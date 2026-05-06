@@ -27,3 +27,11 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+.beta-badge {
+  color: #ff4d4f;
+  font-size: 9px;
+  font-weight: bold;
+  margin-left: 2px;
+  vertical-align: super;
+}

@@ -2,6 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import '@fortawesome/fontawesome-free/css/all.css';
 import logo from "./logo-arihant-capital.png";
+import Header from "./Header.jsx";
 
 function ResearchCall() {
   const [activeTopTab, setActiveTopTab] = useState("research");
@@ -17,55 +18,7 @@ function ResearchCall() {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-
-      {/* Header Section */}
-      <div className="h-[60px] bg-[#34b350] flex justify-between items-center px-6 text-white fixed top-0 left-0 right-0 w-full z-[1000]">
-        <div className="left">
-          <img src={logo} alt="logo" className="logo" />
-          <div className="menu">
-            <span onClick={() => navigate("/dashboard")}>Dashboard</span>
-            <span>Reports</span>
-            <span>Account Opening</span>
-            <span>Download</span>
-            <span className="active">Research call</span>
-            <span onClick={() => navigate("/dealslip")}>Deal Slip</span>
-            <span>Third Party</span>
-            <span onClick={() => navigate("/contests")} className="cursor-pointer hover:underline">contests</span>
-            <span>Profile<sup className="beta-badge">BETA</sup></span>
-            <Link to="/clicktocall" className="text-white">Click To Call</Link>
-            <span onClick={() => navigate("/payout")}>Payout</span>
-          </div>
-        </div>
-
-        <div className="right relative">
-          <div 
-            className="user-icon cursor-pointer"
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-          >
-            <i className="fa-solid fa-user text-white"></i>
-            <i className="fa fa-chevron-down fa-2xs text-white"></i>
-          </div>
-          
-          {dropdownOpen && (
-            <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-              <div className="py-1">
-                <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer flex items-center">
-                  <i className="fa fa-user-circle mr-2 text-gray-500"></i>
-                  Customer Details
-                </div>
-                <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer flex items-center">
-                  <i className="fa fa-headset mr-2 text-gray-500"></i>
-                  Customer Support
-                </div>
-                <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer flex items-center border-t border-gray-200">
-                  <i className="fa fa-sign-out-alt mr-2 text-red-500"></i>
-                  <span className="text-red-500">Logout</span>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      <Header />
 
       {/* CONTENT WRAPPER */}
       <div className="mt-20 bg-yellow-50 p-3 rounded-md shadow-md border">

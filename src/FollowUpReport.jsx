@@ -235,12 +235,12 @@ export default function FollowUpReport() {
           <h2 className="text-lg font-semibold mb-6">Arihant Product</h2>
 
           <div className="flex flex-wrap gap-32 font-medium">
-            <a href="#" className="text-green-600">Official Website</a>
-            <a href="#" className="text-green-600">Demat your MF Units</a>
-            <a href="#" className="text-green-600">Insta Options</a>
-            <a href="#" className="text-green-600">Trade Bridge</a>
-            <a href="#" className="text-green-600">Value Stocks</a>
-            <a href="#" className="text-green-600">Stock Stack</a>
+            <a href="https://www.arihantcapital.com/" target="_blank" rel="noopener noreferrer" className="text-green-600">Official Website</a>
+            <a href="https://eservices.nsdl.com/cas-stmt-mf-conv/#/login" target="_blank" rel="noopener noreferrer" className="text-green-600">Demat your MF Units</a>
+            <a href="https://instaoptions.arihantplus.com/login" target="_blank" rel="noopener noreferrer" className="text-green-600">Insta Options</a>
+            <a href="https://tradebridge.arihantplus.com/signup" target="_blank" rel="noopener noreferrer" className="text-green-600">Trade Bridge</a>
+            <a href="https://arihantplus.valuestocks.in/" target="_blank" rel="noopener noreferrer" className="text-green-600">Value Stocks</a>
+            <a href="https://tradebridge.arihantplus.com/sso/login?api_key=IBOFTIrFIx1AYBWz0a&source=DESEO" target="_blank" rel="noopener noreferrer" className="text-green-600">Stock Stack</a>
           </div>
         </div>
       </div>

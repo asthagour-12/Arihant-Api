@@ -1,49 +1,66 @@
-import React from "react";
-import "./PayoutRequest.css";
+import React, { useState } from "react";
+import PayoutLayout from "./PayoutLayout.jsx";
+import { AlertCircle } from "lucide-react";
 
-const BulkPayout = () => (
-  <div className="space-y-10">
-    <div className="bg-[#f8f9fa] border border-gray-300 p-5 rounded-xl flex items-center gap-4">
-        <div className="bg-white border border-gray-200 rounded-lg px-4 py-2.5 flex items-center w-[300px]">
-            <input 
-                type="file" 
-                className="text-[13px] text-gray-500 cursor-pointer w-full"
-            />
+const BulkPayout = () => {
+  const [file, setFile] = useState(null);
+  const [showError, setShowError] = useState(false);
+
+  const handleSubmit = () => {
+    if (!file) {
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
+      return;
+    }
+    // Handle submission logic here
+    console.log("File submitted:", file);
+  };
+
+  return (
+    <PayoutLayout>
+      {/* 🚨 ERROR POPUP */}
+      {showError && (
+        <div className="fixed top-5 right-5 z-[1000] animate-in slide-in-from-right-10 fade-in duration-300">
+          <div className="bg-[#e11d48] text-white py-3 px-5 rounded-xl shadow-2xl flex items-center gap-4 border border-white/10 max-w-[280px]">
+            <AlertCircle size={20} />
+            <p className="text-[13px] font-bold">Please Select a File First</p>
+          </div>
         </div>
-        <button className="bg-[#34b350] text-white px-6 h-[44px] rounded-full font-bold text-[14px] transition-all hover:bg-[#2da047]">
-            SUBMIT &gt;
-        </button>
-    </div>
+      )}
 
-    {/* Meaning Text */}
-    <div className="flex items-center justify-center gap-8 my-16">
-      <div className="w-[190px] h-[1px] bg-gray-300"></div>
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="flex justify-between items-center px-1">
+          <div className="text-[13px] text-black font-bold uppercase tracking-[0.15em]">
+            Bulk Payout Upload
+          </div>
+        </div>
 
-      <p className="text-[14px] text-gray-700">
-        What we mean when we say -
-        <span className="font-semibold"> (Z)</span>: Zone,
-        <span className="font-semibold"> (R)</span>: Region,
-        <span className="font-semibold"> (Br)</span>: Branch,
-        <span className="font-semibold"> (AP)</span>: Authorized Person/Sub Broker
-      </p>
-
-      <div className="w-[190px] h-[1px] bg-gray-300"></div>
-    </div>
-
-    {/* Product Section */}
-    <div className="bg-white rounded-xl shadow-sm p-6 mt-8">
-      <h2 className="text-lg font-semibold mb-6">Arihant Product</h2>
-
-      <div className="flex flex-wrap gap-32 font-medium">
-        <a href="#" className="text-green-600">Official Website</a>
-        <a href="#" className="text-green-600">Demat your MF Units</a>
-        <a href="#" className="text-green-600">Insta Options</a>
-        <a href="#" className="text-green-600">Trade Bridge</a>
-        <a href="#" className="text-green-600">Value Stocks</a>
-        <a href="#" className="text-green-600">Stock Stack</a>
+        <div className="bg-gray-50/50 border border-gray-100 p-4 rounded-3xl flex flex-col sm:flex-row items-end gap-6 shadow-sm">
+          <div className="flex flex-col gap-2 flex-grow max-w-sm w-full">
+            <label className="text-[12px] font-bold text-black uppercase tracking-[0.1em] px-1">Upload Bulk Payout File</label>
+            <div className="bg-white border border-gray-200 rounded-lg px-4 py-2 flex items-center shadow-inner group hover:border-[#27ae60] transition-all">
+              <input
+                type="file"
+                onChange={(e) => {
+                  setFile(e.target.files[0]);
+                  setShowError(false);
+                }}
+                className="text-[13px] text-gray-500 cursor-pointer w-full outline-none file:mr-4 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[11px] file:font-bold file:bg-green-50 file:text-[#27ae60] hover:file:bg-green-100"
+              />
+            </div>
+          </div>
+          <button 
+            onClick={handleSubmit}
+            className="bg-[#27ae60] hover:bg-[#219150] text-white px-8 h-[48px] rounded-lg font-bold text-[13px] transition-all shadow-lg shadow-[#27ae60]/20 flex items-center justify-center gap-2 w-full sm:w-auto active:scale-[0.98]"
+          >
+            <span>SUBMIT FILE</span>
+            <i className="fas fa-upload text-xs opacity-70"></i>
+          </button>
+        </div>
       </div>
-    </div>
-  </div>
-);
+    </PayoutLayout>
+  );
+};
 
 export default BulkPayout;

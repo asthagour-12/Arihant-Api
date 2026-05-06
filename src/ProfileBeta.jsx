@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "./logo-arihant-capital.png";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import Header from "./Header.jsx";
 
 export default function ProfileBeta() {
   const navigate = useNavigate();
@@ -40,55 +41,7 @@ export default function ProfileBeta() {
 
   return (
     <div className="download-container">
-
-      {/* Header Section */}
-      <div className="topbar">
-        <div className="left">
-          <img src={logo} alt="logo" className="logo" />
-          <div className="menu">
-            <span onClick={() => navigate("/dashboard")}>Dashboard</span>
-            <span>Reports</span>
-            <span>Account Opening</span>
-            <span>Download</span>
-            <span className="active">Research call</span>
-            <span onClick={() => navigate("/dealslip")}>Deal Slip</span>
-            <span>Third Party</span>
-            <span onClick={() => navigate("/contests")} className="cursor-pointer hover:underline">contests</span>
-            <span>Profile<sup className="beta-badge">BETA</sup></span>
-            <Link to="/clicktocall" className="text-white">Click To Call</Link>
-            <span onClick={() => navigate("/payout")}>Payout</span>
-          </div>
-        </div>
-
-        <div className="right relative">
-          <div 
-            className="user-icon cursor-pointer"
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-          >
-            <i className="fa-solid fa-user text-white"></i>
-            <i className="fa fa-chevron-down fa-2xs text-white"></i>
-          </div>
-          
-          {dropdownOpen && (
-            <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-              <div className="py-1">
-                <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer flex items-center">
-                  <i className="fa fa-user-circle mr-2 text-gray-500"></i>
-                  Customer Details
-                </div>
-                <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer flex items-center">
-                  <i className="fa fa-headset mr-2 text-gray-500"></i>
-                  Customer Support
-                </div>
-                <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer flex items-center border-t border-gray-200">
-                  <i className="fa fa-sign-out-alt mr-2 text-red-500"></i>
-                  <span className="text-red-500">Logout</span>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      <Header />
 
       <div className="bg-[#f3f3f3] min-h-screen pt-[78px] px-3 pb-4">
 
@@ -153,12 +106,12 @@ export default function ProfileBeta() {
           </h2>
 
           <div className="grid grid-cols-6 gap-6 text-center text-[14px]">
-            <a href="#" className="text-green-500">Official Website</a>
-            <a href="#" className="text-green-500">Demat your MF Units</a>
-            <a href="#" className="text-green-500">Insta Options</a>
-            <a href="#" className="text-green-500">Trade Bridge</a>
-            <a href="#" className="text-green-500">Value Stocks</a>
-            <a href="#" className="text-green-500">Stock Stack</a>
+            <a href="https://www.arihantcapital.com/" target="_blank" rel="noopener noreferrer" className="text-green-500">Official Website</a>
+            <a href="https://eservices.nsdl.com/cas-stmt-mf-conv/#/login" target="_blank" rel="noopener noreferrer" className="text-green-500">Demat your MF Units</a>
+            <a href="https://instaoptions.arihantplus.com/login" target="_blank" rel="noopener noreferrer" className="text-green-500">Insta Options</a>
+            <a href="https://tradebridge.arihantplus.com/signup" target="_blank" rel="noopener noreferrer" className="text-green-500">Trade Bridge</a>
+            <a href="https://arihantplus.valuestocks.in/" target="_blank" rel="noopener noreferrer" className="text-green-500">Value Stocks</a>
+            <a href="https://tradebridge.arihantplus.com/sso/login?api_key=IBOFTIrFIx1AYBWz0a&source=DESEO" target="_blank" rel="noopener noreferrer" className="text-green-500">Stock Stack</a>
           </div>
         </div>
 

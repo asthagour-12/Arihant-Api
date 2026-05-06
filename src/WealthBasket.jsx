@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "./logo-arihant-capital.png";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import Header from "./Header.jsx";
 
 const tabs = [
   "Algo Brokerage",
@@ -20,38 +21,7 @@ export default function WealthBasket() {
 
   return (
     <>
-      {/* HEADER */}
-      <div className="topbar">
-        <div className="left">
-          <img src={logo} alt="logo" className="logo" />
-          <div className="menu">
-            <span onClick={() => navigate("/dashboard")}>Dashboard</span>
-            <span onClick={() => navigate("/reports")}>Reports</span>
-            <span onClick={() => navigate("/account-opening")}>
-              Account Opening
-            </span>
-            <span>Download</span>
-            <span className="active">Research call</span>
-            <span onClick={() => navigate("/dealslip")}>Deal Slip</span>
-            <span onClick={() => navigate("/third-party")}>Third Party</span>
-            <span onClick={() => navigate("/contests")}>Contests</span>
-            <span onClick={() => navigate("/profile")}>
-              Profile <sup className="beta-badge">BETA</sup>
-            </span>
-            <span onClick={() => navigate("/clicktocall")}>
-              Click To Call
-            </span>
-            <span onClick={() => navigate("/payout")}>Payout</span>
-          </div>
-        </div>
-
-        <div className="right">
-          <span className="user-icon">
-            <i className="fa-solid fa-user text-white"></i>
-            <i className="fa fa-chevron-down fa-2xs text-white"></i>
-          </span>
-        </div>
-      </div>
+      <Header />
 
       {/* MAIN CONTENT */}
       <div className="p-4 pt-11">
@@ -110,24 +80,24 @@ export default function WealthBasket() {
             </h2>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-sm">
-              <span className="text-green-600 hover:underline cursor-pointer">
+              <a href="https://www.arihantcapital.com/" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline cursor-pointer">
                 Official Website
-              </span>
-              <span className="text-green-600 hover:underline cursor-pointer">
+              </a>
+              <a href="https://eservices.nsdl.com/cas-stmt-mf-conv/#/login" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline cursor-pointer">
                 Demat your MF Units
-              </span>
-              <span className="text-green-600 hover:underline cursor-pointer">
+              </a>
+              <a href="https://instaoptions.arihantplus.com/login" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline cursor-pointer">
                 Insta Options
-              </span>
-              <span className="text-green-600 hover:underline cursor-pointer">
+              </a>
+              <a href="https://tradebridge.arihantplus.com/signup" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline cursor-pointer">
                 Trade Bridge
-              </span>
-              <span className="text-green-600 hover:underline cursor-pointer">
+              </a>
+              <a href="https://arihantplus.valuestocks.in/" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline cursor-pointer">
                 Value Stocks
-              </span>
-              <span className="text-green-600 hover:underline cursor-pointer">
+              </a>
+              <a href="https://tradebridge.arihantplus.com/sso/login?api_key=IBOFTIrFIx1AYBWz0a&source=DESEO" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline cursor-pointer">
                 Stock Stack
-              </span>
+              </a>
             </div>
           </div>
 

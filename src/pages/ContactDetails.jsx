@@ -91,8 +91,15 @@ const ContactDetails = () => {
                 <div className="bg-white border border-gray-100 rounded-2xl p-12 shadow-sm">
                     <div className="text-2xl font-black text-gray-800 mb-10 pb-4 border-b border-gray-50 uppercase tracking-tighter">Arihant Product</div>
                     <div className="flex flex-wrap justify-between gap-8 text-[#34b350] font-black text-[14px]">
-                        {["Official Website", "Demat your MF Units", "Insta Options", "Trade Bridge", "Value Stocks", "Stock Stack"].map(p => (
-                            <a key={p} href="#" className="hover:scale-105 transition-transform">{p}</a>
+                        {[
+                            { label: "Official Website", url: "https://www.arihantcapital.com/" },
+                            { label: "Demat your MF Units", url: "https://eservices.nsdl.com/cas-stmt-mf-conv/#/login" },
+                            { label: "Insta Options", url: "https://instaoptions.arihantplus.com/login" },
+                            { label: "Trade Bridge", url: "https://tradebridge.arihantplus.com/signup" },
+                            { label: "Value Stocks", url: "https://arihantplus.valuestocks.in/" },
+                            { label: "Stock Stack", url: "https://tradebridge.arihantplus.com/sso/login?api_key=IBOFTIrFIx1AYBWz0a&source=DESEO" }
+                        ].map(p => (
+                            <a key={p.label} href={p.url} target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform">{p.label}</a>
                         ))}
                     </div>
                 </div>

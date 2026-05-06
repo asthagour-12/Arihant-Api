@@ -1,6 +1,7 @@
 {
   "name": "arihant-login",
   "version": "1.0.0",
+  "type": "module",
   "description": "Arihant Capital Backoffice Login Page",
   "main": "App.jsx",
   "scripts": {

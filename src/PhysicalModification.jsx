@@ -10,9 +10,12 @@ export default function PhysicalModification() {
     key: "",
     direction: "asc",
   });
+  const [error, setError] = useState("");
 
   // SEARCH / BACKEND READY
   const handleApply = async () => {
+    setError(""); // Reset error
+    
     // API Example:
     // const res = await fetch("/api/physical-modification");
     // const data = await res.json();
@@ -48,6 +51,10 @@ export default function PhysicalModification() {
       );
     }
 
+    if (filtered.length === 0) {
+      setError("No data found for the selected criteria");
+    }
+    
     setResults(filtered);
   };
 
@@ -185,10 +192,16 @@ export default function PhysicalModification() {
             className="w-full h-[54px] rounded-full border border-gray-300 pl-14 pr-4 text-[18px] outline-none bg-white"
           />
         </div>
-        <button className="bg-gradient-to-r from-[#35b34a] to-[#2f9f42] hover:from-[#2f9f42] hover:to-[#28a845] text-white font-bold text-[18px] px-8 h-[44px] rounded-full flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
-          APPLY
-          <ChevronRight size={20} />
-        </button>
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={handleApply}
+            className="bg-gradient-to-r from-[#35b34a] to-[#2f9f42] hover:from-[#2f9f42] hover:to-[#28a845] text-white font-bold text-[18px] px-8 h-[44px] rounded-full flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+          >
+            APPLY
+            <ChevronRight size={20} />
+          </button>
+          {error && <span className="text-red-500 text-sm font-medium">{error}</span>}
+        </div>
       </div>
 
       {/* Conditional Content Based on Active Sub Tab */}

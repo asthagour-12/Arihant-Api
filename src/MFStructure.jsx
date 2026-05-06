@@ -85,24 +85,24 @@ export default function MFStructure() {
             </h2>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-sm">
-              <span className="text-green-600 hover:underline cursor-pointer">
+              <a href="https://www.arihantcapital.com/" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline cursor-pointer">
                 Official Website
-              </span>
-              <span className="text-green-600 hover:underline cursor-pointer">
+              </a>
+              <a href="https://eservices.nsdl.com/cas-stmt-mf-conv/#/login" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline cursor-pointer">
                 Demat your MF Units
-              </span>
-              <span className="text-green-600 hover:underline cursor-pointer">
+              </a>
+              <a href="https://instaoptions.arihantplus.com/login" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline cursor-pointer">
                 Insta Options
-              </span>
-              <span className="text-green-600 hover:underline cursor-pointer">
+              </a>
+              <a href="https://tradebridge.arihantplus.com/signup" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline cursor-pointer">
                 Trade Bridge
-              </span>
-              <span className="text-green-600 hover:underline cursor-pointer">
+              </a>
+              <a href="https://arihantplus.valuestocks.in/" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline cursor-pointer">
                 Value Stocks
-              </span>
-              <span className="text-green-600 hover:underline cursor-pointer">
+              </a>
+              <a href="https://tradebridge.arihantplus.com/sso/login?api_key=IBOFTIrFIx1AYBWz0a&source=DESEO" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline cursor-pointer">
                 Stock Stack
-              </span>
+              </a>
             </div>
           </div>
 

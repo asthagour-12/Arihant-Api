@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Header from "./Header.jsx";
 import logo from './logo-arihant-capital.png';
 
 const tabs = [
@@ -160,36 +161,10 @@ export default function ThirdParty() {
   const navigate = useNavigate();
 
   return (
-    <div className="download-container">
+    <div className="bg-[#f1f1f1] min-h-screen">
+      <Header />
 
-      {/* Header Section */}
-      <div className="topbar">
-        <div className="left">
-          <img src={logo} alt="logo" className="logo" />
-          <div className="menu">
-            <span onClick={() => navigate("/dashboard")}>Dashboard</span>
-            <span>Reports</span>
-            <span>Account Opening</span>
-            <span>Download</span>
-            <span className="active">Research call</span>
-            <span onClick={() => navigate("/dealslip")}>Deal Slip</span>
-            <span>Third Party</span>
-            <span onClick={() => navigate("/contests")} className="cursor-pointer hover:underline">contests</span>
-            <span>Profile<sup className="beta-badge">BETA</sup></span>
-            <span onClick={() => navigate("/clicktocall")}>Click To Call</span>
-            <span onClick={() => navigate("/payout")}>Payout</span>
-          </div>
-        </div>
-
-        <div className="right">
-          <span className="user-icon">
-            <i className="fa-solid fa-user text-white"></i>
-            <i className="fa fa-chevron-down fa-2xs text-white"></i>
-          </span>
-        </div>
-      </div>
-
-      <div className="p-4 pt-11">
+      <div className="p-4 pt-[60px]">
 
         {/* -------- TABS -------- */}
         <div className="bg-white rounded-lg shadow-sm p-4 w-full mt-10">

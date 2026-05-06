@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import '@fortawesome/fontawesome-free/css/all.css';
 import logo from "./logo-arihant-capital.png";
+import Header from "./Header.jsx";
+import { useNavigate } from "react-router-dom";
 
 function FundamentalCall() {
+  const navigate = useNavigate();
   const [activeTopTab, setActiveTopTab] = useState("research");
   const [activeSubTab, setActiveSubTab] = useState("short-term");
 
@@ -27,32 +30,7 @@ function FundamentalCall() {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      {/* Header Section */}
-      <div className="h-[60px] bg-[#34b350] flex justify-between items-center px-6 text-white fixed top-0 left-0 right-0 w-full z-[1000]">
-        <div className="left">
-          <img src={logo} alt="logo" className="logo" />
-          <div className="menu">
-            <span onClick={() => window.location.href = "/dashboard"}>Dashboard</span>
-            <span>Reports</span>
-            <span>Account Opening</span>
-            <span>Download</span>
-            <span onClick={() => window.location.href = "/researchcall"}>Research call</span>
-            <span className="active">Fundamental call</span>
-            <span onClick={() => window.location.href = "/dealslip"}>Deal Slip</span>
-            <span>Third Party</span>
-            <span onClick={() => window.location.href = "/contests"} className="cursor-pointer hover:underline">contests</span>
-            <span>Profile<sup className="beta-badge">BETA</sup></span>
-            <span onClick={() => window.location.href = "/clicktocall"} className="cursor-pointer hover:underline">Click To Call</span>
-            <span onClick={() => window.location.href = "/payout"}>Payout</span>
-          </div>
-        </div>
-        <div className="right">
-          <span className="user-icon">
-            <i className="fa-solid fa-user text-white"></i>
-            <i className="fa fa-chevron-down fa-2xs text-white"></i>
-          </span>
-        </div>
-      </div>
+      <Header />
       
       {/* Top Tabs */}
           <div className="flex gap-6 border-b pb-3">

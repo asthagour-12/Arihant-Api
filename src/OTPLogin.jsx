@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './OTPLogin.css';
 
 const OTPLogin = () => {
     const [mobile, setMobile] = useState('');
@@ -24,16 +23,14 @@ const OTPLogin = () => {
             if (response.data.success) {
                 setShowOTP(true);
                 setSuccess('OTP sent successfully!');
-                console.log('OTP:', response.data.otp); // For demo purposes
             } else {
                 setError(response.data.message);
             }
         } catch (error) {
             setError('Failed to send OTP. Please try again.');
-            console.error('Send OTP Error:', error);
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     };
 
     const handleVerifyOTP = async (e) => {
@@ -50,32 +47,14 @@ const OTPLogin = () => {
 
             if (response.data.success) {
                 setSuccess('OTP verified successfully!');
-                // Redirect to dashboard
                 window.location.href = response.data.redirectUrl;
             } else {
                 setError(response.data.message);
             }
         } catch (error) {
             setError('Failed to verify OTP. Please try again.');
-            console.error('Verify OTP Error:', error);
-        }
-
-        setLoading(false);
-    };
-
-    const handleMobileChange = (e) => {
-        const value = e.target.value;
-        // Only allow numbers
-        if (/^\d*$/.test(value)) {
-            setMobile(value);
-        }
-    };
-
-    const handleOTPChange = (e) => {
-        const value = e.target.value;
-        // Only allow numbers, max 6 digits
-        if (/^\d*$/.test(value) && value.length <= 6) {
-            setOtp(value);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -87,86 +66,106 @@ const OTPLogin = () => {
     };
 
     return (
-        <div className="otp-login-container">
-            <div className="otp-login-card">
-                <div className="login-header">
-                    <h1 className="login-title">Arihant Capital</h1>
-                    <p className="login-subtitle">Secure OTP Login</p>
-                </div>
+        <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-6 font-sans">
+            <div className="w-full max-w-md bg-white rounded-[32px] shadow-2xl shadow-gray-200 border border-gray-100 overflow-hidden animate-in fade-in zoom-in-95 duration-500">
+                
+                {/* Header Decoration */}
+                <div className="h-2 bg-[#34b350] w-full"></div>
+                
+                <div className="p-8 lg:p-12">
+                    <div className="text-center mb-10">
+                        <h1 className="text-3xl font-black text-gray-800 tracking-tighter mb-2">Arihant Capital</h1>
+                        <p className="text-gray-400 font-bold text-[11px] uppercase tracking-[0.2em]">Secure OTP Login</p>
+                    </div>
 
-                {!showOTP ? (
-                    <form onSubmit={handleSendOTP} className="otp-form">
-                        <div className="form-group">
-                            <label htmlFor="mobile" className="form-label">
-                                Mobile Number
-                            </label>
-                            <input
-                                type="tel"
-                                id="mobile"
-                                value={mobile}
-                                onChange={handleMobileChange}
-                                placeholder="Enter your mobile number"
-                                className="form-input"
-                                maxLength={10}
-                                required
-                            />
-                        </div>
+                    {!showOTP ? (
+                        <form onSubmit={handleSendOTP} className="space-y-8">
+                            <div className="space-y-2">
+                                <label htmlFor="mobile" className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
+                                    Mobile Number
+                                </label>
+                                <div className="relative group">
+                                    <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold">+91</span>
+                                    <input
+                                        type="tel"
+                                        id="mobile"
+                                        value={mobile}
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                                            setMobile(val);
+                                        }}
+                                        placeholder="10-digit number"
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-16 pr-6 py-4 text-gray-800 font-bold outline-none focus:bg-white focus:border-[#34b350] transition-all shadow-inner"
+                                        required
+                                    />
+                                </div>
+                            </div>
 
-                        <button
-                            type="submit"
-                            className="submit-button"
-                            disabled={loading || mobile.length !== 10}
-                        >
-                            {loading ? 'Sending...' : 'Send OTP'}
-                        </button>
-                    </form>
-                ) : (
-                    <form onSubmit={handleVerifyOTP} className="otp-form">
-                        <div className="mobile-display">
-                            <span className="mobile-label">Mobile:</span>
-                            <span className="mobile-value">{mobile}</span>
                             <button
-                                type="button"
-                                onClick={resetForm}
-                                className="change-mobile-btn"
+                                type="submit"
+                                className="w-full bg-[#34b350] hover:bg-[#2e9e47] text-white py-4 rounded-2xl font-black text-sm tracking-widest uppercase shadow-xl shadow-green-500/20 transition-all disabled:bg-gray-200 active:scale-[0.98]"
+                                disabled={loading || mobile.length !== 10}
                             >
-                                Change
+                                {loading ? 'SENDING...' : 'SEND OTP'}
                             </button>
+                        </form>
+                    ) : (
+                        <form onSubmit={handleVerifyOTP} className="space-y-8">
+                            <div className="bg-green-50 p-4 rounded-2xl flex items-center justify-between border border-green-100">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-green-600 font-black uppercase tracking-widest">Mobile</span>
+                                    <span className="text-gray-800 font-black">+91 {mobile}</span>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={resetForm}
+                                    className="text-[11px] font-black text-[#34b350] hover:underline uppercase tracking-widest"
+                                >
+                                    Change
+                                </button>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="otp" className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
+                                    Enter 6-digit OTP
+                                </label>
+                                <input
+                                    type="text"
+                                    id="otp"
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                    placeholder="••••••"
+                                    className="w-full text-center tracking-[0.8em] text-2xl bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-gray-900 font-black outline-none focus:bg-white focus:border-[#34b350] transition-all shadow-inner"
+                                    required
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="w-full bg-[#34b350] hover:bg-[#2e9e47] text-white py-4 rounded-2xl font-black text-sm tracking-widest uppercase shadow-xl shadow-green-500/20 transition-all disabled:bg-gray-200 active:scale-[0.98]"
+                                disabled={loading || otp.length !== 6}
+                            >
+                                {loading ? 'VERIFYING...' : 'VERIFY OTP'}
+                            </button>
+                        </form>
+                    )}
+
+                    {error && (
+                        <div className="mt-6 p-4 bg-red-50 text-red-600 rounded-xl text-[12px] font-bold text-center border border-red-100 animate-in fade-in slide-in-from-top-2">
+                            {error}
                         </div>
-
-                        <div className="form-group">
-                            <label htmlFor="otp" className="form-label">
-                                Enter OTP
-                            </label>
-                            <input
-                                type="text"
-                                id="otp"
-                                value={otp}
-                                onChange={handleOTPChange}
-                                placeholder="Enter 6-digit OTP"
-                                className="form-input otp-input"
-                                maxLength={6}
-                                required
-                            />
+                    )}
+                    {success && (
+                        <div className="mt-6 p-4 bg-green-50 text-green-600 rounded-xl text-[12px] font-bold text-center border border-green-100 animate-in fade-in slide-in-from-top-2">
+                            {success}
                         </div>
+                    )}
 
-                        <button
-                            type="submit"
-                            className="submit-button"
-                            disabled={loading || otp.length !== 6}
-                        >
-                            {loading ? 'Verifying...' : 'Verify OTP'}
-                        </button>
-                    </form>
-                )}
-
-                {error && <div className="error-message">{error}</div>}
-                {success && <div className="success-message">{success}</div>}
-
-                <div className="login-footer">
-                    <p className="help-text">
-                        Need assistance? Call us on 0731-4217208
-                    </p>
+                    <div className="mt-12 text-center">
+                        <p className="text-[11px] text-gray-400 font-medium">
+                            Need assistance? <strong className="text-gray-800 font-bold">0731-4217208</strong>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

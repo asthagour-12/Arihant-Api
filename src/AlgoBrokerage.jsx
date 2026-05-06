@@ -20,14 +20,20 @@ const tabs = [
 function CustomDateFilter() {
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
+  const [error, setError] = useState("");
 
   const fromRef = useRef();
   const toRef = useRef();
 
   const today = new Date();
 
+  const handleApply = () => {
+    // In a real app, this would check if any data was returned from the API
+    setError("No data found for the selected criteria");
+  };
+
   return (
-    <div className="flex gap-6 items-end bg-[#f3f3f3] p-4 rounded-xl mt-4">
+    <div className="flex gap-6 items-end bg-[#f3f3f3] p-4 rounded-xl mt-4 flex-wrap">
 
       {/* FROM DATE */}
       <div>
@@ -148,10 +154,17 @@ function CustomDateFilter() {
       </div>
 
       {/* APPLY BUTTON */}
-      <button className="bg-green-600 text-white px-6 py-2 rounded-full font-semibold flex items-center gap-2 ">
-        APPLY
-        <i className="fa fa-angle-right"></i>
-      </button>
+      <div className="flex items-center gap-4">
+        <button 
+          onClick={handleApply}
+          className="bg-green-600 text-white px-6 py-2 rounded-full font-semibold flex items-center gap-2"
+        >
+          APPLY
+          <i className="fa fa-angle-right"></i>
+        </button>
+        {error && <span className="text-red-500 text-sm font-medium">{error}</span>}
+      </div>
+
     </div>
   );
 }
@@ -160,7 +173,7 @@ export default function AlgoBrokerage() {
   const navigate = useNavigate();
 
   return (
-    <div className="download-container">
+    <>
       <Header />
 
       <div className="p-4 pt-11">
@@ -206,6 +219,6 @@ export default function AlgoBrokerage() {
         </div>
 
       </div>
-    </div>
+    </>
   );
 }

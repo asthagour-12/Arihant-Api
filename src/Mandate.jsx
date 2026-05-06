@@ -23,6 +23,7 @@ export default function Mandate() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "" });
+  const [error, setError] = useState("");
   const [visibleRows, setVisibleRows] = useState({});
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -122,12 +123,19 @@ export default function Mandate() {
     );
   };
 
+  const handleApply = () => {
+    if (data.length === 0) {
+      setError("No data found for the selected criteria");
+    } else {
+      setError("");
+    }
+  };
+
   return (
     <>
-      <div className="download-container">
-        <Header />
+      <Header />
 
-        <div className="p-4 pt-11">
+      <div className="p-4 pt-11">
 
           {/* -------- TABS -------- */}
           <div className="bg-white rounded-lg shadow-sm p-4 w-full mt-10">
@@ -205,10 +213,16 @@ export default function Mandate() {
               </div>
 
               {/* APPLY BUTTON */}
-              <button className="bg-green-600 text-white px-6 py-2 mt-4 rounded-full font-semibold flex items-center  gap-2 ">
-                APPLY
-                <i className="fa fa-angle-right "></i>
-              </button>
+              <div className="flex items-center gap-4 mt-4">
+                <button 
+                  onClick={handleApply}
+                  className="bg-green-600 text-white px-6 py-2 rounded-full font-semibold flex items-center gap-2"
+                >
+                  APPLY
+                  <i className="fa fa-angle-right"></i>
+                </button>
+                {error && <span className="text-red-500 text-sm font-medium">{error}</span>}
+              </div>
 
             </div>
 
@@ -314,7 +328,6 @@ export default function Mandate() {
 
           </div>
         </div>
-      </div>
     </>
   );
 }
