@@ -2,35 +2,79 @@ import React from "react";
 import Layout from "../components/layout/Layout";
 import SubNavigation from "../components/layout/SubNavigation";
 import ProductBox from "../components/common/ProductBox";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { validateDates } from "../utils/dateValidation";
+import { toast } from "react-toastify";
+import { Calendar } from "lucide-react";
 
 const IPOReport = () => {
-    const [fromDate, setFromDate] = React.useState("");
-    const [toDate, setToDate] = React.useState("");
+    const [fromDate, setFromDate] = React.useState(null);
+    const [toDate, setToDate] = React.useState(null);
+    const [error, setError] = React.useState("");
+    const fromRef = React.useRef();
+    const toRef = React.useRef();
+
+    const handleApply = () => {
+        const errorMsg = validateDates(fromDate, toDate);
+        if (errorMsg) {
+            setError(errorMsg);
+            toast.error(errorMsg);
+            return;
+        }
+        setError("");
+        toast.success("Applied");
+    };
 
     return (
         <div className="p-6 bg-white min-h-screen">
             <div className="max-w-[1600px] mx-auto">
                 <div className="bg-[#f8f9fa] border border-gray-100 px-8 py-8 rounded-2xl mb-12 shadow-sm">
-                    <div className="flex gap-4 items-end">
-                        <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">From Date</label>
-                            <input
-                                type="date"
-                                value={fromDate}
-                                onChange={e => setFromDate(e.target.value)}
-                                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#27ae60] focus:ring-2 focus:ring-green-100"
-                            />
+                    <div className="flex gap-8 items-end flex-wrap justify-center">
+                        <div className="flex flex-col gap-2">
+                            <label className="text-gray-500 font-bold text-[11px] uppercase tracking-wider ml-1">From Date</label>
+                            <div className="relative group">
+                                <DatePicker
+                                    selected={fromDate}
+                                    onChange={(d) => setFromDate(d)}
+                                    dateFormat="dd/MM/yyyy"
+                                    placeholderText="DD/MM/YYYY"
+                                    maxDate={new Date()}
+                                    className={`px-4 py-3 border rounded-lg focus:outline-none focus:border-[#34b350] text-sm w-56 bg-white shadow-sm transition-all h-[48px] font-bold ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-200"}`}
+                                    ref={fromRef}
+                                    onFocus={(e) => e.target.blur()}
+                                />
+                                <Calendar
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-hover:text-[#34b350] transition-colors cursor-pointer"
+                                    size={16}
+                                    onClick={() => fromRef.current.setOpen(true)}
+                                />
+                            </div>
                         </div>
-                        <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">To Date</label>
-                            <input
-                                type="date"
-                                value={toDate}
-                                onChange={e => setToDate(e.target.value)}
-                                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#27ae60] focus:ring-2 focus:ring-green-100"
-                            />
+                        <div className="flex flex-col gap-2">
+                            <label className="text-gray-500 font-bold text-[11px] uppercase tracking-wider ml-1">To Date</label>
+                            <div className="relative group">
+                                <DatePicker
+                                    selected={toDate}
+                                    onChange={(d) => setToDate(d)}
+                                    dateFormat="dd/MM/yyyy"
+                                    placeholderText="DD/MM/YYYY"
+                                    maxDate={new Date()}
+                                    className={`px-4 py-3 border rounded-lg focus:outline-none focus:border-[#34b350] text-sm w-56 bg-white shadow-sm transition-all h-[48px] font-bold ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-200"}`}
+                                    ref={toRef}
+                                    onFocus={(e) => e.target.blur()}
+                                />
+                                <Calendar
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-hover:text-[#34b350] transition-colors cursor-pointer"
+                                    size={16}
+                                    onClick={() => toRef.current.setOpen(true)}
+                                />
+                            </div>
                         </div>
-                        <button className="bg-[#27ae60] hover:bg-[#219150] text-white px-10 h-[52px] rounded-full font-bold text-[14px] transition-all shadow-md flex items-center justify-center gap-2">
+                        <button 
+                            onClick={handleApply}
+                            className="bg-[#34b350] hover:bg-[#2e9e47] text-white px-10 h-[48px] rounded-full font-bold text-[14px] transition-all shadow-md flex items-center justify-center gap-2 mt-auto"
+                        >
                             <span>SEARCH</span>
                             <span className="text-[18px]">›</span>
                         </button>

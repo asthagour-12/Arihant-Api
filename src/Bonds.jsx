@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header.jsx";
+import { toast } from "react-toastify";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 
@@ -108,6 +109,7 @@ export default function Bonds() {
   const handleSubmit = async () => {
     if (!clientCode.trim()) {
       setError("Client code is required");
+      toast.error("Client code is required");
       return;
     }
 
@@ -118,6 +120,7 @@ export default function Bonds() {
 
     if (codes.length === 0) {
       setError("Enter valid client code");
+      toast.error("Enter valid client code");
       return;
     }
 
@@ -125,6 +128,7 @@ export default function Bonds() {
 
     if (!isValid) {
       setError("Only numeric client codes allowed");
+      toast.error("Only numeric client codes allowed");
       return;
     }
 
@@ -151,11 +155,12 @@ export default function Bonds() {
       setClientCode("");
       setError("");
 
-      alert("Submitted successfully");
+      toast.success("Submitted successfully");
 
     } catch (err) {
       console.error(err);
       setError("Something went wrong");
+      toast.error("Something went wrong");
     }
   };
 

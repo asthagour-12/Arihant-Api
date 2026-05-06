@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Search, ChevronRight } from "lucide-react";
 import ReKYCModification from "./Rekyc Modification.jsx";
+import { toast } from "react-toastify";
 
 export default function PhysicalModification() {
   const [activeSubTab, setActiveSubTab] = useState("Physical Modification");
@@ -52,7 +53,9 @@ export default function PhysicalModification() {
     }
 
     if (filtered.length === 0) {
-      setError("No data found for the selected criteria");
+      const msg = "No data found for the selected criteria";
+      setError(msg);
+      toast.error(msg);
     }
     
     setResults(filtered);
@@ -200,7 +203,6 @@ export default function PhysicalModification() {
             APPLY
             <ChevronRight size={20} />
           </button>
-          {error && <span className="text-red-500 text-sm font-medium">{error}</span>}
         </div>
       </div>
 

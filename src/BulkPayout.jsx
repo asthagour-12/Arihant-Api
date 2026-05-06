@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import PayoutLayout from "./PayoutLayout.jsx";
 import { AlertCircle } from "lucide-react";
+import { toast } from "react-toastify";
 
 const BulkPayout = () => {
   const [file, setFile] = useState(null);
-  const [showError, setShowError] = useState(false);
 
   const handleSubmit = () => {
     if (!file) {
-      setShowError(true);
-      setTimeout(() => setShowError(false), 3000);
+      toast.error("Please Select a File First");
       return;
     }
     // Handle submission logic here
@@ -18,15 +17,7 @@ const BulkPayout = () => {
 
   return (
     <PayoutLayout>
-      {/* 🚨 ERROR POPUP */}
-      {showError && (
-        <div className="fixed top-5 right-5 z-[1000] animate-in slide-in-from-right-10 fade-in duration-300">
-          <div className="bg-[#e11d48] text-white py-3 px-5 rounded-xl shadow-2xl flex items-center gap-4 border border-white/10 max-w-[280px]">
-            <AlertCircle size={20} />
-            <p className="text-[13px] font-bold">Please Select a File First</p>
-          </div>
-        </div>
-      )}
+      {/* Red popup error message is now handled by ToastContainer in App.jsx */}
 
       <div className="space-y-8">
         {/* Header */}
@@ -44,7 +35,6 @@ const BulkPayout = () => {
                 type="file"
                 onChange={(e) => {
                   setFile(e.target.files[0]);
-                  setShowError(false);
                 }}
                 className="text-[13px] text-gray-500 cursor-pointer w-full outline-none file:mr-4 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[11px] file:font-bold file:bg-green-50 file:text-[#27ae60] hover:file:bg-green-100"
               />

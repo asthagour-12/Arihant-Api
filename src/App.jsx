@@ -17,6 +17,8 @@ import ReportsPage from './ReportsPage.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './Index.css'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import ZoomResearch from "./ZoomResearch";
 import FollowUpReport from "./FollowUpReport"
 import ProfileBeta from "./ProfileBeta"
@@ -91,6 +93,7 @@ function App() {
           </Route>
         </Routes>
         <Footer />
+        <ToastContainer position="top-center" autoClose={3000} />
       </Router>
     </div>
   );

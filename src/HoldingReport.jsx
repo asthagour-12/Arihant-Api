@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { ChevronDown, Search, Download, Calendar, ChevronUp, ChevronsUpDown } from 'lucide-react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 export default function HoldingReport() {
   const [selectedOption, setSelectedOption] = useState('Select Option');
   const [searchInput, setSearchInput] = useState('');
-  const [selectedDate, setSelectedDate] = useState('2026-04-29');
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const dateRef = React.useRef();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const [sortConfig, setSortConfig] = useState({
@@ -109,12 +112,12 @@ export default function HoldingReport() {
   const renderSortIcon = (column) => {
     if (sortConfig.key === column) {
       return sortConfig.direction === "asc" ? (
-        <ChevronUp size={15} className="ml-1 opacity-80" />
+        <ChevronUp size={14} className="text-white ml-2" />
       ) : (
-        <ChevronDown size={15} className="ml-1 opacity-80" />
+        <ChevronDown size={14} className="text-white ml-2" />
       );
     }
-    return <ChevronsUpDown size={15} className="ml-1 opacity-50" />;
+    return <ChevronsUpDown size={14} className="text-white/60 ml-2" />;
   };
 
   const sortedData = [...tableData].sort((a, b) => {
@@ -233,16 +236,25 @@ export default function HoldingReport() {
             </button>
 
             {/* Date Input */}
-            <div className="flex flex-col gap-2">
-              <label className="text-gray-500 font-medium text-[11px] uppercase tracking-wider ml-1">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-gray-500 font-bold text-[11px] uppercase tracking-wider ml-1">
                 As On Date
               </label>
               <div className="relative group">
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-[#27ae60] focus:ring-2 focus:ring-green-50/50 text-sm h-[40px] w-56 bg-white transition-all shadow-sm"
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={(d) => setSelectedDate(d)}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="DD/MM/YYYY"
+                  maxDate={new Date()}
+                  className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-[#34b350] text-sm h-[40px] w-52 bg-white transition-all shadow-sm font-bold"
+                  ref={dateRef}
+                  onFocus={(e) => e.target.blur()}
+                />
+                <Calendar
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-hover:text-[#34b350] transition-colors pointer-events-auto cursor-pointer"
+                  size={16}
+                  onClick={() => dateRef.current.setOpen(true)}
                 />
               </div>
             </div>
@@ -267,74 +279,74 @@ export default function HoldingReport() {
               border: 1px solid #e5e7eb;
             }
             .holding-table th {
-              border: 1px solid #2ea147;
+              border: 1px solid rgba(255, 255, 255, 0.1);
             }
           `}</style>
           <table className="w-full holding-table border-collapse" style={{ fontFamily: 'futura, sans-serif' }}>
             <thead>
-              <tr style={{ backgroundColor: '#34b350' }} className="text-white">
-                <th className="px-3 py-2 border cursor-pointer hover:bg-[#2ea147] transition-colors" onClick={() => handleSort("clientName")}>
-                  <div className="flex items-center justify-between text-left text-[11px] font-bold tracking-wider whitespace-nowrap">
+              <tr style={{ backgroundColor: '#1EB04C' }} className="text-white">
+                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("clientName")}>
+                  <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
                     <span>CLIENT NAME</span>
                     {renderSortIcon("clientName")}
                   </div>
                 </th>
-                <th className="px-3 py-2 border cursor-pointer hover:bg-[#2ea147] transition-colors" onClick={() => handleSort("clientCode")}>
-                  <div className="flex items-center justify-between text-left text-[11px] font-bold tracking-wider whitespace-nowrap">
+                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("clientCode")}>
+                  <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
                     <span>CLIENT CODE</span>
                     {renderSortIcon("clientCode")}
                   </div>
                 </th>
-                <th className="px-3 py-2 border cursor-pointer hover:bg-[#2ea147] transition-colors" onClick={() => handleSort("scriptCode")}>
-                  <div className="flex items-center justify-between text-left text-[11px] font-bold tracking-wider whitespace-nowrap">
+                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("scriptCode")}>
+                  <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
                     <span>SCRIPT CODE</span>
                     {renderSortIcon("scriptCode")}
                   </div>
                 </th>
-                <th className="px-3 py-2 border cursor-pointer hover:bg-[#2ea147] transition-colors" onClick={() => handleSort("scriptName")}>
-                  <div className="flex items-center justify-between text-left text-[11px] font-bold tracking-wider whitespace-nowrap">
+                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("scriptName")}>
+                  <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
                     <span>SCRIPT NAME</span>
                     {renderSortIcon("scriptName")}
                   </div>
                 </th>
-                <th className="px-3 py-2 border cursor-pointer hover:bg-[#2ea147] transition-colors" onClick={() => handleSort("isin")}>
-                  <div className="flex items-center justify-between text-left text-[11px] font-bold tracking-wider whitespace-nowrap">
+                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("isin")}>
+                  <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
                     <span>ISIN</span>
                     {renderSortIcon("isin")}
                   </div>
                 </th>
-                <th className="px-3 py-2 border cursor-pointer hover:bg-[#2ea147] transition-colors" onClick={() => handleSort("pledgePOA")}>
-                  <div className="flex items-center justify-between text-center text-[11px] font-bold tracking-wider whitespace-nowrap">
+                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("pledgePOA")}>
+                  <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
                     <span>PLEDGE POA</span>
                     {renderSortIcon("pledgePOA")}
                   </div>
                 </th>
-                <th className="px-3 py-2 border cursor-pointer hover:bg-[#2ea147] transition-colors" onClick={() => handleSort("freePOA")}>
-                  <div className="flex items-center justify-between text-center text-[11px] font-bold tracking-wider whitespace-nowrap">
+                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("freePOA")}>
+                  <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
                     <span>FREE POA</span>
                     {renderSortIcon("freePOA")}
                   </div>
                 </th>
-                <th className="px-3 py-2 border cursor-pointer hover:bg-[#2ea147] transition-colors" onClick={() => handleSort("mtfQty")}>
-                  <div className="flex items-center justify-between text-center text-[11px] font-bold tracking-wider whitespace-nowrap">
+                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("mtfQty")}>
+                  <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
                     <span>MTF QTY</span>
                     {renderSortIcon("mtfQty")}
                   </div>
                 </th>
-                <th className="px-3 py-2 border cursor-pointer hover:bg-[#2ea147] transition-colors" onClick={() => handleSort("netQty")}>
-                  <div className="flex items-center justify-between text-center text-[11px] font-bold tracking-wider whitespace-nowrap">
+                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("netQty")}>
+                  <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
                     <span>NET QTY</span>
                     {renderSortIcon("netQty")}
                   </div>
                 </th>
-                <th className="px-3 py-2 border cursor-pointer hover:bg-[#2ea147] transition-colors" onClick={() => handleSort("stockValue")}>
-                  <div className="flex items-center justify-between text-center text-[11px] font-bold tracking-wider whitespace-nowrap">
+                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("stockValue")}>
+                  <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
                     <span>STOCK VALUE</span>
                     {renderSortIcon("stockValue")}
                   </div>
                 </th>
-                <th className="px-3 py-2 border cursor-pointer hover:bg-[#2ea147] transition-colors" onClick={() => handleSort("closeRate")}>
-                  <div className="flex items-center justify-between text-center text-[11px] font-bold tracking-wider whitespace-nowrap">
+                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("closeRate")}>
+                  <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
                     <span>CLOSE RATE</span>
                     {renderSortIcon("closeRate")}
                   </div>

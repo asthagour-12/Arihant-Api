@@ -3,8 +3,25 @@ import Layout from "../components/layout/Layout";
 import SubNavigation from "../components/layout/SubNavigation";
 import FilterBar, { FilterItem, ApplyButton, SearchInput, DateInput } from "../components/common/FilterBar";
 import Table from "../components/common/Table";
+import { validateDates } from "../utils/dateValidation";
+import { toast } from "react-toastify";
 
 const ContractNote = () => {
+    const [fromDate, setFromDate] = React.useState(null);
+    const [toDate, setToDate] = React.useState(null);
+    const [error, setError] = React.useState("");
+
+    const handleApply = () => {
+        const errorMsg = validateDates(fromDate, toDate);
+        if (errorMsg) {
+            setError(errorMsg);
+            toast.error(errorMsg);
+            return;
+        }
+        setError("");
+        toast.success("Applied");
+    };
+
     const headers = ["Date", "Client", "Settle", "Contract", "Exchange Code", "File Name"];
     const data = []; // Empty state as requested
 
@@ -16,14 +33,14 @@ const ContractNote = () => {
                 </FilterItem>
 
                 <FilterItem label="From Date">
-                    <DateInput value="" width="140px" />
+                    <DateInput selected={fromDate} onChange={(d) => setFromDate(d)} error={error} width="140px" />
                 </FilterItem>
 
                 <FilterItem label="To Date">
-                    <DateInput value="" width="140px" />
+                    <DateInput selected={toDate} onChange={(d) => setToDate(d)} error={error} width="140px" />
                 </FilterItem>
 
-                <ApplyButton label="Apply" />
+                <ApplyButton onClick={handleApply} />
             </FilterBar>
 
             <Table

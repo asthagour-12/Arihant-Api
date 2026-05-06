@@ -17,68 +17,68 @@ const Header = () => {
         </div>
 
         <nav className="hidden lg:flex items-center gap-6 h-full text-white/90 text-[14px] font-semibold">
-          <span 
-            onClick={() => navigate("/dashboard")} 
+          <span
+            onClick={() => navigate("/dashboard")}
             className={`cursor-pointer transition-all hover:text-white py-5 ${isActive("/dashboard") ? "border-b-4 border-white text-white font-bold" : ""}`}
           >
             Dashboard
           </span>
-          <span 
-            onClick={() => navigate("/reports")} 
+          <span
+            onClick={() => navigate("/reports")}
             className={`cursor-pointer transition-all hover:text-white py-5 ${isActive("/reports") ? "border-b-4 border-white text-white font-bold" : ""}`}
           >
             Reports
           </span>
-          <span 
-            onClick={() => navigate("/account-opening")} 
+          <span
+            onClick={() => navigate("/account-opening")}
             className={`cursor-pointer transition-all hover:text-white py-5 ${isActive("/account-opening") ? "border-b-4 border-white text-white font-bold" : ""}`}
           >
             Account Opening
           </span>
-          <span 
-            onClick={() => navigate("/download")} 
+          <span
+            onClick={() => navigate("/download")}
             className={`cursor-pointer transition-all hover:text-white py-5 ${isActive("/download") ? "border-b-4 border-white text-white font-bold" : ""}`}
           >
             Download
           </span>
-          <span 
-            onClick={() => navigate("/researchcall")} 
+          <span
+            onClick={() => navigate("/researchcall")}
             className={`cursor-pointer transition-all hover:text-white py-5 ${isActive("/researchcall") ? "border-b-4 border-white text-white font-bold" : ""}`}
           >
             Research Call
           </span>
-          <span 
-            onClick={() => navigate("/dealslip")} 
+          <span
+            onClick={() => navigate("/dealslip")}
             className={`cursor-pointer transition-all hover:text-white py-5 ${isActive("/dealslip") ? "border-b-4 border-white text-white font-bold" : ""}`}
           >
             Deal Slip
           </span>
-          <span 
-            onClick={() => navigate("/third-party")} 
+          <span
+            onClick={() => navigate("/third-party")}
             className={`cursor-pointer transition-all hover:text-white py-5 ${isActive("/third-party") ? "border-b-4 border-white text-white font-bold" : ""}`}
           >
             Third Party
           </span>
-          <span 
-            onClick={() => navigate("/contests")} 
+          <span
+            onClick={() => navigate("/contests")}
             className={`cursor-pointer transition-all hover:text-white py-5 ${isActive("/contests") ? "border-b-4 border-white text-white font-bold" : ""}`}
           >
             Contests
           </span>
-          <span 
-            onClick={() => navigate("/profile")} 
+          <span
+            onClick={() => navigate("/profile")}
             className={`cursor-pointer transition-all hover:text-white py-5 ${isActive("/profile") ? "border-b-4 border-white text-white font-bold" : ""}`}
           >
-            Portfolio <sup className="bg-red-600 text-white text-[9px] px-1.5 py-0.5 rounded-full ml-1 font-bold">BETA</sup>
+            Profile <sup className="bg-red-600 text-white text-[9px] px-1.5 py-0.5 rounded-full ml-1 font-bold">BETA</sup>
           </span>
-          <Link 
-            to="/clicktocall" 
+          <Link
+            to="/clicktocall"
             className={`no-underline transition-all hover:text-white py-5 ${isActive("/clicktocall") ? "border-b-4 border-white text-white font-bold" : "text-white/90"}`}
           >
             Click To Call
           </Link>
-          <span 
-            onClick={() => navigate("/payout")} 
+          <span
+            onClick={() => navigate("/payout")}
             className={`cursor-pointer transition-all hover:text-white py-5 ${isActive("/payout") ? "border-b-4 border-white text-white font-bold" : ""}`}
           >
             Payout

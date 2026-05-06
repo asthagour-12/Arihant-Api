@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const OTPLogin = () => {
     const [mobile, setMobile] = useState('');
@@ -23,11 +23,14 @@ const OTPLogin = () => {
             if (response.data.success) {
                 setShowOTP(true);
                 setSuccess('OTP sent successfully!');
+                toast.success('OTP sent successfully!');
             } else {
                 setError(response.data.message);
+                toast.error(response.data.message);
             }
         } catch (error) {
             setError('Failed to send OTP. Please try again.');
+            toast.error('Failed to send OTP. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -47,12 +50,15 @@ const OTPLogin = () => {
 
             if (response.data.success) {
                 setSuccess('OTP verified successfully!');
+                toast.success('OTP verified successfully!');
                 window.location.href = response.data.redirectUrl;
             } else {
                 setError(response.data.message);
+                toast.error(response.data.message);
             }
         } catch (error) {
             setError('Failed to verify OTP. Please try again.');
+            toast.error('Failed to verify OTP. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -150,16 +156,7 @@ const OTPLogin = () => {
                         </form>
                     )}
 
-                    {error && (
-                        <div className="mt-6 p-4 bg-red-50 text-red-600 rounded-xl text-[12px] font-bold text-center border border-red-100 animate-in fade-in slide-in-from-top-2">
-                            {error}
-                        </div>
-                    )}
-                    {success && (
-                        <div className="mt-6 p-4 bg-green-50 text-green-600 rounded-xl text-[12px] font-bold text-center border border-green-100 animate-in fade-in slide-in-from-top-2">
-                            {success}
-                        </div>
-                    )}
+                    {/* Removed inline error/success messages to use toast popups instead */}
 
                     <div className="mt-12 text-center">
                         <p className="text-[11px] text-gray-400 font-medium">

@@ -17,7 +17,7 @@ const PayoutLayout = ({ children }) => {
       <Header />
 
       {/* 📑 PREMIUM SUB-NAVIGATION (TABS) */}
-      <div className="bg-white border-b border-gray-100 px-6 sm:px-12 pt-6 sm:pt-8 shadow-sm">
+      <div className="bg-white border-b border-gray-100 px-6 sm:px-12 pt-6 sm:pt-8 shadow-sm mt-[60px]">
         <div className="max-w-[1600px] mx-auto flex flex-wrap gap-x-12 sm:gap-x-20 gap-y-4 mb-0 overflow-x-auto scrollbar-hide">
           {tabs.map((tab) => (
             <Link

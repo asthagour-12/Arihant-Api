@@ -4,6 +4,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Header from "./Header.jsx";
+import { validateDates } from "./utils/dateValidation";
+import { toast } from "react-toastify";
 
 const tabs = [
   { name: "Algo Brokerage", path: "/algo-brokerage" },
@@ -124,11 +126,14 @@ export default function Mandate() {
   };
 
   const handleApply = () => {
-    if (data.length === 0) {
-      setError("No data found for the selected criteria");
-    } else {
-      setError("");
+    const errorMsg = validateDates(fromDate, toDate);
+    if (errorMsg) {
+      setError(errorMsg);
+      toast.error(errorMsg);
+      return;
     }
+    setError("");
+    // Further logic
   };
 
   return (
@@ -170,7 +175,7 @@ export default function Mandate() {
                     maxDate={today}
                     dateFormat="dd/MM/yyyy"
                     placeholderText="DD/MM/YYYY"
-                    className="w-[200px] bg-white border rounded-lg px-3 pr-10 py-2 text-sm"
+                    className={`w-[200px] bg-white border rounded-lg px-3 pr-10 py-2 text-sm ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-300"}`}
                     ref={fromRef}
                     onFocus={(e) => e.target.blur()}
                   />
@@ -191,7 +196,7 @@ export default function Mandate() {
                     maxDate={today}
                     dateFormat="dd/MM/yyyy"
                     placeholderText="DD/MM/YYYY"
-                    className="w-[200px] bg-white border rounded-lg px-3 pr-10 py-2 text-sm"
+                    className={`w-[200px] bg-white border rounded-lg px-3 pr-10 py-2 text-sm ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-300"}`}
                     ref={toRef}
                     onFocus={(e) => e.target.blur()}
                   />
@@ -216,12 +221,11 @@ export default function Mandate() {
               <div className="flex items-center gap-4 mt-4">
                 <button 
                   onClick={handleApply}
-                  className="bg-green-600 text-white px-6 py-2 rounded-full font-semibold flex items-center gap-2"
+                  className="bg-[#34b350] hover:bg-[#2e9e47] text-white px-8 py-2 rounded-full font-semibold flex items-center gap-2 transition-all shadow-md active:scale-95"
                 >
                   APPLY
                   <i className="fa fa-angle-right"></i>
                 </button>
-                {error && <span className="text-red-500 text-sm font-medium">{error}</span>}
               </div>
 
             </div>
