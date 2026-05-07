@@ -92,7 +92,7 @@ export default function ReportsPage() {
 
   return (
     <div className="reports-wrapper w-full">
-      <div className="bg-[#f3f3f3] min-h-screen">
+      <div className="bg-[#f3f3f3]">
         {needsHeader && <Header />}
 
         <div className={`bg-gray-100 p-2 md:p-6 ${needsHeader ? "mt-6" : ""}`}>

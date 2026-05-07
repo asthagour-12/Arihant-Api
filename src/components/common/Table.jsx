@@ -1,6 +1,39 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
+import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 
 const Table = ({ headers, rows }) => {
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
+  const handleSort = (index) => {
+    let direction = 'asc';
+    if (sortConfig.key === index && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key: index, direction });
+  };
+
+  const sortedRows = useMemo(() => {
+    if (sortConfig.key === null) return rows;
+    return [...rows].sort((a, b) => {
+      const aVal = a[sortConfig.key];
+      const bVal = b[sortConfig.key];
+      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [rows, sortConfig]);
+
+  const SortIcon = ({ index }) => {
+    if (sortConfig.key === index) {
+      return sortConfig.direction === 'asc' ? (
+        <ChevronUp size={12} className="text-white" />
+      ) : (
+        <ChevronDown size={12} className="text-white" />
+      );
+    }
+    return <ChevronsUpDown size={12} className="text-white/40 group-hover:text-white transition-colors" />;
+  };
+
   const formatCell = (content, header) => {
     if (content === null || content === undefined) return "";
     const h = header.toLowerCase();
@@ -21,19 +54,21 @@ const Table = ({ headers, rows }) => {
           <thead className="bg-[#1EB04C] text-white uppercase">
             <tr>
               {headers.map((h, i) => (
-                <th key={i} className="px-3 py-2 border-r border-white/10 last:border-0 group cursor-pointer font-bold">
-                  <div className="flex items-center gap-1.5 whitespace-nowrap">
+                <th 
+                  key={i} 
+                  onClick={() => handleSort(i)}
+                  className="px-3 py-3 border-r border-white/10 last:border-0 group cursor-pointer font-bold select-none hover:bg-[#18a045] transition-colors"
+                >
+                  <div className="flex items-center justify-between gap-1.5 whitespace-nowrap">
                     {h}
-                    <div className="flex flex-col text-[7px] leading-[4px] opacity-40 group-hover:opacity-100 transition-opacity">
-                      <span>▲</span><span>▼</span>
-                    </div>
+                    <SortIcon index={i} />
                   </div>
                 </th>
               ))}
             </tr>
           </thead>
           <tbody className="bg-white">
-            {rows.map((row, rowIndex) => (
+            {sortedRows.map((row, rowIndex) => (
               <tr key={rowIndex} className="border-b border-gray-100 hover:bg-gray-50 transition-colors group">
                 {row.map((cell, cellIndex) => (
                   <td key={cellIndex} className="px-3 py-2 border-r border-gray-100 last:border-0 text-gray-700 text-[11px]">
@@ -42,7 +77,7 @@ const Table = ({ headers, rows }) => {
                 ))}
               </tr>
             ))}
-            {rows.length === 0 && (
+            {sortedRows.length === 0 && (
               <tr className="bg-white">
                 <td colSpan={headers.length} className="px-3 py-12 text-center text-gray-400 text-[13px] font-medium">
                   No data to display
@@ -54,7 +89,7 @@ const Table = ({ headers, rows }) => {
       </div>
 
       <div className="px-4 py-2 bg-[#f9f9f9] text-gray-500 font-medium border-t border-gray-200 text-[11px]">
-        {rows.length} total
+        {sortedRows.length} total
       </div>
     </div>
   );

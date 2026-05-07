@@ -176,27 +176,26 @@ export default function Bonds() {
 
           {/* TABS */}
           <div className="flex gap-10 border-b overflow-x-auto w-full">
-          {["Algo Brokerage", "Mutual Fund", "Rejection", "Mandate", "Product Deck", "MF Structure & Brokerage", "Wealth Basket", "SIP Revenue Calculator", "Bonds"].map((tab, i) => (
-            <div
-              key={i}
-              onClick={() => navigate(tab === "Algo Brokerage" ? "/algo-brokerage" : 
-                       tab === "Mutual Fund" ? "/mutual-fund" : 
-                       tab === "Rejection" ? "/rejection" : 
-                       tab === "Mandate" ? "/mandate" : 
-                       tab === "Product Deck" ? "/product-deck" : 
-                       tab === "MF Structure & Brokerage" ? "/mf-structure" : 
-                       tab === "Wealth Basket" ? "/wealth-basket" : 
-                       tab === "SIP Revenue Calculator" ? "/sip-calculator" : 
-                       tab === "Bonds" ? "/bonds" : "/")}
-              className={`pb-3 text-base whitespace-nowrap leading-tight tracking-tight no-underline cursor-pointer ${
-                tab === "Bonds"
-                  ? "border-b-2 border-green-600 text-black font-medium"
-                  : "text-gray-600 font-medium hover:text-black"
-              }`}
-            >
-              {tab}
-            </div>
-          ))}
+            {["Algo Brokerage", "Mutual Fund", "Rejection", "Mandate", "Product Deck", "MF Structure & Brokerage", "Wealth Basket", "SIP Revenue Calculator", "Bonds"].map((tab, i) => (
+              <div
+                key={i}
+                onClick={() => navigate(tab === "Algo Brokerage" ? "/algo-brokerage" :
+                  tab === "Mutual Fund" ? "/mutual-fund" :
+                    tab === "Rejection" ? "/rejection" :
+                      tab === "Mandate" ? "/mandate" :
+                        tab === "Product Deck" ? "/product-deck" :
+                          tab === "MF Structure & Brokerage" ? "/mf-structure" :
+                            tab === "Wealth Basket" ? "/wealth-basket" :
+                              tab === "SIP Revenue Calculator" ? "/sip-calculator" :
+                                tab === "Bonds" ? "/bonds" : "/")}
+                className={`pb-3 text-base whitespace-nowrap leading-tight tracking-tight no-underline cursor-pointer ${tab === "Bonds"
+                    ? "border-b-2 border-green-600 text-black font-medium"
+                    : "text-gray-600 font-medium hover:text-black"
+                  }`}
+              >
+                {tab}
+              </div>
+            ))}
           </div>
 
           {/* TOP BAR */}
@@ -210,113 +209,113 @@ export default function Bonds() {
 
           <div className="mt-4 bg-white rounded-lg border">
 
-  {/* SCROLL CONTAINER (IMPORTANT) */}
-  <div className="max-h-[400px] overflow-auto">
+            {/* SCROLL CONTAINER (IMPORTANT) */}
+            <div className="max-h-[400px] overflow-auto">
 
-    <table className="w-full text-[12px] border border-gray-300 table-auto">
+              <table className="w-full text-[12px] border border-gray-300 table-auto">
 
-      {/* HEADER */}
-      <thead className="sticky top-0 z-10">
-        <tr className="bg-[#2fb344] text-white">
+                {/* HEADER */}
+                <thead className="sticky top-0 z-10">
+                  <tr className="bg-[#2fb344] text-white">
 
-          {[
-            { label: "Security Name", key: "securityName" },
-            { label: "ISIN", key: "isin" },
-            { label: "IP Frequency", key: "ipFrequency" },
-            { label: "Price", key: "price" },
-            { label: "Face Value", key: "faceValue" },
-            { label: "Type", key: "type" },
-            { label: "Rating", key: "rating" },
-            { label: "Yield (%)", key: "yield" },
-            { label: "Apply", key: "apply" }
-          ].map((col) => (
-            <th
-              key={col.key}
-              className="px-3 py-2 border-r whitespace-nowrap"
-            >
-              <div
-                onClick={() => col.key !== "apply" && handleSort(col.key)}
-                className="flex items-center cursor-pointer"
-              >
-                {col.label}
+                    {[
+                      { label: "Security Name", key: "securityName" },
+                      { label: "ISIN", key: "isin" },
+                      { label: "IP Frequency", key: "ipFrequency" },
+                      { label: "Price", key: "price" },
+                      { label: "Face Value", key: "faceValue" },
+                      { label: "Type", key: "type" },
+                      { label: "Rating", key: "rating" },
+                      { label: "Yield (%)", key: "yield" },
+                      { label: "Apply", key: "apply" }
+                    ].map((col) => (
+                      <th
+                        key={col.key}
+                        className="px-3 py-2 border-r whitespace-nowrap"
+                      >
+                        <div
+                          onClick={() => col.key !== "apply" && handleSort(col.key)}
+                          className="flex items-center cursor-pointer"
+                        >
+                          {col.label}
 
-                {/* SORT ICON */}
-                {col.key !== "apply" && <SortIcon column={col.key} />}
-              </div>
-            </th>
-          ))}
+                          {/* SORT ICON */}
+                          {col.key !== "apply" && <SortIcon column={col.key} />}
+                        </div>
+                      </th>
+                    ))}
 
-        </tr>
-      </thead>
+                  </tr>
+                </thead>
 
-      {/* BODY */}
-      <tbody>
-        {loading ? (
-          <tr>
-            <td colSpan="9" className="p-4 text-center">
-              Loading...
-            </td>
-          </tr>
-        ) : data.length > 0 ? (
-          data.map((item, i) => (
-            <tr key={i} className="border-b h-[28px]">
+                {/* BODY */}
+                <tbody>
+                  {loading ? (
+                    <tr>
+                      <td colSpan="9" className="p-4 text-center">
+                        Loading...
+                      </td>
+                    </tr>
+                  ) : data.length > 0 ? (
+                    data.map((item, i) => (
+                      <tr key={i} className="border-b h-[28px]">
 
-              <td className="px-3 py-[4px] border-r whitespace-nowrap">
-                {item.securityName}
-              </td>
+                        <td className="px-3 py-[4px] border-r whitespace-nowrap">
+                          {item.securityName}
+                        </td>
 
-              <td className="px-3 py-[4px] border-r">
-                {item.isin}
-              </td>
+                        <td className="px-3 py-[4px] border-r">
+                          {item.isin}
+                        </td>
 
-              <td className="px-3 py-[4px] border-r">
-                {item.ipFrequency}
-              </td>
+                        <td className="px-3 py-[4px] border-r">
+                          {item.ipFrequency}
+                        </td>
 
-              <td className="px-3 py-[4px] border-r">
-                {item.price}
-              </td>
+                        <td className="px-3 py-[4px] border-r">
+                          {item.price}
+                        </td>
 
-              <td className="px-3 py-[4px] border-r">
-                {item.faceValue}
-              </td>
+                        <td className="px-3 py-[4px] border-r">
+                          {item.faceValue}
+                        </td>
 
-              <td className="px-3 py-[4px] border-r">
-                {item.type}
-              </td>
+                        <td className="px-3 py-[4px] border-r">
+                          {item.type}
+                        </td>
 
-              <td className="px-3 py-[4px] border-r">
-                {item.rating}
-              </td>
+                        <td className="px-3 py-[4px] border-r">
+                          {item.rating}
+                        </td>
 
-              <td className="px-3 py-[4px] border-r">
-                {item.yield}%
-              </td>
+                        <td className="px-3 py-[4px] border-r">
+                          {item.yield}%
+                        </td>
 
-              {/* APPLY BUTTON */}
-              <td className="px-3 py-[4px] text-center">
-                <button
-                  onClick={() => setShowModal(true)}
-                  className="bg-green-600 text-white px-4 py-1 rounded-full text-xs"
-                >
-                  Apply
-                </button>
-              </td>
+                        {/* APPLY BUTTON */}
+                        <td className="px-3 py-[4px] text-center">
+                          <button
+                            onClick={() => setShowModal(true)}
+                            className="bg-green-600 text-white px-4 py-1 rounded-full text-xs"
+                          >
+                            Apply
+                          </button>
+                        </td>
 
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan="9" className="p-4 text-center">
-              No data found
-            </td>
-          </tr>
-        )}
-      </tbody>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="9" className="p-4 text-center">
+                        No data found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
 
-    </table>
-  </div>
-</div>
+              </table>
+            </div>
+          </div>
 
           {/* TOTAL */}
           <div className="mt-3 text-sm text-gray-500">
@@ -362,7 +361,7 @@ export default function Bonds() {
 
             {/* BUTTONS */}
             <div className="flex justify-end gap-3">
-              
+
               <button
                 onClick={() => setShowModal(false)}
                 className="bg-gray-500 text-white px-5 py-2 rounded-md"

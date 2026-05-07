@@ -143,196 +143,195 @@ export default function MutualFund() {
 
       <div className="p-4 pt-11">
 
-          {/* -------- TABS -------- */}
-          <div className="bg-white rounded-lg shadow-sm p-4 w-full mt-10">
-            <div className="flex gap-10 border-b overflow-x-auto w-full">
-              {tabs.map((tab) => (
-                <NavLink
-                  key={tab.name}
-                  to={tab.path}
-                  className={({ isActive }) =>
-                    `pb-3 text-base whitespace-nowrap leading-tight tracking-tight no-underline ${
-                      isActive
-                        ? "border-b-2 border-green-600 text-black font-medium"
-                        : "text-gray-600 font-medium"
-                    }`
-                  }
-                >
-                  {tab.name}
-                </NavLink>
-              ))}
-            </div>
+        {/* -------- TABS -------- */}
+        <div className="bg-white rounded-lg shadow-sm p-4 w-full mt-10">
+          <div className="flex gap-10 border-b overflow-x-auto w-full">
+            {tabs.map((tab) => (
+              <NavLink
+                key={tab.name}
+                to={tab.path}
+                className={({ isActive }) =>
+                  `pb-3 text-base whitespace-nowrap leading-tight tracking-tight no-underline ${isActive
+                    ? "border-b-2 border-green-600 text-black font-medium"
+                    : "text-gray-600 font-medium"
+                  }`
+                }
+              >
+                {tab.name}
+              </NavLink>
+            ))}
+          </div>
 
-            {/* -------- FILTER BOX -------- */}
-            <div className="bg-[#eaeaea] p-4 rounded-lg mt-4 flex items-center gap-4 flex-wrap">
+          {/* -------- FILTER BOX -------- */}
+          <div className="bg-[#eaeaea] p-4 rounded-lg mt-4 flex items-center gap-4 flex-wrap">
 
-              {/* FROM DATE */}
-              <div>
-                <label className="text-xs text-gray-600">From Date</label>
-                <div className="relative">
-                  <DatePicker
-                    selected={fromDate}
-                    onChange={(d) => setFromDate(d)}
-                    maxDate={today}
-                    dateFormat="dd/MM/yyyy"
-                    placeholderText="DD/MM/YYYY"
-                    className={`w-[200px] bg-white border rounded-lg px-3 pr-10 py-2 text-sm ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-300"}`}
-                    ref={fromRef}
-                    onFocus={(e) => e.target.blur()}
-                  />
-                  <i
-                    className="fa fa-calendar absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
-                    onClick={() => fromRef.current.setOpen(true)}
-                  />
-                </div>
-              </div>
-
-              {/* TO DATE */}
-              <div>
-                <label className="text-xs text-gray-600">To Date</label>
-                <div className="relative">
-                  <DatePicker
-                    selected={toDate}
-                    onChange={(d) => setToDate(d)}
-                    maxDate={today}
-                    dateFormat="dd/MM/yyyy"
-                    placeholderText="DD/MM/YYYY"
-                    className={`w-[200px] bg-white border rounded-lg px-3 pr-10 py-2 text-sm ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-300"}`}
-                    ref={toRef}
-                    onFocus={(e) => e.target.blur()}
-                  />
-                  <i
-                    className="fa fa-calendar absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
-                    onClick={() => toRef.current.setOpen(true)}
-                  />
-                </div>
-              </div>
-
-              {/* SEARCH INPUT */}
-              <div className="relative pt-4">
-                <input
-                  type="text"
-                  placeholder="Search by Commision Account"
-                  className="w-[320px] bg-white border rounded-full px-10 py-2 text-sm outline-none"
+            {/* FROM DATE */}
+            <div>
+              <label className="text-xs text-gray-600">From Date</label>
+              <div className="relative">
+                <DatePicker
+                  selected={fromDate}
+                  onChange={(d) => setFromDate(d)}
+                  maxDate={today}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="DD/MM/YYYY"
+                  className={`w-[200px] bg-white border rounded-lg px-3 pr-10 py-2 text-sm ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-300"}`}
+                  ref={fromRef}
+                  onFocus={(e) => e.target.blur()}
                 />
-                <i className="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 pt-4 text-gray-500" />
+                <i
+                  className="fa fa-calendar absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
+                  onClick={() => fromRef.current.setOpen(true)}
+                />
               </div>
-
-              {/* APPLY BUTTON */}
-              <div className="flex items-center gap-4 mt-4">
-                <button 
-                  onClick={handleApply}
-                  className="bg-[#34b350] hover:bg-[#2e9e47] text-white px-8 py-2 rounded-full font-semibold flex items-center gap-2 transition-all shadow-md active:scale-95"
-                >
-                  APPLY
-                  <i className="fa fa-angle-right"></i>
-                </button>
-              </div>
-
             </div>
 
-            {/* -------- SEARCH RESULT TEXT -------- */}
-            <div className="mt-4 flex items-center justify-between">
-
-              {/* LEFT TEXT */}
-              <div className="text-sm text-gray-700 pb-3">
-                Search results({data.length})
+            {/* TO DATE */}
+            <div>
+              <label className="text-xs text-gray-600">To Date</label>
+              <div className="relative">
+                <DatePicker
+                  selected={toDate}
+                  onChange={(d) => setToDate(d)}
+                  maxDate={today}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="DD/MM/YYYY"
+                  className={`w-[200px] bg-white border rounded-lg px-3 pr-10 py-2 text-sm ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-300"}`}
+                  ref={toRef}
+                  onFocus={(e) => e.target.blur()}
+                />
+                <i
+                  className="fa fa-calendar absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
+                  onClick={() => toRef.current.setOpen(true)}
+                />
               </div>
-
-              {/* RIGHT DOWNLOAD ICON */}
-              <i className="fa fa-download text-green-600 text-lg cursor-pointer" onClick={handleDownload}></i>
-
             </div>
 
-            {/* -------- TABLE -------- */}
-            <div className="mt-2 bg-white rounded-lg overflow-hidden border">
-
-              {/* Table */}
-              <table className="w-full text-[12px] border border-gray-300 table-fixed">
-
-                <thead>
-                  <tr className="bg-[#2fb344] text-white">
-
-                    <th className="px-3 py-2 border-r border-gray-200">
-                      <div onClick={() => handleSort("account")} className="flex items-center cursor-pointer">
-                        COMMISSION ACCOUNT
-                        <SortIcon column="account" />
-                      </div>
-                    </th>
-
-                    <th className="px-3 py-2 border-r border-gray-200">
-                      <div onClick={() => handleSort("name")} className="flex items-center cursor-pointer">
-                        SUBBROKER NAME
-                        <SortIcon column="name" />
-                      </div>
-                    </th>
-
-                    <th className="px-3 py-2 border-r border-gray-200">
-                      <div onClick={() => handleSort("amount")} className="flex items-center cursor-pointer">
-                        BROKERAGE AMOUNT
-                        <SortIcon column="amount" />
-                      </div>
-                    </th>
-
-                    <th className="px-3 py-2">
-                      <div onClick={() => handleSort("pass")} className="flex items-center cursor-pointer">
-                        PASS ON %
-                        <SortIcon column="pass" />
-                      </div>
-                    </th>
-
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {loading ? (
-                    <tr>
-                      <td colSpan="4" className="p-4 text-center text-gray-500">
-                        Loading...
-                      </td>
-                    </tr>
-                  ) : data.length > 0 ? (
-                    data.map((item, index) => (
-                      <tr key={index} className="border-b border-gray-200 h-[28px]">
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.account}
-                        </td>
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.name}
-                        </td>
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.amount}
-                        </td>
-
-                        <td className="px-3 py-[4px]">
-                          {item.pass}%
-                        </td>
-
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="4" className="p-4 text-left text-gray-500 text-base">
-                        No data to display
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-
-              </table>
-
+            {/* SEARCH INPUT */}
+            <div className="relative pt-4">
+              <input
+                type="text"
+                placeholder="Search by Commision Account"
+                className="w-[320px] bg-white border rounded-full px-10 py-2 text-sm outline-none"
+              />
+              <i className="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 pt-4 text-gray-500" />
             </div>
 
-            {/* TOTAL DISPLAY */}
-            <div className="mt-4 p-4 text-left text-gray-500 text-base">
-              Total: {data.length}
+            {/* APPLY BUTTON */}
+            <div className="flex items-center gap-4 mt-4">
+              <button
+                onClick={handleApply}
+                className="bg-[#34b350] hover:bg-[#2e9e47] text-white px-8 py-2 rounded-full font-semibold flex items-center gap-2 transition-all shadow-md active:scale-95"
+              >
+                APPLY
+                <i className="fa fa-angle-right"></i>
+              </button>
             </div>
 
           </div>
+
+          {/* -------- SEARCH RESULT TEXT -------- */}
+          <div className="mt-4 flex items-center justify-between">
+
+            {/* LEFT TEXT */}
+            <div className="text-sm text-gray-700 pb-3">
+              Search results({data.length})
+            </div>
+
+            {/* RIGHT DOWNLOAD ICON */}
+            <i className="fa fa-download text-green-600 text-lg cursor-pointer" onClick={handleDownload}></i>
+
+          </div>
+
+          {/* -------- TABLE -------- */}
+          <div className="mt-2 bg-white rounded-lg overflow-hidden border">
+
+            {/* Table */}
+            <table className="w-full text-[12px] border border-gray-300 table-fixed">
+
+              <thead>
+                <tr className="bg-[#2fb344] text-white">
+
+                  <th className="px-3 py-2 border-r border-gray-200">
+                    <div onClick={() => handleSort("account")} className="flex items-center cursor-pointer">
+                      COMMISSION ACCOUNT
+                      <SortIcon column="account" />
+                    </div>
+                  </th>
+
+                  <th className="px-3 py-2 border-r border-gray-200">
+                    <div onClick={() => handleSort("name")} className="flex items-center cursor-pointer">
+                      SUBBROKER NAME
+                      <SortIcon column="name" />
+                    </div>
+                  </th>
+
+                  <th className="px-3 py-2 border-r border-gray-200">
+                    <div onClick={() => handleSort("amount")} className="flex items-center cursor-pointer">
+                      BROKERAGE AMOUNT
+                      <SortIcon column="amount" />
+                    </div>
+                  </th>
+
+                  <th className="px-3 py-2">
+                    <div onClick={() => handleSort("pass")} className="flex items-center cursor-pointer">
+                      PASS ON %
+                      <SortIcon column="pass" />
+                    </div>
+                  </th>
+
+                </tr>
+              </thead>
+
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan="4" className="p-4 text-center text-gray-500">
+                      Loading...
+                    </td>
+                  </tr>
+                ) : data.length > 0 ? (
+                  data.map((item, index) => (
+                    <tr key={index} className="border-b border-gray-200 h-[28px]">
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.account}
+                      </td>
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.name}
+                      </td>
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.amount}
+                      </td>
+
+                      <td className="px-3 py-[4px]">
+                        {item.pass}%
+                      </td>
+
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="p-4 text-left text-gray-500 text-base">
+                      No data to display
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+
+            </table>
+
+          </div>
+
+          {/* TOTAL DISPLAY */}
+          <div className="mt-4 p-4 text-left text-gray-500 text-base">
+            Total: {data.length}
+          </div>
+
         </div>
+      </div>
     </>
   );
 }

@@ -130,7 +130,7 @@ export default function MarketingMaterial() {
     <>
       <div className="bg-gray-100 min-h-screen mt-9">
         <Header />
-        
+
         <div className="p-6">
           <div className="bg-white p-4 rounded-xl shadow mt-2">
             {/* TABS */}
@@ -139,37 +139,34 @@ export default function MarketingMaterial() {
                 <span
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`pb-2 cursor-pointer relative z-10 ${
-                    activeTab === tab
+                  className={`pb-2 cursor-pointer relative z-10 ${activeTab === tab
                       ? "border-b-4 border-green-600 text-black"
                       : "text-gray-400 hover:text-black"
-                  }`}
+                    }`}
                 >
                   {tab}
                 </span>
               ))}
             </div>
-            
+
             {/* Compliance Certificate Sub-tabs - Second Line */}
             {activeTab === "Compliance Certificate" && (
               <div className="flex gap-8 pt-4 text-lg font-semibold border-b pb-2">
                 <span
-                  className={`cursor-pointer pb-2 relative z-10 ${
-                    activeSubTab === "certificate"
+                  className={`cursor-pointer pb-2 relative z-10 ${activeSubTab === "certificate"
                       ? "border-b-4 border-green-600 text-black"
                       : "text-gray-400 hover:text-black"
-                  }`}
+                    }`}
                   onClick={() => setActiveSubTab("certificate")}
                 >
                   Certificate
                 </span>
 
                 <span
-                  className={`cursor-pointer pb-2 relative z-10 ${
-                    activeSubTab === "upload"
+                  className={`cursor-pointer pb-2 relative z-10 ${activeSubTab === "upload"
                       ? "border-b-4 border-green-600 text-black"
                       : "text-gray-400 hover:text-black"
-                  }`}
+                    }`}
                   onClick={() => setActiveSubTab("upload")}
                 >
                   Upload Certificate
@@ -192,11 +189,10 @@ export default function MarketingMaterial() {
                       >
                         <div
                           className={`w-5 h-5 rounded-full border flex items-center justify-center
-                          ${
-                            open[category]
+                          ${open[category]
                               ? "bg-[#34b350] border-[#34b350]"
                               : "border-gray-400"
-                          }`}
+                            }`}
                         >
                           {open[category] && (
                             <div className="w-2 h-2 bg-white rounded-full"></div>
@@ -211,31 +207,34 @@ export default function MarketingMaterial() {
                       {/* FILE LIST */}
                       <div
                         className={`ml-6 mt-3 transition-all duration-300 overflow-hidden
-                        ${
-                          open[category]
+                        ${open[category]
                             ? "max-h-[400px] opacity-100"
                             : "max-h-0 opacity-0"
-                        }`}
+                          }`}
                       >
                         {data[category].map((file, i) => (
                           <div key={i} className="flex items-center gap-3 mt-2">
                             <div
                               onClick={() => toggleFile(file)}
                               className={`w-4 h-4 rounded-full border flex items-center justify-center cursor-pointer
-                              ${
-                                selected[file]
+                              ${selected[file]
                                   ? "bg-blue-600 border-blue-600"
                                   : "border-gray-400"
-                              }`}
+                                }`}
                             >
                               {selected[file] && (
                                 <div className="w-2 h-2 bg-white rounded-full"></div>
                               )}
                             </div>
 
-                            <span className="text-sm text-blue-600 hover:underline cursor-pointer">
+                            <a
+                              href={`https://intranet.arihantcapital.com/Files/ConnectFile/${file}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm text-blue-600 hover:underline cursor-pointer no-underline"
+                            >
                               {file}
-                            </span>
+                            </a>
                           </div>
                         ))}
                       </div>
@@ -244,7 +243,7 @@ export default function MarketingMaterial() {
                 </div>
               </div>
             )}
-            
+
             {activeTab === "Compliance Certificate" && (
               <div className="mt-6">
                 {/* UPLOAD SECTION */}
@@ -278,7 +277,7 @@ export default function MarketingMaterial() {
                     </div>
                   </div>
                 )}
-                
+
                 {/* CERTIFICATE SECTION */}
                 {activeSubTab === "certificate" && (
                   <div className="w-full h-2">
@@ -287,22 +286,22 @@ export default function MarketingMaterial() {
                 )}
               </div>
             )}
-            
+
             {activeTab === "Compliance Circular" && (
               <ComplianceCircular />
             )}
-            
+
             {activeTab === "Download" && (
               <Download />
             )}
-            
+
             {activeTab === "Training" && (
               <Training />
             )}
           </div>
         </div>
       </div>
-      
+
       <ToastContainer />
     </>
   );

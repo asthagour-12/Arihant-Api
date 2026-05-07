@@ -86,20 +86,20 @@ export default function Rejection() {
   const handleDownload = () => {
     // Create CSV content
     const headers = [
-      "Client Code", 
-      "Client Name", 
-      "Ammount", 
-      "Buys Sell", 
-      "Dp Transfer", 
-      "Dp Folio No", 
-      "Eun", 
-      "Order No", 
-      "Order Remark", 
-      "Order Type", 
-      "Schema Name", 
-      "Set Type", 
-      "Sip Date", 
-      "Sip Regn Date", 
+      "Client Code",
+      "Client Name",
+      "Ammount",
+      "Buys Sell",
+      "Dp Transfer",
+      "Dp Folio No",
+      "Eun",
+      "Order No",
+      "Order Remark",
+      "Order Type",
+      "Schema Name",
+      "Set Type",
+      "Sip Date",
+      "Sip Regn Date",
       "Units"
     ];
     const csvContent = [
@@ -170,240 +170,239 @@ export default function Rejection() {
 
       <div className="p-4 pt-11">
 
-          {/* -------- TABS -------- */}
-          <div className="bg-white rounded-lg shadow-sm p-4 w-full mt-10">
-            <div className="flex gap-10 border-b overflow-x-auto w-full">
-              {tabs.map((tab) => (
-                <NavLink
-                  key={tab.name}
-                  to={tab.path}
-                  className={({ isActive }) =>
-                    `pb-3 text-base whitespace-nowrap leading-tight tracking-tight no-underline ${
-                      isActive
-                        ? "border-b-2 border-green-600 text-black font-medium"
-                        : "text-gray-600 font-medium"
-                    }`
-                  }
-                >
-                  {tab.name}
-                </NavLink>
-              ))}
-            </div>
+        {/* -------- TABS -------- */}
+        <div className="bg-white rounded-lg shadow-sm p-4 w-full mt-10">
+          <div className="flex gap-10 border-b overflow-x-auto w-full">
+            {tabs.map((tab) => (
+              <NavLink
+                key={tab.name}
+                to={tab.path}
+                className={({ isActive }) =>
+                  `pb-3 text-base whitespace-nowrap leading-tight tracking-tight no-underline ${isActive
+                    ? "border-b-2 border-green-600 text-black font-medium"
+                    : "text-gray-600 font-medium"
+                  }`
+                }
+              >
+                {tab.name}
+              </NavLink>
+            ))}
+          </div>
 
-            {/* -------- FILTER BOX -------- */}
-            <div className="bg-[#eaeaea] p-4 rounded-lg mt-4 flex items-center gap-4 flex-wrap">
+          {/* -------- FILTER BOX -------- */}
+          <div className="bg-[#eaeaea] p-4 rounded-lg mt-4 flex items-center gap-4 flex-wrap">
 
-              {/* FROM DATE */}
-              <div>
-                <label className="text-xs text-gray-600">From Date</label>
-                <div className="relative">
-                  <DatePicker
-                    selected={fromDate}
-                    onChange={(d) => setFromDate(d)}
-                    maxDate={today}
-                    dateFormat="dd/MM/yyyy"
-                    placeholderText="DD/MM/YYYY"
-                    className={`w-[200px] bg-white border rounded-lg px-3 pr-10 py-2 text-sm ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-300"}`}
-                    ref={fromRef}
-                    onFocus={(e) => e.target.blur()}
-                  />
-                  <i
-                    className="fa fa-calendar absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
-                    onClick={() => fromRef.current.setOpen(true)}
-                  />
-                </div>
-              </div>
-
-              {/* TO DATE */}
-              <div>
-                <label className="text-xs text-gray-600">To Date</label>
-                <div className="relative">
-                  <DatePicker
-                    selected={toDate}
-                    onChange={(d) => setToDate(d)}
-                    maxDate={today}
-                    dateFormat="dd/MM/yyyy"
-                    placeholderText="DD/MM/YYYY"
-                    className={`w-[200px] bg-white border rounded-lg px-3 pr-10 py-2 text-sm ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-300"}`}
-                    ref={toRef}
-                    onFocus={(e) => e.target.blur()}
-                  />
-                  <i
-                    className="fa fa-calendar absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
-                    onClick={() => toRef.current.setOpen(true)}
-                  />
-                </div>
-              </div>
-
-              {/* SEARCH INPUT */}
-              <div className="relative pt-4">
-                <input
-                  type="text"
-                  placeholder="Search by Commision Account"
-                  className="w-[320px] bg-white border rounded-full px-10 py-2 text-sm outline-none"
+            {/* FROM DATE */}
+            <div>
+              <label className="text-xs text-gray-600">From Date</label>
+              <div className="relative">
+                <DatePicker
+                  selected={fromDate}
+                  onChange={(d) => setFromDate(d)}
+                  maxDate={today}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="DD/MM/YYYY"
+                  className={`w-[200px] bg-white border rounded-lg px-3 pr-10 py-2 text-sm ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-300"}`}
+                  ref={fromRef}
+                  onFocus={(e) => e.target.blur()}
                 />
-                <i className="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 pt-4 text-gray-500" />
+                <i
+                  className="fa fa-calendar absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
+                  onClick={() => fromRef.current.setOpen(true)}
+                />
               </div>
-
-              {/* APPLY BUTTON */}
-              <div className="flex items-center gap-4 mt-4">
-                <button 
-                  onClick={handleApply}
-                  className="bg-[#34b350] hover:bg-[#2e9e47] text-white px-8 py-2 rounded-full font-semibold flex items-center gap-2 transition-all shadow-md active:scale-95"
-                >
-                  APPLY
-                  <i className="fa fa-angle-right"></i>
-                </button>
-              </div>
-
             </div>
 
-            {/* -------- SEARCH RESULT TEXT -------- */}
-            <div className="mt-4 flex items-center justify-between">
-
-              {/* LEFT TEXT */}
-              <div className="text-sm text-gray-700 pb-3">
-                Search results({data.length})
+            {/* TO DATE */}
+            <div>
+              <label className="text-xs text-gray-600">To Date</label>
+              <div className="relative">
+                <DatePicker
+                  selected={toDate}
+                  onChange={(d) => setToDate(d)}
+                  maxDate={today}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="DD/MM/YYYY"
+                  className={`w-[200px] bg-white border rounded-lg px-3 pr-10 py-2 text-sm ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-300"}`}
+                  ref={toRef}
+                  onFocus={(e) => e.target.blur()}
+                />
+                <i
+                  className="fa fa-calendar absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
+                  onClick={() => toRef.current.setOpen(true)}
+                />
               </div>
-
-              {/* RIGHT DOWNLOAD ICON */}
-              <i className="fa fa-download text-green-600 text-lg cursor-pointer" onClick={handleDownload}></i>
-
             </div>
 
-            {/* -------- TABLE -------- */}
-            <div className="mt-2 bg-white rounded-lg overflow-hidden border">
-
-              {/* Table */}
-              <table className="w-full text-[12px] border border-gray-300 table-fixed">
-
-                <thead>
-                  <tr className="bg-[#2fb344] text-white">
-
-                    {[
-                      { label: "Client Code", key: "clientCode" },
-                      { label: "Client Name", key: "clientName" },
-                      { label: "Ammount", key: "amount" },
-                      { label: "Buys Sell", key: "buySell" },
-                      { label: "Dp Transfer", key: "dpTransfer" },
-                      { label: "Dp Folio No", key: "dpFolioNo" },
-                      { label: "Eun", key: "eun" },
-                      { label: "Order No", key: "orderNo" },
-                      { label: "Order Remark", key: "orderRemark" },
-                      { label: "Order Type", key: "orderType" },
-                      { label: "Schema Name", key: "schemeName" },
-                      { label: "Set Type", key: "setType" },
-                      { label: "Sip Date", key: "sipDate" },
-                      { label: "Sip Regn Date", key: "sipRegnDate" },
-                      { label: "Units", key: "units" }
-                    ].map((col) => (
-                      <th key={col.key} className="px-3 py-2 border-r border-gray-200 whitespace-nowrap">
-                        <div
-                          onClick={() => handleSort(col.key)}
-                          className="flex items-center cursor-pointer"
-                        >
-                          {col.label}
-                          <SortIcon column={col.key} />
-                        </div>
-                      </th>
-                    ))}
-
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {loading ? (
-                    <tr>
-                      <td colSpan="15" className="p-4 text-center text-gray-500">
-                        Loading...
-                      </td>
-                    </tr>
-                  ) : data.length > 0 ? (
-                    data.map((item, index) => (
-                      <tr key={index} className="border-b border-gray-200 h-[28px]">
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.clientCode}
-                        </td>
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.clientName}
-                        </td>
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.amount}
-                        </td>
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.buySell}
-                        </td>
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.dpTransfer}
-                        </td>
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.dpFolioNo}
-                        </td>
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.eun}
-                        </td>
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.orderNo}
-                        </td>
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.orderRemark}
-                        </td>
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.orderType}
-                        </td>
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.schemeName}
-                        </td>
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.setType}
-                        </td>
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.sipDate}
-                        </td>
-
-                        <td className="px-3 py-[4px] border-r border-gray-200">
-                          {item.sipRegnDate}
-                        </td>
-
-                        <td className="px-3 py-[4px]">
-                          {item.units}
-                        </td>
-
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="15" className="p-4 text-left text-gray-500 text-base">
-                        No data to display
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-
-              </table>
-
+            {/* SEARCH INPUT */}
+            <div className="relative pt-4">
+              <input
+                type="text"
+                placeholder="Search by Commision Account"
+                className="w-[320px] bg-white border rounded-full px-10 py-2 text-sm outline-none"
+              />
+              <i className="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 pt-4 text-gray-500" />
             </div>
 
-            {/* TOTAL DISPLAY */}
-            <div className="mt-4 p-4 text-left text-gray-500 text-base">
-              Total: {data.length}
+            {/* APPLY BUTTON */}
+            <div className="flex items-center gap-4 mt-4">
+              <button
+                onClick={handleApply}
+                className="bg-[#34b350] hover:bg-[#2e9e47] text-white px-8 py-2 rounded-full font-semibold flex items-center gap-2 transition-all shadow-md active:scale-95"
+              >
+                APPLY
+                <i className="fa fa-angle-right"></i>
+              </button>
             </div>
 
           </div>
+
+          {/* -------- SEARCH RESULT TEXT -------- */}
+          <div className="mt-4 flex items-center justify-between">
+
+            {/* LEFT TEXT */}
+            <div className="text-sm text-gray-700 pb-3">
+              Search results({data.length})
+            </div>
+
+            {/* RIGHT DOWNLOAD ICON */}
+            <i className="fa fa-download text-green-600 text-lg cursor-pointer" onClick={handleDownload}></i>
+
+          </div>
+
+          {/* -------- TABLE -------- */}
+          <div className="mt-2 bg-white rounded-lg overflow-hidden border">
+
+            {/* Table */}
+            <table className="w-full text-[12px] border border-gray-300 table-fixed">
+
+              <thead>
+                <tr className="bg-[#2fb344] text-white">
+
+                  {[
+                    { label: "Client Code", key: "clientCode" },
+                    { label: "Client Name", key: "clientName" },
+                    { label: "Ammount", key: "amount" },
+                    { label: "Buys Sell", key: "buySell" },
+                    { label: "Dp Transfer", key: "dpTransfer" },
+                    { label: "Dp Folio No", key: "dpFolioNo" },
+                    { label: "Eun", key: "eun" },
+                    { label: "Order No", key: "orderNo" },
+                    { label: "Order Remark", key: "orderRemark" },
+                    { label: "Order Type", key: "orderType" },
+                    { label: "Schema Name", key: "schemeName" },
+                    { label: "Set Type", key: "setType" },
+                    { label: "Sip Date", key: "sipDate" },
+                    { label: "Sip Regn Date", key: "sipRegnDate" },
+                    { label: "Units", key: "units" }
+                  ].map((col) => (
+                    <th key={col.key} className="px-3 py-2 border-r border-gray-200 whitespace-nowrap">
+                      <div
+                        onClick={() => handleSort(col.key)}
+                        className="flex items-center cursor-pointer"
+                      >
+                        {col.label}
+                        <SortIcon column={col.key} />
+                      </div>
+                    </th>
+                  ))}
+
+                </tr>
+              </thead>
+
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan="15" className="p-4 text-center text-gray-500">
+                      Loading...
+                    </td>
+                  </tr>
+                ) : data.length > 0 ? (
+                  data.map((item, index) => (
+                    <tr key={index} className="border-b border-gray-200 h-[28px]">
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.clientCode}
+                      </td>
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.clientName}
+                      </td>
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.amount}
+                      </td>
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.buySell}
+                      </td>
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.dpTransfer}
+                      </td>
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.dpFolioNo}
+                      </td>
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.eun}
+                      </td>
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.orderNo}
+                      </td>
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.orderRemark}
+                      </td>
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.orderType}
+                      </td>
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.schemeName}
+                      </td>
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.setType}
+                      </td>
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.sipDate}
+                      </td>
+
+                      <td className="px-3 py-[4px] border-r border-gray-200">
+                        {item.sipRegnDate}
+                      </td>
+
+                      <td className="px-3 py-[4px]">
+                        {item.units}
+                      </td>
+
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="15" className="p-4 text-left text-gray-500 text-base">
+                      No data to display
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+
+            </table>
+
+          </div>
+
+          {/* TOTAL DISPLAY */}
+          <div className="mt-4 p-4 text-left text-gray-500 text-base">
+            Total: {data.length}
+          </div>
+
         </div>
+      </div>
     </>
   );
 }

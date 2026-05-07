@@ -1,17 +1,18 @@
-import { Search, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Calendar, ChevronDown } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-
-import logo from "./logo-arihant-capital.png";
+import Header from "./Header.jsx";
 
 export default function FollowUpReport() {
   const navigate = useNavigate();
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
+  const [search, setSearch] = useState("");
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const calendarRef = useRef(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // Close calendar when clicking outside
   useEffect(() => {
@@ -74,151 +75,124 @@ export default function FollowUpReport() {
     setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + direction, 1));
   };
 
+  // 🔹 Apply validation
+  const handleApply = () => {
+    if (!search.trim() || !selectedDate) {
+      setErrorMessage("please enter a valid client code");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
+    }
+  };
+
   return (
     <div>
       {/* HEADER */}
       <div className="download-container">
-        <div className="topbar">
-          <div className="left">
-            <img src={logo} alt="logo" className="logo" />
-            <div className="menu">
-              <Link to="/dashboard" className="text-white">Dashboard</Link>
-              <span className="text-white">Reports</span>
-              <span className="text-white">Account Opening</span>
-              <span className="text-white">Download</span>
-              <Link to="/researchcall" className="text-white">Research call</Link>
-              <Link to="/dealslip" className="text-white">Deal Slip</Link>
-              <span onClick={() => navigate("/third-party")} className="text-white cursor-pointer hover:underline">Third Party</span>
-              <Link to="/contests" className="text-white">contests</Link>
-              <span className="text-white">Profile<sup className="beta-badge">BETA</sup></span>
-              <Link to="/clicktocall" className="text-white">Click To Call</Link>
-              <Link to="/payout" className="text-white">Payout</Link>
-            </div>
-          </div>
-
-          <div className="right relative">
-            <div
-              className="user-icon cursor-pointer"
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-            >
-              <i className="fa-solid fa-user text-white"></i>
-              <i className="fa fa-chevron-down fa-2xs text-white"></i>
-            </div>
-
-            {dropdownOpen && (
-              <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                <div className="py-1">
-                  <div className="px-4 py-2 text-sm hover:bg-gray-100">Customer Details</div>
-                  <div className="px-4 py-2 text-sm hover:bg-gray-100">Customer Support</div>
-                  <div className="px-4 py-2 text-sm hover:bg-gray-100 border-t text-red-500">
-                    Logout
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        <Header />
       </div>
 
-      <div className="bg-gray-100 min-h-screen mt-[75px] px-6 pb-6">
-        {/* Tabs */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <div className="flex gap-8 border-b pb-3">
+      {/* BODY */}
+      <div className="bg-[#f3f3f3] h-50 px-5 pt-[82px] pb-6">
+        {/* TABS CONTAINER */}
+        <div className="bg-white rounded-[18px] shadow-sm px-7 pt-6 pb-0">
+          <div className="flex gap-8 text-sm border-b border-gray-300 pb-3">
             <button 
               onClick={() => navigate("/clicktocall")}
-              className="text-gray-500 font-medium"
+              className="pb-2 text-gray-500 hover:text-black transition-colors"
             >
               Click to Call Inactive
             </button>
-            <button className="text-black font-semibold border-b-2 border-green-500 pb-2">
+            <button className="pb-2 text-black font-semibold border-b-2 border-green-600">
               Follow Up Report
             </button>
           </div>
 
-          {/* Filters */}
-          <div className="bg-gray-100 rounded-lg p-6 mt-6 flex items-end gap-6 flex-wrap">
-            {/* Search */}
-            <div>
-              <p className="text-sm text-black mb-2">Search By Client</p>
-              <div className="flex items-center bg-white border rounded-full px-4 py-2 w-72 h-[44px]">
-                <Search className="text-gray-400 w-4 h-4 mr-2" />
-                <input
-                  type="text"
-                  placeholder="Search client code"
-                  className="outline-none text-sm w-full"
-                />
-              </div>
-            </div>
-
-            {/* Date */}
-            <div ref={calendarRef}>
-              <p className="text-sm text-black mb-2">As On (Date)</p>
-              <div className="relative">
-                <div className="flex items-center bg-white border rounded-lg px-4 py-2 w-72 h-[44px]">
+          {/* Filters - Matching Click to Call Inactive styling */}
+          <div className="bg-[#efefef] px-7 pt-3 pb-4 -mx-7">
+            <div className="flex items-end gap-8 flex-wrap">
+              {/* Search */}
+              <div>
+                <p className="text-sm text-black mb-0 pb-2">Search client code</p>
+                <div className="relative group">
                   <input
                     type="text"
-                    placeholder="DD/MM/YYYY"
-                    value={selectedDate}
-                    readOnly
-                    className="outline-none text-sm w-full"
+                    placeholder="Search client code"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="pl-10 pr-4 h-[44px] rounded-full border border-gray-300 w-[250px] bg-white outline-none focus:border-green-600 transition-all"
                   />
-                  <Calendar 
-                    className="text-black cursor-pointer" 
-                    onClick={() => setShowCalendar(!showCalendar)}
-                  />
+                  <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 </div>
-                
-                {/* Calendar Popup */}
-                {showCalendar && (
-                  <div className="absolute top-full mt-2 left-0 bg-white border border-gray-300 rounded-lg shadow-lg p-2 z-50 w-48">
-                    {/* Calendar Header */}
-                    <div className="flex items-center justify-between mb-2">
-                      <button 
-                        onClick={() => changeMonth(-1)}
-                        className="p-1 hover:bg-gray-100 rounded"
-                      >
-                        <ChevronLeft className="w-3 h-3" />
-                      </button>
-                      <h3 className="font-semibold text-xs">
-                        {currentMonth.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                      </h3>
-                      <button 
-                        onClick={() => changeMonth(1)}
-                        className="p-1 hover:bg-gray-100 rounded"
-                      >
-                        <ChevronRight className="w-3 h-3" />
-                      </button>
-                    </div>
-                    
-                    {/* Calendar Days */}
-                    <div className="grid grid-cols-7 gap-1 text-center text-xs font-medium mb-1">
-                      {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-                        <div key={day} className="p-1 text-gray-600">{day}</div>
-                      ))}
-                    </div>
-                    
-                    <div className="grid grid-cols-7 gap-1">
-                      {renderCalendar()}
-                    </div>
-                  </div>
-                )}
               </div>
-            </div>
 
-            {/* Button */}
-            <div className="h-[44px] flex items-end">
-              <button className="bg-[#28a745] hover:bg-[#23923d] text-white font-semibold px-8 h-full rounded-full flex items-center gap-2">
+              {/* Date Picker */}
+              <div ref={calendarRef}>
+                <p className="text-sm text-black mb-0 pb-2">As On (Date)</p>
+                <div className="relative group">
+                  <div className="flex items-center bg-white border border-gray-300 rounded-lg px-4 h-[44px] w-[250px] focus-within:border-green-600 transition-all">
+                    <input
+                      type="text"
+                      placeholder="DD/MM/YYYY"
+                      value={selectedDate}
+                      readOnly
+                      className="outline-none text-sm w-full font-medium cursor-pointer"
+                      onClick={() => setShowCalendar(!showCalendar)}
+                    />
+                    <Calendar 
+                      className="text-gray-400 cursor-pointer hover:text-green-600 transition-colors" 
+                      size={18}
+                      onClick={() => setShowCalendar(!showCalendar)}
+                    />
+                  </div>
+                  
+                  {/* Calendar Popup */}
+                  {showCalendar && (
+                    <div className="absolute top-full mt-2 left-0 bg-white border border-gray-300 rounded-lg shadow-xl p-3 z-50 w-64 animate-in fade-in zoom-in duration-200">
+                      <div className="flex items-center justify-between mb-3">
+                        <button onClick={() => changeMonth(-1)} className="p-1 hover:bg-gray-100 rounded-full transition-colors"><ChevronLeft size={16}/></button>
+                        <h3 className="font-bold text-sm text-gray-800">{currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</h3>
+                        <button onClick={() => changeMonth(1)} className="p-1 hover:bg-gray-100 rounded-full transition-colors"><ChevronRight size={16}/></button>
+                      </div>
+                      <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-gray-400 uppercase mb-2">
+                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => <div key={day}>{day}</div>)}
+                      </div>
+                      <div className="grid grid-cols-7 gap-1">{renderCalendar()}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Apply Button */}
+              <button 
+                onClick={handleApply}
+                className="bg-green-600 hover:bg-green-700 text-white px-10 h-[44px] rounded-full font-bold text-sm shadow-md transition-all active:scale-95 flex items-center gap-2"
+              >
                 APPLY
-                <span className="text-lg">{'>'}</span>
+                <span className="text-lg">›</span>
               </button>
             </div>
           </div>
         </div>
 
+        {/* ERROR POPUP (RIGHT SIDE) */}
+        {showError && (
+          <div className="fixed top-4 right-4 bg-red-600 text-white px-8 py-4 rounded-lg shadow-lg z-50 flex items-center justify-between min-w-[350px] transition-all duration-300 ease-in-out mt-12">
+            <div>
+              <p className="font-semibold text-lg">Error</p>
+              <p className="text-sm">{errorMessage}</p>
+            </div>
+            <div
+              onClick={() => setShowError(false)}
+              className="w-6 h-6 border-2 border-white rounded-full flex items-center justify-center cursor-pointer"
+            >
+              <span className="text-xs">×</span>
+            </div>
+          </div>
+        )}
+
         {/* Meaning Text */}
         <div className="flex items-center justify-center gap-8 my-16">
           <div className="w-[190px] h-[1px] bg-gray-300"></div>
-
           <p className="text-[14px] text-gray-700">
             What we mean when we say -
             <span className="font-semibold"> (Z)</span>: Zone,
@@ -226,21 +200,19 @@ export default function FollowUpReport() {
             <span className="font-semibold"> (Br)</span>: Branch,
             <span className="font-semibold"> (AP)</span>: Authorized Person/Sub Broker
           </p>
-
           <div className="w-[190px] h-[1px] bg-gray-300"></div>
         </div>
 
         {/* Product Section */}
         <div className="bg-white rounded-xl shadow-sm p-6 mt-8">
           <h2 className="text-lg font-semibold mb-6">Arihant Product</h2>
-
           <div className="flex flex-wrap gap-32 font-medium">
-            <a href="https://www.arihantcapital.com/" target="_blank" rel="noopener noreferrer" className="text-green-600">Official Website</a>
-            <a href="https://eservices.nsdl.com/cas-stmt-mf-conv/#/login" target="_blank" rel="noopener noreferrer" className="text-green-600">Demat your MF Units</a>
-            <a href="https://instaoptions.arihantplus.com/login" target="_blank" rel="noopener noreferrer" className="text-green-600">Insta Options</a>
-            <a href="https://tradebridge.arihantplus.com/signup" target="_blank" rel="noopener noreferrer" className="text-green-600">Trade Bridge</a>
-            <a href="https://arihantplus.valuestocks.in/" target="_blank" rel="noopener noreferrer" className="text-green-600">Value Stocks</a>
-            <a href="https://tradebridge.arihantplus.com/sso/login?api_key=IBOFTIrFIx1AYBWz0a&source=DESEO" target="_blank" rel="noopener noreferrer" className="text-green-600">Stock Stack</a>
+            <a href="https://www.arihantcapital.com/" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline">Official Website</a>
+            <a href="https://eservices.nsdl.com/cas-stmt-mf-conv/#/login" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline">Demat your MF Units</a>
+            <a href="https://instaoptions.arihantplus.com/login" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline">Insta Options</a>
+            <a href="https://tradebridge.arihantplus.com/signup" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline">Trade Bridge</a>
+            <a href="https://arihantplus.valuestocks.in/" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline">Value Stocks</a>
+            <a href="https://tradebridge.arihantplus.com/sso/login?api_key=IBOFTIrFIx1AYBWz0a&source=DESEO" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline">Stock Stack</a>
           </div>
         </div>
       </div>

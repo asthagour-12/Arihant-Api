@@ -14,6 +14,7 @@ export default function ClickToCall() {
   const [activeTab, setActiveTab] = useState("inactive");
   const [showModal, setShowModal] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("Data not found !!!");
   const [selectedDealer, setSelectedDealer] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
@@ -105,6 +106,7 @@ export default function ClickToCall() {
   // Mobile icon click functionality
   const handleMobileClick = () => {
     setShowModal(true);
+    setErrorMessage("Data not found !!!");
     setShowError(true);
 
     // error 3 sec me hide ho jaye
@@ -115,6 +117,7 @@ export default function ClickToCall() {
 
   // WhatsApp click handler
   const handleWhatsappClick = () => {
+    setErrorMessage("Data not found !!!");
     setShowError(true);
 
     // auto hide after 3 sec
@@ -141,6 +144,15 @@ export default function ClickToCall() {
     );
   };
 
+  // 🔹 Apply validation
+  const handleApply = () => {
+    if (!search.trim()) {
+      setErrorMessage("please enter a valid client code");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
+    }
+  };
+
   // Submit functionality
   const handleSubmit = () => {
     // Since dropdown was removed, always allow submission
@@ -154,71 +166,70 @@ export default function ClickToCall() {
   };
 
   return (
-  <div>
-    {/* HEADER */}
-    <div className="download-container">
-      <Header />
-    </div>
+    <div>
+      {/* HEADER */}
+      <div className="download-container">
+        <Header />
+      </div>
 
-    {/* BODY */}
-    <div className="bg-[#f3f3f3] h-50 px-5 pt-[82px] pb-6">
-      {/* TABS */}
-      <div className="bg-white rounded-[18px] shadow-sm px-7 pt-6 pb-0">
-        <div className="flex gap-8 text-sm border-b border-gray-300 pb-3">
+      {/* BODY */}
+      <div className="bg-[#f3f3f3] h-50 px-5 pt-[82px] pb-6">
+        {/* TABS */}
+        <div className="bg-white rounded-[18px] shadow-sm px-7 pt-6 pb-0">
+          <div className="flex gap-8 text-sm border-b border-gray-300 pb-3">
 
-          <button
-            onClick={() => setActiveTab("inactive")}
-            className={`pb-2 ${
-              activeTab === "inactive"
-                ? "border-b-2 border-green-600 font-semibold text-black"
-                : "text-gray-500"
-            }`}
-          >
-            Click to Call Inactive
-          </button>
+            <button
+              onClick={() => setActiveTab("inactive")}
+              className={`pb-2 ${
+                activeTab === "inactive"
+                  ? "border-b-2 border-green-600 font-semibold text-black"
+                  : "text-gray-500"
+              }`}
+            >
+              Click to Call Inactive
+            </button>
 
-          <button
-            onClick={() => navigate("/followupreport")}
-            className={`pb-2 ${
-              activeTab === "follow"
-                ? "border-b-2 border-green-600 font-semibold text-black"
-                : "text-gray-500"
-            }`}
-          >
-            Follow Up Report
-          </button>
+            <button
+              onClick={() => navigate("/followupreport")}
+              className={`pb-2 ${
+                activeTab === "follow"
+                  ? "border-b-2 border-green-600 font-semibold text-black"
+                  : "text-gray-500"
+              }`}
+            >
+              Follow Up Report
+            </button>
 
-         
-          
-            
-         
-        </div>
-    
-
-      {/* Conditional rendering based on active tab */}
-      {activeTab === "follow" ? (
-        <FollowUpReport />
-      ) : (
-        <>
-          {/* Search + Apply section */}
-          <div className="bg-[#efefef] px-7 pt-3 pb-4">
-            <p className="text-sm text-black mb-0 pb-2 ">Search client code</p>
-            <div className="flex items-center gap-5">
-              <div className="relative">
-                <input
-                  placeholder="Search client code"
-                  className="pl-10 pr-4 h-[44px] rounded-full border border-gray-300 w-[250px] bg-white outline-none"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-                <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-              </div>
-
-              <button className="bg-green-600 text-white px-8 h-[44px] rounded-full font-semibold">
-                APPLY
-              </button>
-            </div>
           </div>
+      
+
+        {/* Conditional rendering based on active tab */}
+        {activeTab === "follow" ? (
+          <FollowUpReport />
+        ) : (
+          <>
+            {/* Search + Apply section */}
+            <div className="bg-[#efefef] px-7 pt-3 pb-4">
+              <p className="text-sm text-black mb-0 pb-2 ">Search client code</p>
+              <div className="flex items-center gap-5">
+                <div className="relative">
+                  <input
+                    placeholder="Search client code"
+                    className="pl-10 pr-4 h-[44px] rounded-full border border-gray-300 w-[250px] bg-white outline-none"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                  <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                </div>
+
+                <button 
+                  onClick={handleApply}
+                  className="bg-green-600 text-white px-8 h-[44px] rounded-full font-semibold"
+                >
+                  APPLY
+                </button>
+              </div>
+            </div>
 
           {/* Result + Download */}
           <div className="flex justify-between items-center mb-2 pt-3">
@@ -397,7 +408,7 @@ export default function ClickToCall() {
           {/* TEXT */}
           <div>
             <p className="font-semibold text-lg">Error</p>
-            <p className="text-sm">Data not found !!!</p>
+            <p className="text-sm">{errorMessage}</p>
           </div>
 
           {/* CLOSE BUTTON */}

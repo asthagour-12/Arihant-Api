@@ -4,7 +4,6 @@ export const L = {
   wrapper: {
     padding: "20px",
     backgroundColor: "#f4f7f6",
-    minHeight: "calc(100vh - 100px)",
   },
   card: {
     backgroundColor: "#ffffff",

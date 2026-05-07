@@ -88,7 +88,7 @@ function App() {
             <Route path="product-deck" element={<div></div>} />
             <Route path="mf-structure" element={<div></div>} />
             <Route path="wealth-basket" element={<div></div>} />
-            <Route path="sip-calculator" element={<div></div>} />
+            <Route path="sip-calculator" element={<SIPCalculator />} />
             <Route path="bonds" element={<div></div>} />
           </Route>
         </Routes>

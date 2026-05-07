@@ -29,15 +29,15 @@ const ContractNote = () => {
         <div className="px-6 py-4 max-w-[1600px] mx-auto">
             <FilterBar>
                 <FilterItem label="Search By Client">
-                    <SearchInput placeholder="Search By Client" width="220px" />
+                    <SearchInput placeholder="Search By Client" width="280px" />
                 </FilterItem>
 
                 <FilterItem label="From Date">
-                    <DateInput selected={fromDate} onChange={(d) => setFromDate(d)} error={error} width="140px" />
+                    <DateInput selected={fromDate} onChange={(d) => setFromDate(d)} error={error} width="180px" />
                 </FilterItem>
 
                 <FilterItem label="To Date">
-                    <DateInput selected={toDate} onChange={(d) => setToDate(d)} error={error} width="140px" />
+                    <DateInput selected={toDate} onChange={(d) => setToDate(d)} error={error} width="180px" />
                 </FilterItem>
 
                 <ApplyButton onClick={handleApply} />

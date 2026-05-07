@@ -11,6 +11,7 @@ import { Calendar } from "lucide-react";
 const IPOReport = () => {
     const [fromDate, setFromDate] = React.useState(null);
     const [toDate, setToDate] = React.useState(null);
+    const [clientSearch, setClientSearch] = React.useState("");
     const [error, setError] = React.useState("");
     const fromRef = React.useRef();
     const toRef = React.useRef();
@@ -27,10 +28,26 @@ const IPOReport = () => {
     };
 
     return (
-        <div className="p-6 bg-white min-h-screen">
+        <div className="p-6 bg-white">
             <div className="max-w-[1600px] mx-auto">
                 <div className="bg-[#f8f9fa] border border-gray-100 px-8 py-8 rounded-2xl mb-12 shadow-sm">
-                    <div className="flex gap-8 items-end flex-wrap justify-center">
+                    <div className="flex gap-8 items-end flex-wrap justify-start">
+                        
+                        {/* Search Client Input */}
+                        <div className="flex flex-col gap-2">
+                            <label className="text-gray-500 font-bold text-[11px] uppercase tracking-wider ml-1">Search Client</label>
+                            <div className="relative group">
+                                <i className="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-[#34b350] transition-colors pointer-events-none"></i>
+                                <input 
+                                    type="text" 
+                                    placeholder="Enter Client Code" 
+                                    value={clientSearch}
+                                    onChange={(e) => setClientSearch(e.target.value)}
+                                    className="pl-11 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#34b350] text-sm w-64 bg-white shadow-sm transition-all h-[48px] font-medium"
+                                />
+                            </div>
+                        </div>
+
                         <div className="flex flex-col gap-2">
                             <label className="text-gray-500 font-bold text-[11px] uppercase tracking-wider ml-1">From Date</label>
                             <div className="relative group">

@@ -56,7 +56,7 @@ function CustomDateFilter() {
             className={`w-full border rounded-lg px-3 pr-10 py-2 text-sm ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-300"}`}
             ref={fromRef}
             onFocus={(e) => e.target.blur()}
-            
+
             /* CUSTOM HEADER */
             renderCustomHeader={({
               date,
@@ -115,7 +115,7 @@ function CustomDateFilter() {
             className={`w-full border rounded-lg px-3 pr-10 py-2 text-sm ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-300"}`}
             ref={toRef}
             onFocus={(e) => e.target.blur()}
-            
+
             /* CUSTOM HEADER */
             renderCustomHeader={({
               date,
@@ -162,7 +162,7 @@ function CustomDateFilter() {
 
       {/* APPLY BUTTON */}
       <div className="flex items-center gap-4">
-        <button 
+        <button
           onClick={handleApply}
           className="bg-[#34b350] hover:bg-[#2e9e47] text-white px-8 py-2 rounded-full font-semibold flex items-center gap-2 transition-all shadow-md active:scale-95"
         >
@@ -200,10 +200,9 @@ export default function AlgoBrokerage() {
                   key={tab.name}
                   to={tab.path}
                   className={({ isActive }) =>
-                    `pb-3 text-base whitespace-nowrap leading-tight tracking-tight no-underline ${
-                      isActive
-                        ? "border-b-2 border-green-600 text-black font-medium"
-                        : "text-gray-600 font-medium"
+                    `pb-3 text-base whitespace-nowrap leading-tight tracking-tight no-underline ${isActive
+                      ? "border-b-2 border-green-600 text-black font-medium"
+                      : "text-gray-600 font-medium"
                     }`
                   }
                 >

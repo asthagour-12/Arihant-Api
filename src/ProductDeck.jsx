@@ -42,7 +42,7 @@ export default function ProductDeck() {
                             tab === "Wealth Basket" ? "/wealth-basket" :
                               tab === "SIP Revenue Calculator" ? "/sip-calculator" :
                                 tab === "Bonds" ? "/bonds" : "/")}
-                className={`pb-3 text-base whitespace-nowrap leading-tight tracking-tight no-underline cursor-pointer ${tab === "Wealth Basket"
+                className={`pb-3 text-base whitespace-nowrap leading-tight tracking-tight no-underline cursor-pointer ${tab === "Product Deck"
                   ? "border-b-2 border-green-600 text-black font-medium"
                   : "text-gray-600 font-medium hover:text-black"
                   }`}
@@ -54,10 +54,14 @@ export default function ProductDeck() {
 
           {/* SUB LINKS */}
           <div className="flex gap-10 mt-6 text-blue-600 text-sm font-medium">
-            <span className="cursor-pointer hover:underline">
-
+            <a
+              href="https://download.arihantcapital.com/account/222520250322389892238.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cursor-pointer hover:underline text-blue-600 no-underline"
+            >
               product Deck
-            </span>
+            </a>
 
           </div>
 

@@ -1,7 +1,39 @@
 import React, { useState } from 'react';
+import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 
 const ClientTable = ({ data = [] }) => {
   const [visibleRows, setVisibleRows] = useState({});
+  const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
+
+  const handleSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const SortIcon = ({ column }) => {
+    if (sortConfig.key === column) {
+      return sortConfig.direction === "asc" ? (
+        <ChevronUp size={12} className="text-white" />
+      ) : (
+        <ChevronDown size={12} className="text-white" />
+      );
+    }
+    return <ChevronsUpDown size={12} className="text-white/40 group-hover:text-white transition-colors" />;
+  };
+
+  const sortedData = React.useMemo(() => {
+    if (!sortConfig.key) return data;
+    return [...data].sort((a, b) => {
+      const aVal = a[sortConfig.key] || "";
+      const bVal = b[sortConfig.key] || "";
+      if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [data, sortConfig]);
 
   const toggleVisibility = (index) => {
     setVisibleRows(prev => ({
@@ -25,8 +57,14 @@ const ClientTable = ({ data = [] }) => {
   };
 
   const headers = [
-    "CLIENT NAME", "PAN", "MOBILE", "EMAIL", "DEFAULT BANK & AC NO.", 
-    "CITY & STATE", "MTF AC. OPENING DATE", "DP CODE"
+    { label: "CLIENT NAME", key: "name" },
+    { label: "PAN", key: "pan" },
+    { label: "MOBILE", key: "mobile" },
+    { label: "EMAIL", key: "email" },
+    { label: "DEFAULT BANK & AC NO.", key: "bank" },
+    { label: "CITY & STATE", key: "city" },
+    { label: "MTF AC. OPENING DATE", key: "date" },
+    { label: "DP CODE", key: "dp" }
   ];
 
   return (
@@ -36,19 +74,21 @@ const ClientTable = ({ data = [] }) => {
           <thead className="bg-[#1EB04C] text-white uppercase">
             <tr>
               {headers.map((h, i) => (
-                <th key={i} className="px-3 py-3 border-r border-white/10 last:border-0 group cursor-pointer font-bold">
-                  <div className="flex items-center gap-1.5 whitespace-nowrap">
-                    {h}
-                    <div className="flex flex-col text-[7px] leading-[4px] opacity-40 group-hover:opacity-100 transition-opacity">
-                        <span>▲</span><span>▼</span>
-                    </div>
+                <th 
+                  key={i} 
+                  onClick={() => handleSort(h.key)}
+                  className="px-3 py-3 border-r border-white/10 last:border-0 group cursor-pointer font-bold select-none hover:bg-[#18a045] transition-colors"
+                >
+                  <div className="flex items-center justify-between gap-1.5 whitespace-nowrap">
+                    {h.label}
+                    <SortIcon column={h.key} />
                   </div>
                 </th>
               ))}
             </tr>
           </thead>
           <tbody className="bg-white">
-            {data.map((row, i) => (
+            {sortedData.map((row, i) => (
               <tr key={i} className="border-b border-gray-100 hover:bg-gray-50 transition-colors group">
                 {/* Client Name & Code */}
                 <td className="px-3 py-2 border-r border-gray-100 text-[11px]">
@@ -98,7 +138,7 @@ const ClientTable = ({ data = [] }) => {
         </table>
       </div>
       <div className="px-4 py-2 bg-[#f9f9f9] text-gray-500 font-medium border-t border-gray-200 text-[11px]">
-        {data.length} total
+        {sortedData.length} total
       </div>
     </div>
   );

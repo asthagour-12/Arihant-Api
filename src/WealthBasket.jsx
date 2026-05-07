@@ -32,20 +32,19 @@ export default function WealthBasket() {
             {tabs.map((tab, i) => (
               <div
                 key={i}
-                onClick={() => navigate(tab === "Algo Brokerage" ? "/algo-brokerage" : 
-                         tab === "Mutual Fund" ? "/mutual-fund" : 
-                         tab === "Rejection" ? "/rejection" : 
-                         tab === "Mandate" ? "/mandate" : 
-                         tab === "Product Deck" ? "/product-deck" : 
-                         tab === "MF Structure & Brokerage" ? "/mf-structure" : 
-                         tab === "Wealth Basket" ? "/wealth-basket" : 
-                         tab === "SIP Revenue Calculator" ? "/sip-calculator" : 
-                         tab === "Bonds" ? "/bonds" : "/")}
-                className={`pb-3 text-base whitespace-nowrap leading-tight tracking-tight no-underline cursor-pointer ${
-                  tab === "Wealth Basket"
+                onClick={() => navigate(tab === "Algo Brokerage" ? "/algo-brokerage" :
+                  tab === "Mutual Fund" ? "/mutual-fund" :
+                    tab === "Rejection" ? "/rejection" :
+                      tab === "Mandate" ? "/mandate" :
+                        tab === "Product Deck" ? "/product-deck" :
+                          tab === "MF Structure & Brokerage" ? "/mf-structure" :
+                            tab === "Wealth Basket" ? "/wealth-basket" :
+                              tab === "SIP Revenue Calculator" ? "/sip-calculator" :
+                                tab === "Bonds" ? "/bonds" : "/")}
+                className={`pb-3 text-base whitespace-nowrap leading-tight tracking-tight no-underline cursor-pointer ${tab === "Wealth Basket"
                     ? "border-b-2 border-green-600 text-black font-medium"
                     : "text-gray-600 font-medium hover:text-black"
-                }`}
+                  }`}
               >
                 {tab}
               </div>
@@ -54,12 +53,22 @@ export default function WealthBasket() {
 
           {/* SUB LINKS */}
           <div className="flex gap-10 mt-6 text-blue-600 text-sm font-medium">
-            <span className="cursor-pointer hover:underline">
+            <a
+              href="https://download.arihantcapital.com/client/Arihant%20Deseo%20wealth%20basket.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cursor-pointer hover:underline text-blue-600 no-underline"
+            >
               Arihant Wealth Basket
-            </span>
-            <span className="cursor-pointer hover:underline">
+            </a>
+            <a
+              href="https://download.arihantcapital.com/account/170520250317451991745.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cursor-pointer hover:underline text-blue-600 no-underline"
+            >
               Value Stock
-            </span>
+            </a>
           </div>
 
           {/* INFO */}

@@ -1,17 +1,62 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Header from "../../Header";
+import ThirdPartyHeader from "../components/layout/ThirdPartyHeader";
+
 
 const SliderComponent = ({ label, value, setValue, min, max, type, step = 1 }) => {
     const percentage = ((value - min) / (max - min)) * 100 || 0;
 
+    const formatValue = (val) => {
+        if (type === "currency") return `₹${parseFloat(val).toLocaleString()}`;
+        if (type === "year") return `${val} Yrs`;
+        if (type === "percent") return `${val}%`;
+        return val;
+    };
+
+    const formatLimit = (val) => {
+        if (type === "currency") return `₹${val.toLocaleString()}`;
+        if (type === "year") return `${val} Yrs`;
+        if (type === "percent") return `${val}%`;
+        return val;
+    };
+
     return (
-        <div className="mb-10">
-            <div className="text-[17px] font-black text-gray-900 mb-6 tracking-tighter uppercase tabular-nums">
-                {label}: <span className="text-[#34b350] ml-2">
-                    {type === "currency" ? `₹${parseFloat(value).toLocaleString()}` : type === "year" ? `${value} yrs` : type === "percent" ? `${value}%` : value}
-                </span>
+        <div className="mb-8">
+            <div className="text-[15px] font-normal text-gray-700 mb-4 uppercase tracking-tight">
+                {label}
             </div>
-            <div className="flex items-center gap-8 group">
-                <div className="flex-1 relative h-6 flex items-center">
+            <div className="flex items-center gap-6 group">
+                {type === "currency" && <span className="text-gray-400 font-medium">₹</span>}
+                <div className="flex-1 relative h-6 flex flex-col justify-center">
+                    <style>{`
+                        input[type='range'] {
+                            -webkit-appearance: none;
+                            width: 100%;
+                            height: 6px;
+                            border-radius: 8px;
+                            background: linear-gradient(to right, #34b350 ${percentage}%, #f3f4f6 ${percentage}%);
+                            outline: none;
+                            -webkit-slider-thumb-appearance: none;
+                        }
+                        input[type='range']::-webkit-slider-thumb {
+                            -webkit-appearance: none;
+                            appearance: none;
+                            width: 20px;
+                            height: 20px;
+                            border-radius: 50%;
+                            background: #4A90E2; /* Blue thumb in screenshot */
+                            cursor: pointer;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        }
+                        input[type='range']::-moz-range-thumb {
+                            width: 20px;
+                            height: 20px;
+                            border-radius: 50%;
+                            background: #4A90E2;
+                            cursor: pointer;
+                            border: none;
+                        }
+                    `}</style>
                     <input
                         type="range"
                         min={min}
@@ -19,51 +64,56 @@ const SliderComponent = ({ label, value, setValue, min, max, type, step = 1 }) =
                         step={step}
                         value={value || 0}
                         onChange={(e) => setValue(parseFloat(e.target.value))}
-                        className="w-full h-1.5 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-[#34b350]"
-                        style={{
-                            background: `linear-gradient(to right, #34b350 ${percentage}%, #f3f4f6 ${percentage}%)`
-                        }}
+                        className="w-full cursor-pointer"
                     />
                 </div>
-                <div className="relative w-32 shrink-0">
-                    <input
-                        type="number"
-                        value={value}
-                        onChange={(e) => {
-                            let val = e.target.value === "" ? 0 : parseFloat(e.target.value);
-                            if (val > max) val = max;
-                            setValue(val);
-                        }}
-                        className="w-full h-[52px] bg-white border border-gray-100 rounded-xl text-center text-lg font-black text-gray-900 outline-none focus:border-[#34b350] shadow-inner transition-all tabular-nums"
-                    />
+                <div className="relative w-24 shrink-0">
+                    <div className="flex items-center">
+                        <input
+                            type="number"
+                            value={value}
+                            onChange={(e) => {
+                                let val = e.target.value === "" ? 0 : parseFloat(e.target.value);
+                                if (val > max) val = max;
+                                setValue(val);
+                            }}
+                            className="w-full h-[40px] bg-white border border-gray-200 rounded-lg text-center text-md font-normal text-gray-900 outline-none focus:border-[#34b350] transition-all"
+                        />
+                        {type === "year" && <span className="ml-2 text-sm text-gray-500 whitespace-nowrap">Yrs</span>}
+                        {type === "percent" && <span className="ml-2 text-sm text-gray-500">%</span>}
+                    </div>
                 </div>
             </div>
-            <div className="flex justify-between mt-3 text-[11px] font-black text-gray-300 uppercase tracking-widest leading-none">
-                <span>{type === "currency" ? `₹ 0` : type === "year" ? `1 yr` : type === "percent" ? `0%` : min}</span>
-                <span>{type === "currency" ? `₹ ${(max/100000).toFixed(0)}L` : type === "year" ? `${max} yrs` : type === "percent" ? `${max}%` : max}</span>
+            <div className="flex justify-between mt-2 text-[11px] font-normal text-gray-400">
+                <span>{formatLimit(min)}</span>
+                <span>{formatLimit(max)}</span>
             </div>
         </div>
     );
 };
 
 export default function SipRevenueCalculator() {
-    const [amount, setAmount] = useState(5000);
-    const [years, setYears] = useState(10);
-    const [sipCount, setSipCount] = useState(10);
-    const [returns, setReturns] = useState(12);
-    const [trail, setTrail] = useState(0.8);
+    const [amount, setAmount] = useState(0);
+    const [years, setYears] = useState(0);
+    const [sipCount, setSipCount] = useState(1);
+    const [returns, setReturns] = useState(30);
+    const [trail, setTrail] = useState(1.0);
 
     const [tableData, setTableData] = useState([]);
     const [totalIncome, setTotalIncome] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
 
+    useEffect(() => {
+        document.body.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+    }, []);
+
     const handleCalculate = () => {
         let monthlyRate = (returns / 100) / 12;
         let months = years * 12;
         let data = [];
         let netIncome = 0;
-        
+
         let currentInflow = 0;
         for (let i = 1; i <= months; i++) {
             currentInflow += amount * sipCount;
@@ -99,130 +149,112 @@ export default function SipRevenueCalculator() {
     const totalPages = Math.ceil(tableData.length / rowsPerPage);
 
     return (
-        <div className="min-h-screen bg-[#f6f6f6] font-sans selection:bg-[#34b350] selection:text-white">
-            {/* 🟢 TOP DASHBOARD HEADER */}
-            <div className="bg-[#34b350] px-[32px] h-[64px] flex items-center justify-between sticky top-0 z-[100] shadow-md text-white font-bold">
-                <div className="flex items-center gap-10">
-                    <div className="text-2xl font-black tracking-tighter">ArihantCapital</div>
-                    <nav className="flex gap-6 text-[13px] opacity-90">
-                        <span>Dashboard</span>
-                        <span className="border-b-2 border-white pb-0.5">Reports</span>
-                        <span>Account Opening</span>
-                        <span>Contests</span>
-                        <span>Click To Call</span>
-                    </nav>
-                </div>
-            </div>
+        <div className="bg-gray-50 min-h-screen">
+            <Header />
+            <div className="p-4 pt-[60px]">
+                <ThirdPartyHeader />
+                <div className="py-[30px] selection:bg-[#34b350] selection:text-white" style={{ fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" }}>
+                    <div className="flex flex-col xl:flex-row gap-8 max-w-full mx-auto">
 
-            {/* 🔵 CONTENT AREA */}
-            <div className="px-[40px] py-[40px]">
-                <div className="flex flex-col xl:flex-row gap-10">
-                    
                     {/* 📊 LEFT: CALCULATOR INPUTS */}
-                    <div className="flex-1 bg-white rounded-2xl shadow-[0_10px_30px_rgb(0,0,0,0.03)] border border-gray-100 p-12">
-                        <div className="text-2xl font-black text-gray-900 mb-12 tracking-tighter uppercase border-b border-gray-50 pb-4">SIP Revenue Calculator</div>
-                        
-                        <SliderComponent label="Monthly SIP Amount" value={amount} setValue={setAmount} min={0} max={1000000} type="currency" step={500} />
-                        <SliderComponent label="Duration" value={years} setValue={setYears} min={1} max={40} type="year" />
-                        <SliderComponent label="Total SIPs Registered" value={sipCount} setValue={setSipCount} min={1} max={1000} />
-                        <SliderComponent label="Estimated Annual Returns" value={returns} setValue={setReturns} min={0} max={30} type="percent" step={0.1} />
-                        <SliderComponent label="Expected Trail Income" value={trail} setValue={setTrail} min={0} max={5} type="percent" step={0.05} />
+                    <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-10">
+                        <div className="text-2xl font-normal text-gray-800 mb-10 tracking-tight">SIP Revenue Calculator</div>
 
-                        <div className="flex gap-6 mt-16">
-                            <button onClick={handleReset} className="flex-1 h-14 bg-gray-50 text-gray-400 font-black text-sm uppercase tracking-widest rounded-xl hover:bg-gray-100 transition-all border border-gray-100">RESET</button>
-                            <button onClick={handleCalculate} className="flex-[2] h-14 bg-[#34b350] text-white font-black text-sm uppercase tracking-widest rounded-xl shadow-[0_10px_25px_-5px_rgba(52,179,80,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(52,179,80,0.5)] active:scale-[0.98] transition-all">CALCULATE REVENUE &gt;</button>
+                        <SliderComponent label="Select Amount" value={amount} setValue={setAmount} min={0} max={10000000} type="currency" step={500} />
+                        <SliderComponent label="Select Duration" value={years} setValue={setYears} min={1} max={40} type="year" />
+                        <SliderComponent label="No. of SIP Registered" value={sipCount} setValue={setSipCount} min={1} max={999} />
+                        <SliderComponent label="Annualized Assumed Returns" value={returns} setValue={setReturns} min={0} max={30} type="percent" step={0.1} />
+                        <SliderComponent label="Trail Income" value={trail} setValue={setTrail} min={0} max={100} type="percent" step={0.05} />
+
+                        <div className="flex gap-2 mt-10 justify-end">
+                            <button onClick={handleReset} className="px-4 h-10 border border-gray-200 rounded text-[13px] text-gray-600 font-medium uppercase bg-white hover:bg-gray-50 transition-all">RESET</button>
+                            <button onClick={handleCalculate} className="px-6 h-10 bg-[#007bff] text-white rounded text-[13px] font-bold uppercase hover:bg-blue-600 transition-all">CALCULATE</button>
+                            <button className="px-6 h-10 bg-[#28a745] text-white rounded text-[13px] font-bold hover:bg-green-700 transition-all">Export Excel</button>
                         </div>
                     </div>
 
                     {/* 📈 RIGHT: RESULTS BREAKUP */}
-                    <div className="flex-1 bg-white rounded-2xl shadow-[0_10px_30px_rgb(0,0,0,0.03)] border border-gray-100 overflow-hidden flex flex-col min-h-[800px]">
-                        <div className="p-12 pb-8">
-                            <div className="text-2xl font-black text-gray-900 mb-2 tracking-tighter uppercase">Revenue Breakup</div>
-                            <div className="text-gray-400 font-bold mb-8 uppercase tracking-[0.2em] text-[11px] opacity-60">Month-wise project income</div>
-                            
-                            <div className="bg-green-50/50 rounded-2xl p-8 border border-green-100 flex justify-between items-center">
-                                <div className="text-[13px] text-gray-500 font-black uppercase tracking-widest">Total Projected Income</div>
-                                <div className="text-4xl font-black text-[#34b350] tracking-tighter tabular-nums">₹{parseFloat(totalIncome).toLocaleString()}</div>
-                            </div>
-                        </div>
+                    <div className="flex-[1.6] bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col min-h-[700px]">
+                        <div className="p-8">
+                            <div className="text-2xl font-normal text-gray-800 mb-2 tracking-tight">SIP Revenue Breakup</div>
+                            <div className="text-blue-500 font-normal text-sm mb-8">Total Income/Trail: <span className="font-normal">₹{parseFloat(totalIncome).toLocaleString()}</span></div>
 
-                        <div className="flex-1 flex flex-col px-12 pb-12">
-                            <div className="overflow-hidden rounded-xl border border-gray-100 shadow-[0_20px_40px_rgb(0,0,0,0.05)] bg-white flex-1 flex flex-col">
-                                <div className="overflow-y-auto flex-1 group">
-                                    <table className="w-full text-left text-[11px] font-black uppercase text-gray-700">
-                                        <thead className="bg-[#34b350] text-white sticky top-0 z-10">
-                                            <tr className="leading-none">
-                                                {["MONTH", "TOTAL INFLOW", "EST. AUM", "TRAIL INCOME"].map(h => (
-                                                    <th key={h} className="px-6 py-[22px] border-r border-white/10 last:border-0">{h}</th>
-                                                ))}
+                            <div className="overflow-hidden rounded-lg border border-gray-100 bg-white flex-1 flex flex-col">
+                                <div className="overflow-y-auto flex-1 group min-h-[400px]">
+                                    <table className="w-full text-left text-[12px] font-normal text-gray-500">
+                                        <thead className="bg-gray-50 sticky top-0 z-10 border-b border-gray-100">
+                                            <tr>
+                                                <th className="px-6 py-4 font-normal uppercase">MONTHS</th>
+                                                <th className="px-6 py-4 font-normal uppercase text-center">INFLOW (₹)</th>
+                                                <th className="px-6 py-4 font-normal uppercase text-center">AUM (₹)</th>
+                                                <th className="px-6 py-4 font-normal uppercase text-right">INCOME/TRAIL (₹)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {currentRows.length > 0 ? (
                                                 currentRows.map((row, i) => (
-                                                    <tr key={i} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                                                        <td className="px-6 py-5 border-r border-gray-50 text-gray-400 font-black italic">#{row.month}</td>
-                                                        <td className="px-6 py-5 border-r border-gray-50 text-gray-900 font-bold tabular-nums">₹{row.inflow.toLocaleString()}</td>
-                                                        <td className="px-6 py-5 border-r border-gray-50 text-gray-900 font-bold tabular-nums">₹{row.aum.toLocaleString()}</td>
-                                                        <td className="px-6 py-5 text-[#34b350] font-black tabular-nums">₹{row.income.toLocaleString()}</td>
+                                                    <tr key={i} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                                                        <td className="px-6 py-4 text-gray-600">#{row.month}</td>
+                                                        <td className="px-6 py-4 text-gray-600 text-center">₹{row.inflow.toLocaleString()}</td>
+                                                        <td className="px-6 py-4 text-gray-600 text-center">₹{row.aum.toLocaleString()}</td>
+                                                        <td className="px-6 py-4 text-gray-600 text-right font-medium">₹{row.income.toLocaleString()}</td>
                                                     </tr>
                                                 ))
                                             ) : (
                                                 <tr>
-                                                    <td colSpan="4" className="py-40 text-center">
-                                                        <div className="text-gray-200 font-black text-2xl italic tracking-tighter uppercase opacity-50">No Data Calculated</div>
-                                                        <div className="text-gray-300 text-[10px] font-bold mt-2 uppercase tracking-widest">Click calculate to see result</div>
+                                                    <td colSpan="4" className="py-32 text-center">
+                                                        <div className="text-gray-400 font-normal text-sm">No data available. Please calculate SIP.</div>
                                                     </td>
                                                 </tr>
                                             )}
                                         </tbody>
                                     </table>
                                 </div>
-                                
+
                                 {/* 🔢 PAGINATION */}
-                                <div className="px-8 py-5 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
-                                    <div className="text-[11px] text-gray-400 font-black uppercase tracking-widest">
-                                        Page {currentPage} of {totalPages || 1}
+                                <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                                    <div className="text-[12px] text-gray-500 font-normal">
+                                        {tableData.length > 0 
+                                            ? `Showing ${startIndex + 1}-${Math.min(startIndex + rowsPerPage, tableData.length)} of ${tableData.length} rows`
+                                            : "Showing 0-0 of 0 rows"}
                                     </div>
-                                    <div className="flex gap-4">
-                                        <button 
-                                            disabled={currentPage === 1}
-                                            onClick={() => setCurrentPage(p => p - 1)}
-                                            className="w-10 h-10 rounded-lg bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-[#34b350] disabled:opacity-30 shadow-sm transition-all"
-                                        >&lt;</button>
-                                        <button 
-                                            disabled={currentPage >= totalPages}
-                                            onClick={() => setCurrentPage(p => p + 1)}
-                                            className="w-10 h-10 rounded-lg bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-[#34b350] disabled:opacity-30 shadow-sm transition-all"
-                                        >&gt;</button>
+                                    <div className="flex gap-4 items-center">
+                                        <div className="flex gap-1">
+                                            <button
+                                                disabled={currentPage === 1}
+                                                onClick={() => setCurrentPage(p => p - 1)}
+                                                className="w-8 h-8 rounded border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-100 disabled:opacity-30 transition-all"
+                                            >&lt;</button>
+                                            <button
+                                                disabled={currentPage >= totalPages}
+                                                onClick={() => setCurrentPage(p => p + 1)}
+                                                className="w-8 h-8 rounded border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-100 disabled:opacity-30 transition-all"
+                                            >&gt;</button>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[12px] text-gray-500">Rows per page:</span>
+                                            <select 
+                                                value={rowsPerPage}
+                                                onChange={(e) => {
+                                                    setRowsPerPage(parseInt(e.target.value));
+                                                    setCurrentPage(1);
+                                                }}
+                                                className="px-1 py-1 border border-gray-200 rounded text-[12px] font-normal outline-none bg-white"
+                                            >
+                                                <option>10</option>
+                                                <option>25</option>
+                                                <option>50</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <button className="w-full mt-8 h-14 bg-[#22c55e] text-white font-black text-sm uppercase tracking-widest rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all">EXPORT DATA TO EXCEL ↓</button>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            {/* 📦 FOOTER PRODUCT SECTION */}
-            <div className="px-[40px] pb-16">
-                <div className="bg-white border border-gray-100 rounded-2xl p-12 shadow-[0_5px_15px_rgba(0,0,0,0.02)]">
-                    <div className="text-2xl font-black text-gray-800 mb-10 pb-4 border-b border-gray-50 uppercase tracking-tighter">Arihant Product</div>
-                    <div className="flex flex-wrap justify-between gap-8 text-[#34b350] font-black text-[14px]">
-                        {[
-                            { label: "Official Website", url: "https://www.arihantcapital.com/" },
-                            { label: "Demat your MF Units", url: "https://eservices.nsdl.com/cas-stmt-mf-conv/#/login" },
-                            { label: "Insta Options", url: "https://instaoptions.arihantplus.com/login" },
-                            { label: "Trade Bridge", url: "https://tradebridge.arihantplus.com/signup" },
-                            { label: "Value Stocks", url: "https://arihantplus.valuestocks.in/" },
-                            { label: "Stock Stack", url: "https://tradebridge.arihantplus.com/sso/login?api_key=IBOFTIrFIx1AYBWz0a&source=DESEO" }
-                        ].map(p => (
-                            <a key={p.label} href={p.url} target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform">{p.label}</a>
-                        ))}
-                    </div>
                 </div>
             </div>
         </div>
+    </div>
     );
 }

@@ -37,9 +37,7 @@ const ClientMIS = () => {
                 <FilterItem label="Search By Client">
                     <SearchInput placeholder="Search By Client" width="300px" />
                 </FilterItem>
-                <div className="ml-auto">
-                    <ApplyButton label="Apply" />
-                </div>
+                <ApplyButton label="Apply" />
             </FilterBar>
 
             <ResultsHeader count={12} />
