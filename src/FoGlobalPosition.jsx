@@ -9,23 +9,51 @@ export default function FOGlobalPosition() {
   const [searchInput, setSearchInput] = useState('');
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
-  const [error, setError] = useState("");
+  const [showCustomError, setShowCustomError] = useState(false);
+  const [customErrorMsg, setCustomErrorMsg] = useState("");
+
+  React.useEffect(() => {
+    if (showCustomError) {
+      const timer = setTimeout(() => setShowCustomError(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showCustomError]);
+
   const fromRef = React.useRef();
   const toRef = React.useRef();
 
   const handleApply = () => {
-    const errorMsg = validateDates(fromDate, toDate);
-    if (errorMsg) {
-      setError(errorMsg);
-      toast.error(errorMsg);
+    if (!searchInput.trim()) {
+      setCustomErrorMsg("Please enter Client Code");
+      setShowCustomError(true);
       return;
     }
-    setError("");
-    toast.success("Filters applied");
+    if (!fromDate || !toDate) {
+      setCustomErrorMsg("Please select Date range");
+      setShowCustomError(true);
+      return;
+    }
+    if (fromDate.toDateString() === toDate.toDateString()) {
+      setCustomErrorMsg("From and To dates cannot be same");
+      setShowCustomError(true);
+      return;
+    }
+
+    const errorMsg = validateDates(fromDate, toDate);
+    if (errorMsg) {
+      setCustomErrorMsg(errorMsg);
+      setShowCustomError(true);
+      return;
+    }
+    toast.error("Data not found", {
+      position: "top-right",
+      autoClose: 3000,
+      theme: "colored"
+    });
   };
 
   return (
-    <div className="bg-white min-h-screen flex flex-col">
+    <div className="flex flex-col">
       <style>{`
         .no-native-calendar::-webkit-calendar-picker-indicator {
           opacity: 0;
@@ -37,10 +65,10 @@ export default function FOGlobalPosition() {
         }
       `}</style>
       {/* Main Content Section */}
-      <div className="flex-1 px-8 py-6">
+      <div className="flex-1 px-0 py-0">
         {/* Search Section */}
-        <div className="bg-gray-100 border border-gray-200 px-8 py-6 rounded-lg mb-8 max-w-[1600px] mx-auto">
-          <div className="flex gap-6 items-end flex-wrap justify-center">
+        <div className="bg-gray-100 border border-gray-200 px-8 py-6 rounded-lg mb-6 max-w-[1600px] mx-auto">
+          <div className="flex gap-4 items-end flex-wrap justify-start">
             {/* Search Input */}
             <div className="relative group w-80">
               <Search
@@ -52,7 +80,7 @@ export default function FOGlobalPosition() {
                 placeholder="Search client code"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 h-[48px] border border-gray-200 rounded-full focus:outline-none focus:border-[#27ae60] focus:ring-2 focus:ring-green-50/50 text-sm bg-white shadow-sm transition-all"
+                className={`w-full pl-10 pr-4 py-3 h-[48px] border rounded-full focus:outline-none focus:border-[#27ae60] focus:ring-2 focus:ring-green-50/50 text-sm bg-white shadow-sm transition-all ${showCustomError && !searchInput.trim() ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-200"}`}
               />
             </div>
 
@@ -68,7 +96,7 @@ export default function FOGlobalPosition() {
                   dateFormat="dd/MM/yyyy"
                   placeholderText="DD/MM/YYYY"
                   maxDate={new Date()}
-                  className={`px-4 py-3 border rounded-lg focus:outline-none focus:border-[#34b350] text-sm w-52 bg-white shadow-sm transition-all h-[44px] ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-200"}`}
+                  className={`px-4 py-3 border rounded-lg focus:outline-none focus:border-[#34b350] text-sm w-52 bg-white shadow-sm transition-all h-[44px] ${showCustomError && !fromDate ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-200"}`}
                   ref={fromRef}
                   onFocus={(e) => e.target.blur()}
                 />
@@ -92,7 +120,7 @@ export default function FOGlobalPosition() {
                   dateFormat="dd/MM/yyyy"
                   placeholderText="DD/MM/YYYY"
                   maxDate={new Date()}
-                  className={`px-4 py-3 border rounded-lg focus:outline-none focus:border-[#34b350] text-sm w-52 bg-white shadow-sm transition-all h-[44px] ${error ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-200"}`}
+                  className={`px-4 py-3 border rounded-lg focus:outline-none focus:border-[#34b350] text-sm w-52 bg-white shadow-sm transition-all h-[44px] ${showCustomError && !toDate ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-200"}`}
                   ref={toRef}
                   onFocus={(e) => e.target.blur()}
                 />
@@ -115,14 +143,22 @@ export default function FOGlobalPosition() {
           </div>
         </div>
 
-        {/* Legend/Info Text */}
-        <div className="mt-8 px-6 py-6 text-center max-w-[1600px] mx-auto">
-          <p className="text-gray-600 text-sm font-light">
-            What we mean when we say -{' '}
-            <span className="font-semibold text-gray-800">
-              (Z): Zone, (R): Region, (Br): Branch, (AP): Authorized Person/Sub Broker
-            </span>
-          </p>
+
+        {/* 🚨 CUSTOM ERROR TOAST */}
+        <div
+          className={`fixed top-5 right-5 bg-[#e50046] text-white rounded-xl shadow-2xl px-6 py-2 min-w-[360px]
+                  flex items-center justify-between z-[6000]
+                  transition-all duration-500 transform ${showCustomError ? "translate-x-0 opacity-100" : "translate-x-[120%] opacity-0"}`}
+        >
+          <div>
+            <h2 className="text-2xl font-bold -mb-1">Error</h2>
+            <p className="text-base font-semibold">{customErrorMsg}</p>
+          </div>
+          <div className="ml-6 flex items-center">
+            <div className="w-9 h-9 border-[3px] border-white rounded-full relative">
+              <span className="absolute top-1/2 left-1/2 w-4 h-[2.5px] bg-white -translate-x-1/2 -translate-y-1/2 rotate-[-45deg] rounded"></span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

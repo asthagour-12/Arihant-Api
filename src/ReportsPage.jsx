@@ -137,7 +137,7 @@ export default function ReportsPage() {
             <div className={`${activeTab === "Transaction" ? "pt-1" : ""}`}>
               {renderContent()}
             </div>
-            
+
             {/* 🔗 ARIHANT PRODUCTS & LEGEND SECTION */}
             <ArihantProducts />
           </div>

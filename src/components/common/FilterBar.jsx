@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const FilterBar = ({ children }) => {
   return (
-    <div className="bg-white border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-6 mb-8">
+    <div className="bg-gray-100 border border-gray-200 p-6 mb-8 rounded-xl">
       <div className="flex flex-wrap items-end gap-6">
         {children}
       </div>

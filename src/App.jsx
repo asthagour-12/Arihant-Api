@@ -36,6 +36,7 @@ import Download from './Download.jsx';
 import MarketingMaterial from "./MarketingMaterial";
 import KRAStatusPage from './KRAStatusPage.jsx';
 import HoldingReport from './HoldingReport.jsx';
+import ArihantProducts from './ArihantProducts.jsx';
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
           {/* Default Route - Redirect to Dashboard */}
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/arihant-products" element={<ArihantProducts />} />
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/account-opening" element={<KRAStatusPage />} />
           <Route path="/download" element={<MarketingMaterial />} />
@@ -92,6 +94,7 @@ function App() {
             <Route path="bonds" element={<div></div>} />
           </Route>
         </Routes>
+
         <Footer />
         <ToastContainer position="top-center" autoClose={3000} />
       </Router>

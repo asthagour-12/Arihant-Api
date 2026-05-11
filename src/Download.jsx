@@ -49,7 +49,7 @@ export default function Download() {
 
           {/* CATEGORY */}
           <div className="flex items-center gap-3 cursor-pointer">
-            
+
             <div
               onClick={() => toggle(category)}
               className={circleClass(open[category])}

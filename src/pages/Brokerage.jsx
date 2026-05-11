@@ -230,7 +230,7 @@ const Brokerage = () => {
     ];
 
     return (
-        <div className="px-2 pt-0 pb-0 max-w-[1600px] mx-auto relative">
+        <div className="px-2 pt-6 pb-0 max-w-[1600px] mx-auto relative">
             {/* 🧭 SUB TABS */}
             <div className="flex gap-10 border-b border-gray-200 mb-1 pt-0">
                 {subTabs.map((tab) => (
@@ -313,6 +313,7 @@ const Brokerage = () => {
                         onMaskToggle={handleEyeClick}
                         isMasked={isMasked}
                         onDownload={handleDownload}
+                        isPlain={true}
                     />
                 </>
             )}

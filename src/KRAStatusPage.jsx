@@ -74,24 +74,23 @@ export default function KRAStatusPage() {
   return (
     <div className="bg-[#f3f3f3] p-2">
       <Header />
-      
+
       {/* CONTENT WRAPPER - Like Contests Page */}
       <div className="p-6 bg-[#f4f6f9] min-h-screen mt-16">
-        
+
         {/* Main Box */}
         <div className="bg-[#efefef] rounded-2xl shadow-sm border border-gray-200 w-full px-5 pt-6 pb-10">
-          
+
           {/* Tabs */}
           <div className="flex flex-wrap gap-8 text-[15px] text-black font-semibold border-b border-gray-300 pb-1" mt-11px>
             {tabs.map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-3 transition-all ${
-                  activeTab === tab
+                className={`pb-3 transition-all ${activeTab === tab
                     ? "border-b-[3px] border-green-500 font-black text-black"
                     : "hover:text-green-600"
-                }`}
+                  }`}
               >
                 {tab}
               </button>

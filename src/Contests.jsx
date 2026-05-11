@@ -29,136 +29,133 @@ function Contests() {
       {/* CONTENT WRAPPER */}
       <div className="p-6 bg-[#f4f6f9] min-h-screen mt-16">
 
-      {/* Tabs */}
-      <div className="flex gap-8 bg-white px-6 py-4 rounded-t-md text-[14px] border">
-        <span
-          onClick={() => setActiveTab("contest")}
-          className={`cursor-pointer pb-2 ${
-            activeTab === "contest"
-              ? "border-b-2 border-green-500 font-semibold"
-              : "text-gray-500"
-          }`}
-        >
-          Contest
-        </span>
+        {/* Tabs */}
+        <div className="flex gap-8 bg-white px-6 py-4 rounded-t-md text-[14px] border">
+          <span
+            onClick={() => setActiveTab("contest")}
+            className={`cursor-pointer pb-2 ${activeTab === "contest"
+                ? "border-b-2 border-green-500 font-semibold"
+                : "text-gray-500"
+              }`}
+          >
+            Contest
+          </span>
 
-        <span
-          onClick={() => setActiveTab("data")}
-          className={`cursor-pointer pb-2 ${
-            activeTab === "data"
-              ? "border-b-2 border-green-500 font-semibold"
-              : "text-gray-500"
-          }`}
-        >
-          Contest Data
-        </span>
+          <span
+            onClick={() => setActiveTab("data")}
+            className={`cursor-pointer pb-2 ${activeTab === "data"
+                ? "border-b-2 border-green-500 font-semibold"
+                : "text-gray-500"
+              }`}
+          >
+            Contest Data
+          </span>
 
-        <span
-          onClick={() => setActiveTab("minor-drive-creatives")}
-          className={`cursor-pointer pb-2 ${
-            activeTab === "minor-drive-creatives"
-              ? "border-b-2 border-green-500 font-semibold"
-              : "text-gray-500"
-          }`}
-        >
-          Minor Drive Creatives
-        </span>
+          <span
+            onClick={() => setActiveTab("minor-drive-creatives")}
+            className={`cursor-pointer pb-2 ${activeTab === "minor-drive-creatives"
+                ? "border-b-2 border-green-500 font-semibold"
+                : "text-gray-500"
+              }`}
+          >
+            Minor Drive Creatives
+          </span>
 
-        <Link to="/contests-video" className="text-gray-600 cursor-pointer hover:underline">Contest Video</Link>
-      </div>
-
-      {/* Content based on active tab */}
-      {activeTab === "contest" && (
-        <div className="bg-white border border-gray-200 rounded-b-md p-4">
-          {/* Contest Image with Tailwind CSS styles */}
-          <div className="max-w-2xl ml-4">
-            <img 
-              src={contestImage} 
-              alt="Contest" 
-              className="w-full h-auto border-none outline-none max-w-full align-middle"
-            />
-          </div>
+          <Link to="/contests-video" className="text-gray-600 cursor-pointer hover:underline">Contest Video</Link>
         </div>
-      )}
 
-      {activeTab === "data" && (
-        <div className="bg-white border border-gray-200 rounded-b-md py-3">
-          {/* Header */}
-          <div className="px-6 py-2 text-sm text-gray-700 pb-8px">
-            Search results ({data.length})
+        {/* Content based on active tab */}
+        {activeTab === "contest" && (
+          <div className="bg-white border border-gray-200 rounded-b-md p-4">
+            {/* Contest Image with Tailwind CSS styles */}
+            <div className="max-w-2xl ml-4">
+              <img
+                src={contestImage}
+                alt="Contest"
+                className="w-full h-auto border-none outline-none max-w-full align-middle"
+              />
+            </div>
           </div>
+        )}
 
-          {/* Table */}
-          <table className="w-[95%] mx-auto text-[12px] border border-gray-300 table-fixed">
-            <thead>
-              <tr className="bg-[#2fb344] text-white">
-                <th className="px-3 py-2 border-r border-gray-200">
-                  Branch
-                </th>
-                <th className="px-3 py-2 border-r border-gray-200">
-                  Client
-                </th>
-                <th className="px-3 py-2 border-r border-gray-200">
-                  Name
-                </th>
-                <th className="px-3 py-2 border-r border-gray-200">
-                  Email
-                </th>
-                <th className="px-3 py-2">
-                  Mobile
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((item, index) => (
-                <tr key={index} className="border-b border-gray-200">
-                  <td className="px-3 py-2 border-r border-gray-200">
-                    {item.branch}
-                  </td>
-                  <td className="px-3 py-2 border-r border-gray-200">
-                    {item.client}
-                  </td>
-                  <td className="px-3 py-2 border-r border-gray-200">
-                    {item.name}
-                  </td>
-                  <td className="px-3 py-2 border-r border-gray-200">
-                    {item.email}
-                  </td>
-                  <td className="px-3 py-2">
-                    {item.mobile}
-                  </td>
+        {activeTab === "data" && (
+          <div className="bg-white border border-gray-200 rounded-b-md py-3">
+            {/* Header */}
+            <div className="px-6 py-2 text-sm text-gray-700 pb-8px">
+              Search results ({data.length})
+            </div>
+
+            {/* Table */}
+            <table className="w-[95%] mx-auto text-[12px] border border-gray-300 table-fixed">
+              <thead>
+                <tr className="bg-[#2fb344] text-white">
+                  <th className="px-3 py-2 border-r border-gray-200">
+                    Branch
+                  </th>
+                  <th className="px-3 py-2 border-r border-gray-200">
+                    Client
+                  </th>
+                  <th className="px-3 py-2 border-r border-gray-200">
+                    Name
+                  </th>
+                  <th className="px-3 py-2 border-r border-gray-200">
+                    Email
+                  </th>
+                  <th className="px-3 py-2">
+                    Mobile
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+              </thead>
+              <tbody>
+                {data.map((item, index) => (
+                  <tr key={index} className="border-b border-gray-200">
+                    <td className="px-3 py-2 border-r border-gray-200">
+                      {item.branch}
+                    </td>
+                    <td className="px-3 py-2 border-r border-gray-200">
+                      {item.client}
+                    </td>
+                    <td className="px-3 py-2 border-r border-gray-200">
+                      {item.name}
+                    </td>
+                    <td className="px-3 py-2 border-r border-gray-200">
+                      {item.email}
+                    </td>
+                    <td className="px-3 py-2">
+                      {item.mobile}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
-      {activeTab === "minor-drive-creatives" && (
-        <div className="bg-white border border-gray-200 rounded-b-md p-4">
-          <h2 className="text-xl font-semibold mb-4">Minor Drive Creatives</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-4">
-              <img src={contestImg1} alt="Contest Creative 1" className="w-full h-auto rounded" />
-            </div>
-            <div className="p-4">
-              <img src={contestImg2} alt="Contest Creative 2" className="w-full h-auto rounded" />
-            </div>
-            <div className="p-4">
-              <img src={contestImg3} alt="Contest Creative 3" className="w-full h-auto rounded" />
-            </div>
-            <div className="p-4">
-              <img src={contestImg4} alt="Contest Creative 4" className="w-full h-auto rounded" />
-            </div>
-            <div className="p-4">
-              <img src={contestImg5} alt="Contest Creative 5" className="w-full h-auto rounded" />
-            </div>
-            <div className="p-4">
-              <img src={contestImg6} alt="Contest Creative 6" className="w-full h-auto rounded" />
+        {activeTab === "minor-drive-creatives" && (
+          <div className="bg-white border border-gray-200 rounded-b-md p-4">
+            <h2 className="text-xl font-semibold mb-4">Minor Drive Creatives</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="p-4">
+                <img src={contestImg1} alt="Contest Creative 1" className="w-full h-auto rounded" />
+              </div>
+              <div className="p-4">
+                <img src={contestImg2} alt="Contest Creative 2" className="w-full h-auto rounded" />
+              </div>
+              <div className="p-4">
+                <img src={contestImg3} alt="Contest Creative 3" className="w-full h-auto rounded" />
+              </div>
+              <div className="p-4">
+                <img src={contestImg4} alt="Contest Creative 4" className="w-full h-auto rounded" />
+              </div>
+              <div className="p-4">
+                <img src={contestImg5} alt="Contest Creative 5" className="w-full h-auto rounded" />
+              </div>
+              <div className="p-4">
+                <img src={contestImg6} alt="Contest Creative 6" className="w-full h-auto rounded" />
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
     </div>
   );

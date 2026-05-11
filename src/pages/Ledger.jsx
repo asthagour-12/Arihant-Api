@@ -305,8 +305,8 @@ const Ledger = () => {
                                                     setSearchTerm("");
                                                 }}
                                                 className={`px-4 py-2.5 text-[13px] cursor-pointer transition-all ${selectedClient === item
-                                                        ? "bg-blue-600 text-white font-bold border-l-4 border-blue-800"
-                                                        : "text-gray-700 hover:bg-blue-600 hover:text-white"
+                                                    ? "bg-blue-600 text-white font-bold border-l-4 border-blue-800"
+                                                    : "text-gray-700 hover:bg-blue-600 hover:text-white"
                                                     }`}
                                             >
                                                 {item}
@@ -357,9 +357,6 @@ const Ledger = () => {
                                 ))}
                             </div>
 
-                            <div className="flex items-center justify-between mb-2">
-                                <h3 className="text-gray-600 font-bold text-[14px]">Search results({ledgerData.length})</h3>
-                            </div>
                         </div>
                     )}
                     <ResultsHeader count={ledgerData.length} onDownload={handleDownload} />

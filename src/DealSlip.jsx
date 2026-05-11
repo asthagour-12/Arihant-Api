@@ -6,7 +6,7 @@ import '@fortawesome/fontawesome-free/css/all.css';
 
 function DealSlip() {
   const [fromDate, setFromDate] = useState(null);
-const [toDate, setToDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
 
 
   return (
@@ -20,7 +20,7 @@ const [toDate, setToDate] = useState(null);
         <div className="bg-gray-200 rounded-md px-5 py-4 flex flex-wrap items-end gap-0">
 
           {/* CLIENT CODE */}
-           <div className="flex flex-col flex-1 min-w-[180px] mr-3"> 
+          <div className="flex flex-col flex-1 min-w-[180px] mr-3">
             <label className="text-sm mb-1 text-gray-600 font-medium">
               Enter Client Code
             </label>

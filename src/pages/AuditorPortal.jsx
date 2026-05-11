@@ -8,7 +8,7 @@ const AuditorPortal = () => {
 
     return (
         <div className="px-6 py-6 max-w-[1600px] mx-auto">
-            <div className="bg-white border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-8 rounded-xl">
+            <div className="bg-gray-100 border border-gray-200 p-8 rounded-xl">
                 <div className="flex items-end gap-6">
                     <div className="flex flex-col gap-2">
                         <label className="text-[11px] text-gray-400 font-bold uppercase ml-1">Financial year</label>

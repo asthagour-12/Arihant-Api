@@ -68,6 +68,7 @@ const ClientMIS = () => {
                         width="300px" 
                         value={clientCode}
                         onChange={(e) => setClientCode(e.target.value)}
+                        error={showCustomError && !clientCode.trim()}
                     />
                 </FilterItem>
                 <ApplyButton label="Apply" onClick={handleApply} />
