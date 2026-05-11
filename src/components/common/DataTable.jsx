@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronUp, ChevronDown, ChevronsUpDown, Download } from "lucide-react";
 
-const DataTable = ({ headers, rows, showMaskIcon = false, resultsCount }) => {
+const DataTable = ({ headers, rows, showMaskIcon = false, resultsCount, onDownload, onMaskToggle, isMasked, isPlain = false }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
   const handleSort = (index) => {
@@ -34,19 +34,14 @@ const DataTable = ({ headers, rows, showMaskIcon = false, resultsCount }) => {
     return <ChevronsUpDown size={14} className="text-white/60 ml-2" />;
   };
 
+  const colWidth = `${100 / (headers.length || 1)}%`;
+
   return (
     <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-6">
-      <div className="flex justify-between items-center py-4 px-6 bg-white border-b border-gray-100">
-        <div className="text-gray-900 font-bold text-[16px]">
-          {resultsCount !== undefined ? `Search results (${resultsCount})` : "Results"}
-        </div>
-        <div className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-[#1EB04C] hover:text-white hover:border-[#1EB04C] transition-all cursor-pointer shadow-sm">
-          <Download size={16} />
-        </div>
-      </div>
+
 
       <div className="overflow-x-auto">
-        <table className="w-full text-left">
+        <table className="w-full text-left table-fixed border-collapse">
           <thead className="bg-[#1EB04C] text-white">
             <tr>
               {headers.map((h, i) => (
@@ -54,9 +49,10 @@ const DataTable = ({ headers, rows, showMaskIcon = false, resultsCount }) => {
                   key={i} 
                   onClick={() => handleSort(i)}
                   className="px-6 py-4 text-[13px] font-semibold border-r border-white/10 last:border-0 cursor-pointer select-none hover:bg-[#18a045] transition-colors"
+                  style={{ width: colWidth }}
                 >
-                  <div className="flex items-center justify-between">
-                    <span>{h}</span>
+                  <div className="flex items-center justify-start gap-2">
+                    <span className="truncate">{h}</span>
                     <SortIcon index={i} />
                   </div>
                 </th>
@@ -67,11 +63,18 @@ const DataTable = ({ headers, rows, showMaskIcon = false, resultsCount }) => {
             {sortedRows.map((row, rowIndex) => (
               <tr key={rowIndex} className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
                 {row.map((cell, cellIndex) => (
-                  <td key={cellIndex} className="px-6 py-4 border-r border-gray-50 last:border-0 text-[13px] text-gray-700 font-medium">
-                    <div className="flex items-center gap-2">
-                      {cell}
+                  <td 
+                    key={cellIndex} 
+                    className="px-6 py-4 border-r border-gray-50 last:border-0 text-[13px] text-gray-700 font-medium overflow-hidden"
+                    style={{ width: colWidth }}
+                  >
+                    <div className="flex items-center gap-2 truncate">
+                      <span className="truncate">{cell}</span>
                       {showMaskIcon && cell?.toString().includes('xxx') && (
-                        <i className="fas fa-eye-slash text-[10px] text-gray-300 cursor-pointer hover:text-[#1EB04C]"></i>
+                        <i 
+                          onClick={onMaskToggle}
+                          className="fas fa-eye-slash text-[10px] text-gray-300 cursor-pointer hover:text-[#1EB04C]"
+                        ></i>
                       )}
                     </div>
                   </td>
@@ -95,8 +98,5 @@ const DataTable = ({ headers, rows, showMaskIcon = false, resultsCount }) => {
     </div>
   );
 };
-
-const DownloadIcon = () => <i className="fas fa-download text-[14px]"></i>;
-
 
 export default DataTable;
