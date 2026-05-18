@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import Header from "../Header.jsx";
+import Header from "./Header";
 import ComplianceCertificate from "./ComplianceCertificate.jsx";
 import ComplianceCircular from "./ComplianceCircular.jsx";
 import Download from "./Download.jsx";
 import Training from "./Training.jsx";
 import { ToastContainer, toast } from "react-toastify";
-import ArihantProductsSection from "../ArihantProducts.jsx";
+import ArihantProductsSection from "./ArihantProducts";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function MarketingMaterial() {

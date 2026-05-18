@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import Header from "../Header.jsx";
+import Header from "./Header";
 import HoldKRAStatus from "./HoldKRAStatus.jsx";
 import PhysicalModification from "./PhysicalModification.jsx";
 import PhysicalAccountOpening from "./PhysicalAccountOpening.jsx";
@@ -9,7 +9,7 @@ import RekycTAT from "./RekycTAT.jsx";
 import ReactivationTAT from "./Reactivation TAT.jsx";
 import ContactDetailsPage from "./ContactDetailsPage.jsx";
 import EKYCTAT from "./EKYCTAT.jsx";
-import ArihantProducts from "../ArihantProducts.jsx";
+import ArihantProducts from "./ArihantProducts";
 import { Eye, ChevronDown, ChevronUp, ChevronsUpDown, Search, ChevronRight } from "lucide-react";
 
 export default function KRAStatusPage() {

@@ -2,7 +2,7 @@ import { Search, ChevronLeft, ChevronRight, Calendar, ChevronDown } from "lucide
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import Header from "../Header.jsx";
+import Header from "./Header";
 
 export default function FollowUpReport() {
   const navigate = useNavigate();

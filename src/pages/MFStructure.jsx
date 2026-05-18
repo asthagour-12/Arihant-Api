@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../Header.jsx";
+import Header from "./Header";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const tabs = [

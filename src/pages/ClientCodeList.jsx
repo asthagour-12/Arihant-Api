@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import Header from "../Header.jsx";
+import Header from "./Header";
 import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 import korpInstance from "../api/korpApiService";
 

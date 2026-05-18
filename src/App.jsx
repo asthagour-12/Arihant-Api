@@ -2,18 +2,18 @@ import React from 'react';
 import Dashboard from './pages/Dashboard';
 import Payout from './pages/Payout';
 import PayoutReport from './pages/PayoutReport';
-import BulkPayout from './BulkPayout.jsx';
+import BulkPayout from './pages/BulkPayout.jsx';
 import CancelRequest from './pages/CancelRequest';
 import DealSlip from './pages/DealSlip';
-import Footer from './Footer';
+import Footer from './pages/Footer';
 import ContestsData from './pages/ContestsData';
-import Contests from './Contests.jsx';
-import ClickToCall from './ClickToCall.jsx';
+import Contests from './pages/Contests.jsx';
+import ClickToCall from './pages/ClickToCall.jsx';
 import ContestsVideo from './pages/ContestsVideo';
 import MinorDriveCreatives from './pages/MinorDriveCreatives';
 import ResearchCall from './pages/ResearchCall'
 import FundamentalCall from './pages/FundamentalCall'
-import ReportsPage from './ReportsPage.jsx'
+import ReportsPage from './pages/ReportsPage.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './Index.css'
@@ -22,27 +22,27 @@ import 'react-toastify/dist/ReactToastify.css';
 import ZoomResearch from "./pages/ZoomResearch";
 import FollowUpReport from "./pages/FollowUpReport"
 import ProfileBeta from "./pages/ProfileBeta"
-import ThirdParty from './ThirdParty.jsx';
-import MutualFund from './MutualFund.jsx';
-import Rejection from './Rejection.jsx';
-import Mandate from './Mandate.jsx';
-import ProductDeck from './ProductDeck.jsx';
-import MFStructure from './MFStructure.jsx';
-import WealthBasket from './WealthBasket.jsx';
-import SIPCalculator from './SipRevenueCalculator.jsx';
-import Bonds from './Bonds.jsx';
-import AlgoBrokerage from './AlgoBrokerage.jsx';
-import Download from './Download.jsx';
+import ThirdParty from './pages/ThirdParty.jsx';
+import MutualFund from './pages/MutualFund.jsx';
+import Rejection from './pages/Rejection.jsx';
+import Mandate from './pages/Mandate.jsx';
+import ProductDeck from './pages/ProductDeck.jsx';
+import MFStructure from './pages/MFStructure.jsx';
+import WealthBasket from './pages/WealthBasket.jsx';
+import SIPCalculator from './pages/SipRevenueCalculator.jsx';
+import Bonds from './pages/Bonds.jsx';
+import AlgoBrokerage from './pages/AlgoBrokerage.jsx';
+import Download from './pages/Download.jsx';
 import MarketingMaterial from "./pages/MarketingMaterial";
-import KRAStatusPage from './KRAStatusPage.jsx';
-import HoldingReport from './HoldingReport.jsx';
-import ArihantProducts from './ArihantProducts.jsx';
-import LoginPage from './LoginPage.jsx';
-import ClientCodeList from './ClientCodeList.jsx';
-import NewClient from './NewClient.jsx';
-import InactiveClient from './InactiveClient.jsx';
-import ActiveClient from './ActiveClient.jsx';
-import TotalClient from './TotalClient.jsx';
+import KRAStatusPage from './pages/KRAStatusPage.jsx';
+import HoldingReport from './pages/HoldingReport.jsx';
+import ArihantProducts from './pages/ArihantProducts.jsx';
+import LoginPage from './pages/LoginPage.jsx';
+import ClientCodeList from './pages/ClientCodeList.jsx';
+import NewClient from './pages/NewClient.jsx';
+import InactiveClient from './pages/InactiveClient.jsx';
+import ActiveClient from './pages/ActiveClient.jsx';
+import TotalClient from './pages/TotalClient.jsx';
 
 function AppContent() {
   const location = useLocation();

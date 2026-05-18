@@ -4,8 +4,8 @@ import { ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import Header from "../Header.jsx";
-import ArihantProductsSection from "../ArihantProducts.jsx";
+import Header from "./Header";
+import ArihantProductsSection from "./ArihantProducts";
 import { validateDates } from "./utils/dateValidation";
 import { toast } from "react-toastify";
 

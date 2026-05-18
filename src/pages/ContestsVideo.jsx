@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../logo-arihant-capital.png";
-import Header from "../Header.jsx";
+import Header from "./Header";
 
 function ContestsVideo() {
   const [activeTab, setActiveTab] = useState("video");

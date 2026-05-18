@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import '@fortawesome/fontawesome-free/css/all.css';
 import logo from "../logo-arihant-capital.png";
-import Header from "../Header.jsx";
+import Header from "./Header";
 import { useNavigate } from "react-router-dom";
 
 function FundamentalCall() {

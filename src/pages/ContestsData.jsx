@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronDown, ChevronUp, ChevronsUpDown, Eye, EyeOff } from 'lucide-react';
-import Header from "../Header.jsx";
+import Header from "./Header";
 
 export default function ContestsData() {
   const [activeTab, setActiveTab] = useState("data");

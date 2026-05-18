@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import '@fortawesome/fontawesome-free/css/all.css';
 import logo from "../logo-arihant-capital.png";
-import Header from "../Header.jsx";
-import ArihantProductsSection from "../ArihantProducts.jsx";
+import Header from "./Header";
+import ArihantProductsSection from "./ArihantProducts";
 
 function ResearchCall() {
   const [activeTopTab, setActiveTopTab] = useState("research");

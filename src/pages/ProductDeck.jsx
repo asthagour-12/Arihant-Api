@@ -2,8 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../logo-arihant-capital.png";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import Header from "../Header.jsx";
-import ArihantProductsSection from "../ArihantProducts.jsx";
+import Header from "./Header";
+import ArihantProductsSection from "./ArihantProducts";
 
 const tabs = [
   "Algo Brokerage",

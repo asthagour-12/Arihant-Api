@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import Header from "../Header.jsx";
+import Header from "./Header";
 
 const PayoutLayout = ({ children }) => {
   const location = useLocation();

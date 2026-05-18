@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../Header.jsx";
-import ArihantProductsSection from "../ArihantProducts.jsx";
+import Header from "./Header";
+import ArihantProductsSection from "./ArihantProducts";
 import { toast } from "react-toastify";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 

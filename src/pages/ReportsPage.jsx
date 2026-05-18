@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Header from "../Header.jsx";
+import Header from "./Header";
 import HoldingReport from "./HoldingReport.jsx";
 import OpenPosition from "./Openposition.jsx";
 import FOGlobalPosition from "./FoglobalPosition.jsx";
@@ -19,7 +19,7 @@ import MobileLogin from "./pages/MobileLogin.jsx";
 import MTFSetoff from "./pages/MTFSetoff.jsx";
 import IPOReport from "./pages/IPOReport.jsx";
 import PerformanceReport from "./pages/PerformanceReport.jsx";
-import ArihantProducts from "../ArihantProducts.jsx";
+import ArihantProducts from "./ArihantProducts";
 
 export default function ReportsPage() {
   const [activeTab, setActiveTab] = useState("Transaction");

@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import banner from "../assets/position-call-banner.jpg";
 import '@fortawesome/fontawesome-free/css/all.css';
 import logo from "../logo-arihant-capital.png";
-import Header from "../Header.jsx";
-import ArihantProductsSection from "../ArihantProducts.jsx";
+import Header from "./Header";
+import ArihantProductsSection from "./ArihantProducts";
 
 function ResearchSection() {
   const [activeTab, setActiveTab] = useState("zoom");

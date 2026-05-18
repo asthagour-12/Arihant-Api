@@ -3,7 +3,7 @@ import { Download, ChevronDown, ChevronUp, ChevronsUpDown } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import logo from "../logo-arihant-capital.png";
-import Header from "../Header.jsx";
+import Header from "./Header";
 
 export default function ClickToCall() {
   const navigate = useNavigate();

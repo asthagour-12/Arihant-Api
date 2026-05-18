@@ -1,10 +1,10 @@
 import React, { useState, useRef } from "react";
-import Header from "../Header.jsx";
+import Header from "./Header";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import '@fortawesome/fontawesome-free/css/all.css';
-import ArihantProducts from "../ArihantProducts.jsx";
-import Footer from "../Footer.jsx";
+import ArihantProducts from "./ArihantProducts";
+import Footer from "./Footer";
 
 function DealSlip() {
   const [fromDate, setFromDate] = useState(null);

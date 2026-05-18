@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import logo from './logo-arihant-capital.png';
+import logo from '../logo-arihant-capital.png';
 
 const Header = () => {
   const navigate = useNavigate();

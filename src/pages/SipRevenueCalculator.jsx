@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Header from "../Header";
-import ArihantProductsSection from "../ArihantProducts.jsx";
-import ThirdPartyHeader from "../components/layout/ThirdPartyHeader";
+import Header from "./Header";
+import ArihantProductsSection from "./ArihantProducts";
+import ThirdPartyHeader from "./ThirdPartyHeader";
 
 
 const SliderComponent = ({ label, value, setValue, min, max, type, step = 1 }) => {

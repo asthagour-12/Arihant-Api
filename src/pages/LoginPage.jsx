@@ -5,7 +5,7 @@ import { getCsrfToken, sendOtp, verifyOtp } from '../api/authApi';
 import banner from '../left-banner.svg';
 import logo from '../logo-arihant-capital.png';
 import smartphone from '../smartphone.svg';
-import Footer from '../Footer';
+import Footer from './Footer';
 
 const LoginPage = () => {
 

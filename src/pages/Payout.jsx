@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Header from "../Header.jsx";
-import ArihantProducts from "../ArihantProducts.jsx";
+import Header from "./Header";
+import ArihantProducts from "./ArihantProducts";
 import { L } from "../styles/legacyStyles.jsx";
 import { Search, Download } from "lucide-react";
 import DatePicker from "react-datepicker";
