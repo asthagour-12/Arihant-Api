@@ -1,103 +1,87 @@
-import React from "react";
+import React, { useState } from "react";
+import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 
 const RekycTAT = () => {
-    const tabs = [
-        "KRA & UCC Status", "Hold KRA Status", "Modification Status", 
-        "Physical Account Opening", "Nominee Pending", "Contact Details", 
-        "Rekyc TAT", "EKYC TAT", "Reactivation TAT"
-      ];
+    const [data, setData] = useState([
+        { type: "BANK (if client Name is matched on bank ac", timing: "if request received up to 6 PM", esign: "E-signature Not required", activation: "Same day", kra: "Monday to Friday" },
+        { type: "BANK (if client Name is Mismatched on bank", timing: "if request received up to 6 PM", esign: "up to 15 minutes", activation: "Same day", kra: "Monday to Friday" },
+        { type: "Default Bank", timing: "if request received up to 6 PM", esign: "E-signature Not required", activation: "Same day", kra: "Monday to Friday" },
+        { type: "Mobile", timing: "if request received up to 6 PM", esign: "E-signature Not required", activation: "Same day", kra: "Monday to Friday" },
+        { type: "Email", timing: "if request received up to 6 PM", esign: "E-signature Not required", activation: "Same day", kra: "Monday to Friday" },
+        { type: "DDPI", timing: "if request received up to 2 PM", esign: "instant e-signature facility is availabe", activation: "Same day", kra: "Monday to Friday" },
+        { type: "DDPI", timing: "if request received after 2 PM", esign: "instant e-signature facility is availabe", activation: "Next day", kra: "Monday to Friday" },
+        { type: "Nominee Opt-Out", timing: "if request received up to 6 PM", esign: "instant e-signature facility is availabe", activation: "Same day", kra: "Monday to Friday" },
+        { type: "Nominee Opt-Out", timing: "if request received up to 6 PM", esign: "up to 15 minutes", activation: "Same day", kra: "Monday to Friday" }
+    ]);
 
-    const data = [
-        ["BANK (if client Name is matched on bank ac", "if request received up to 6 PM", "E-signature Not required", "Same day", "Monday to Friday"],
-        ["BANK (if client Name is Mismatched on bank", "if request received up to 6 PM", "up to 15 minutes", "Same day", "Monday to Friday"],
-        ["Default Bank", "if request received up to 6 PM", "E-signature Not required", "Same day", "Monday to Friday"],
-        ["Mobile", "if request received up to 6 PM", "E-signature Not required", "Same day", "Monday to Friday"],
-        ["Email", "if request received up to 6 PM", "E-signature Not required", "Same day", "Monday to Friday"],
-        ["DDPI", "if request received up to 2 PM", "instant e-signature facility is availabe", "Same day", "Monday to Friday"],
-        ["DDPI", "if request received after 2 PM", "instant e-signature facility is availabe", "Next day", "Monday to Friday"],
-        ["Nominee Opt-Out", "if request received up to 6 PM", "instant e-signature facility is availabe", "Same day", "Monday to Friday"],
-        ["Nominee Opt-Out", "if request received up to 6 PM", "up to 15 minutes", "Same day", "Monday to Friday"]
+    const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
+
+    const handleSort = (key) => {
+        let direction = "asc";
+        if (sortConfig.key === key && sortConfig.direction === "asc") {
+            direction = "desc";
+        }
+        setSortConfig({ key, direction });
+
+        const sorted = [...data].sort((a, b) => {
+            if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+            if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
+            return 0;
+        });
+        setData(sorted);
+    };
+
+    const SortIcon = ({ colKey }) => {
+        if (sortConfig.key === colKey) {
+            return sortConfig.direction === "asc" ? <ChevronUp size={14} className="ml-1" /> : <ChevronDown size={14} className="ml-1" />;
+        }
+        return <ChevronsUpDown size={14} className="ml-1 opacity-50" />;
+    };
+
+    const headers = [
+        { label: "Request Type", key: "type" },
+        { label: "Timing", key: "timing" },
+        { label: "E-Signature Approval TAT", key: "esign" },
+        { label: "Update/Activation TAT", key: "activation" },
+        { label: "KRA Validation TAT", key: "kra" }
     ];
 
     return (
-        <div className="min-h-screen bg-[#f6f6f6] font-sans">
-            {/* 🟢 TOP NAVBAR */}
-            <div className="bg-[#34b350] px-8 h-[64px] flex items-center justify-between sticky top-0 z-[100] shadow-md text-white text-[13px] font-bold">
-                <div className="flex items-center gap-12 font-black text-2xl tracking-tighter cursor-pointer">
-                    ArihantCapital
-                    <nav className="flex items-center gap-6 opacity-95 text-[13px] font-bold ml-12">
-                        <span>Dashboard</span>
-                        <span className="border-b-2 border-white pb-1">Reports</span>
-                        <span>Account Opening</span>
-                        <span>Download</span>
-                        <span>Research Call</span>
-                        <span>Deal Slip</span>
-                        <span>Third Party</span>
-                        <span>Contests</span>
-                        <span>Portfolio</span>
-                        <span>Click To Call</span>
-                        <span>Payout</span>
-                    </nav>
-                </div>
-            </div>
+        <div className="w-full bg-white">
+            <div className="overflow-x-auto border-t border-gray-200 mt-6">
+                <div className="min-w-full">
+                    {/* Header */}
+                    <div className="grid grid-cols-5 bg-[#34b44a] text-white text-[12px] font-semibold">
+                        {headers.map((h) => (
+                            <div 
+                                key={h.key}
+                                onClick={() => handleSort(h.key)}
+                                className="px-2 py-2 border-r border-white/20 flex items-center justify-center cursor-pointer select-none text-center"
+                            >
+                                <span>{h.label}</span>
+                                <SortIcon colKey={h.key} />
+                            </div>
+                        ))}
+                    </div>
 
-            {/* 📑 SECONDARY TABS */}
-            <div className="bg-white border-b border-gray-100 px-[40px] pt-[24px]">
-                <div className="flex flex-wrap gap-x-[35px] gap-y-4 mb-4">
-                    {tabs.map((tab) => (
-                        <div key={tab} className={`text-[15px] font-bold cursor-pointer relative pb-3 tracking-tighter ${tab === "Rekyc TAT" ? "text-gray-900 after:content-[''] after:absolute after:bottom-[-1px] after:left-0 after:w-full after:h-[4px] after:bg-[#34b350]" : "text-gray-400"}`}>
-                            {tab}
+                    {/* Body */}
+                    {data.map((row, i) => (
+                        <div 
+                            key={i} 
+                            className={`grid grid-cols-5 border-b border-gray-200 text-[12px] hover:bg-gray-100 transition-colors ${
+                                i % 2 === 0 ? "bg-white" : "bg-[#f9fafb]"
+                            }`}
+                        >
+                            <div className="px-2 py-2 border-r border-gray-200 flex items-center leading-tight">{row.type}</div>
+                            <div className="px-2 py-2 border-r border-gray-200 flex items-center">{row.timing}</div>
+                            <div className="px-2 py-2 border-r border-gray-200 flex items-center text-center justify-center">{row.esign}</div>
+                            <div className="px-2 py-2 border-r border-gray-200 flex items-center text-center justify-center">{row.activation}</div>
+                            <div className="px-2 py-2 flex items-center text-center justify-center">{row.kra}</div>
                         </div>
                     ))}
-                </div>
-            </div>
-
-            {/* 🖥 CONTENT AREA */}
-            <div className="px-[40px] py-[40px] min-h-[500px]">
-                <div className="overflow-hidden bg-white border border-gray-200">
-                    <table className="w-full text-[13px] border-collapse">
-                        <thead className="bg-[#34b350] text-white">
-                            <tr>
-                                {["Request Type", "Timing", "E-Signature Approval TAT", "Update/Activation TAT", "KRA Validation TAT"].map(h => (
-                                    <th key={h} className="px-4 py-3 border-r border-white/20 font-bold text-left">
-                                        <div className="flex items-center gap-1.5 whitespace-nowrap">
-                                            {h} <div className="flex flex-col text-[7px] leading-[4px] opacity-60"><span>▲</span><span>▼</span></div>
-                                        </div>
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data.map((row, i) => (
-                                <tr key={i} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                                    {row.map((cell, j) => (
-                                        <td key={j} className="px-4 py-2 border-r border-gray-200 text-left text-gray-700 font-normal">{cell}</td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    <div className="px-4 py-4 text-gray-500 font-normal text-[14px]">
+                    
+                    <div className="bg-white px-6 py-4 text-black font-bold border-b border-gray-200 text-[14px]">
                         {data.length} total
-                    </div>
-                </div>
-            </div>
-
-            {/* 📦 FOOTER PRODUCT SECTION */}
-            <div className="px-[40px] pb-16">
-                <div className="bg-white border border-gray-100 rounded-2xl p-12 shadow-sm">
-                    <div className="text-2xl font-black text-gray-800 mb-10 pb-4 border-b border-gray-50 uppercase tracking-tighter">Arihant Product</div>
-                    <div className="flex flex-wrap justify-between gap-8 text-[#34b350] font-black text-[14px]">
-                        {[
-                            { label: "Official Website", url: "https://www.arihantcapital.com/" },
-                            { label: "Demat your MF Units", url: "https://eservices.nsdl.com/cas-stmt-mf-conv/#/login" },
-                            { label: "Insta Options", url: "https://instaoptions.arihantplus.com/login" },
-                            { label: "Trade Bridge", url: "https://tradebridge.arihantplus.com/signup" },
-                            { label: "Value Stocks", url: "https://arihantplus.valuestocks.in/" },
-                            { label: "Stock Stack", url: "https://tradebridge.arihantplus.com/sso/login?api_key=IBOFTIrFIx1AYBWz0a&source=DESEO" }
-                        ].map(p => (
-                            <a key={p.label} href={p.url} target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform">{p.label}</a>
-                        ))}
                     </div>
                 </div>
             </div>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getCsrfToken, sendOtp, verifyOtp } from './api/authApi';
-import banner from './left-banner.svg';
-import logo from './logo-arihant-capital.png';
-import smartphone from './smartphone.svg';
-import Footer from './Footer';
+import { getCsrfToken, sendOtp, verifyOtp } from '../api/authApi';
+import banner from '../left-banner.svg';
+import logo from '../logo-arihant-capital.png';
+import smartphone from '../smartphone.svg';
+import Footer from '../Footer';
 
 const LoginPage = () => {
 

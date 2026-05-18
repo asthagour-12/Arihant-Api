@@ -1,117 +1,104 @@
 import React from "react";
+import PayoutLayout from "./PayoutLayout.jsx";
+import { Search, Download, Trash2, ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 
 const CancelRequest = () => {
+    const data = [
+        { date: "22/04/2026", clientCode: "ARI3394", clientName: "Demo Arihant User", amount: "25,000.00", status: "In Process" }
+    ];
+
+    const handleDownload = () => {
+        if (data.length === 0) return;
+        const headers = ["Date", "Client Code", "Client Name", "Request Amount", "Status"];
+        const csvContent = [
+            headers.join(","),
+            ...data.map(item => [
+                item.date,
+                item.clientCode,
+                item.clientName,
+                item.amount.replace(/,/g, ''),
+                item.status
+            ].join(","))
+        ].join("\n");
+
+        const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute("download", `Cancel_Request_Report.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
-        <div className="min-h-screen bg-[#f6f6f6] font-sans selection:bg-arihant-primary selection:text-white">
-            {/* 🟢 TOP NAVBAR */}
-            <div className="bg-[#34b350] px-8 h-[64px] flex items-center justify-between sticky top-0 z-[100] shadow-md">
-                <div className="flex items-center gap-12">
-                    <div className="flex items-baseline gap-1">
-                        <span className="text-white font-black text-2xl tracking-tighter">ArihantCapital</span>
-                        <span className="text-white/70 text-[10px] font-medium uppercase tracking-widest hidden lg:block">Generating Wealth</span>
+        <PayoutLayout>
+            <div className="space-y-8">
+                {/* Header & Actions */}
+                <div className="flex justify-between items-center px-1">
+                    <div className="text-[13px] text-black font-bold uppercase tracking-[0.15em]">
+                        Search results ({data.length})
                     </div>
-                    <nav className="flex items-center gap-6 text-white text-[13px] font-bold opacity-95">
-                        <span>Dashboard</span>
-                        <span className="border-b-2 border-white pb-1">Reports</span>
-                        <span>Account Opening</span>
-                        <span>Download</span>
-                        <span>Research Call</span>
-                        <span>Deal Slip</span>
-                        <span>Third Party</span>
-                        <span>Contests</span>
-                        <div className="relative">
-                            <span>Portfolio <span className="absolute -top-3 -right-6 bg-red-500 text-[8px] px-1 rounded-sm flex items-center h-3">BETA</span></span>
-                        </div>
-                        <span>Click To Call</span>
-                        <span>Payout</span>
-                    </nav>
+                    <button 
+                        onClick={handleDownload}
+                        className="w-11 h-11 rounded-full flex items-center justify-center text-[#27ae60] bg-green-50 hover:bg-[#27ae60] hover:text-white transition-all shadow-sm border border-green-100 active:scale-95"
+                    >
+                        <Download size={18} />
+                    </button>
                 </div>
-            </div>
 
-            {/* 🔵 BREADCRUMB */}
-            <div className="bg-[#e6f7ff] px-[40px] py-[14px] flex items-center gap-3 text-[12px] text-gray-800 font-bold uppercase tracking-widest">
-                <div className="w-[8px] h-[8px] bg-[#34b350] rounded-full shadow-[0_0_10px_rgba(52,179,80,0.4)]"></div>
-                <span>Report</span>
-                <span className="text-gray-300">/</span>
-                <span className="text-[#34b350]">Cancel Request</span>
-            </div>
-
-            {/* 📑 SECONDARY TABS */}
-            <div className="bg-white border-b border-gray-100 px-[40px] pt-[24px]">
-                <div className="flex flex-wrap gap-x-[100px] gap-y-4 mb-4">
-                    {["Payout", "Bulk Payout", "Payout Report", "Cancel Request"].map((tab) => (
-                        <div
-                            key={tab}
-                            className={`pb-3 text-[15px] font-bold transition-all relative cursor-pointer tracking-tighter ${tab === "Cancel Request" ? "text-gray-900 after:content-[''] after:absolute after:bottom-[-1px] after:left-0 after:w-full after:h-[4px] after:bg-[#34b350]" : "text-gray-400"
-                                }`}
-                        >
-                            {tab}
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* 🖥 CONTENT AREA */}
-            <div className="px-[40px] py-[40px] pb-16 min-h-[600px]">
-                <div className="bg-white rounded-2xl shadow-[0_10px_30px_rgb(0,0,0,0.03)] border border-gray-100 p-12 transition-all space-y-10">
-                    <div className="flex justify-between items-center px-1">
-                        <div className="text-gray-900 font-black text-[17px] tracking-tighter uppercase whitespace-nowrap">Search results(1)</div>
-                        <button className="w-12 h-12 rounded-full flex items-center justify-center text-[#34b350] bg-green-50 hover:bg-[#34b350] hover:text-white transition-all shadow-sm">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                        </button>
-                    </div>
-
-                    <div className="overflow-hidden rounded-xl border border-gray-100 shadow-[0_20px_40px_rgb(0,0,0,0.05)] bg-white">
-                        <table className="w-full text-left text-[11px] font-black uppercase text-gray-700">
-                            <thead className="bg-[#34b350] text-white">
-                                <tr className="leading-none">
+                {/* Main Table Card */}
+                <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-xl shadow-gray-200/40">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead className="bg-[#27ae60] text-white">
+                                <tr>
                                     {["Date", "Client Code", "Client Name", "Request Amount", "Status", "Cancel"].map((header) => (
-                                        <th key={header} className="px-6 py-[22px] border-r border-white/10 last:border-0 whitespace-nowrap">
-                                            <div className="flex items-center gap-1.5">{header} <div className="flex flex-col text-[7px] leading-[4px] opacity-40"><span>▲</span><span>▼</span></div></div>
+                                        <th key={header} className="px-6 py-3 text-[12px] font-bold uppercase tracking-wider whitespace-nowrap border-r border-white/10 last:border-0">
+                                            <div className="flex items-center justify-between group cursor-pointer">
+                                                {header}
+                                                <ChevronsUpDown size={14} className="opacity-40 group-hover:opacity-100 transition-opacity" />
+                                            </div>
                                         </th>
                                     ))}
                                 </tr>
                             </thead>
-                            <tbody className="bg-white">
-                                <tr className="border-b border-gray-50 hover:bg-[#34b350]/[0.03] transition-colors group">
-                                    <td className="px-6 py-6 border-r border-[#f9fafb] text-[12px] font-bold text-gray-500">22/04/2026</td>
-                                    <td className="px-6 py-6 border-r border-[#f9fafb] text-[13px] font-black text-gray-900">ARI3394</td>
-                                    <td className="px-6 py-6 border-r border-[#f9fafb] text-[12px] font-bold text-gray-900 uppercase">Demo Arihant User</td>
-                                    <td className="px-6 py-6 border-r border-[#f9fafb] text-[14px] font-black text-[#34b350] tabular-nums tracking-tighter">₹ 25,000.00</td>
-                                    <td className="px-6 py-6 border-r border-[#f9fafb]">
-                                        <span className="bg-orange-50 text-orange-600 border border-orange-100 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">In Process</span>
-                                    </td>
-                                    <td className="px-6 py-6 text-center">
-                                        <button className="bg-red-50 text-red-500 border border-red-100 hover:bg-red-500 hover:text-white px-6 py-2 rounded-lg text-[10px] font-black transition-all uppercase tracking-widest shadow-sm active:scale-[0.95]">CANCEL</button>
-                                    </td>
-                                </tr>
+                            <tbody className="divide-y divide-gray-50">
+                                {data.length > 0 ? (
+                                    data.map((row, idx) => (
+                                        <tr key={idx} className="hover:bg-gray-50/50 transition-colors group">
+                                            <td className="px-6 py-3 text-[13px] text-gray-600 font-medium whitespace-nowrap border-r border-gray-50">{row.date}</td>
+                                            <td className="px-6 py-3 text-[13px] text-gray-900 font-bold whitespace-nowrap border-r border-gray-50">{row.clientCode}</td>
+                                            <td className="px-6 py-3 text-[13px] text-gray-700 font-medium whitespace-nowrap border-r border-gray-50 uppercase">{row.clientName}</td>
+                                            <td className="px-6 py-3 text-[14px] text-[#27ae60] font-black whitespace-nowrap border-r border-gray-50">₹{row.amount}</td>
+                                            <td className="px-6 py-3 border-r border-gray-50">
+                                                <span className="bg-orange-50 text-orange-600 border border-orange-100 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
+                                                    {row.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-3 text-center">
+                                                <button className="bg-rose-50 text-rose-500 border border-rose-100 hover:bg-rose-500 hover:text-white px-6 py-1.5 rounded-lg text-[10px] font-black transition-all uppercase tracking-widest shadow-sm active:scale-95 flex items-center gap-2 mx-auto">
+                                                    <Trash2 size={12} />
+                                                    CANCEL
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="6" className="px-6 py-10 text-center text-gray-300 font-black tracking-[0.3em] uppercase">No data found</td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
-                        <div className="px-10 py-5 bg-gray-50/20 text-gray-400 font-black border-t border-gray-100 uppercase italic text-[11px] tracking-[2px]">1 total</div>
+                    </div>
+                    <div className="px-8 py-4 bg-gray-50/50 text-gray-400 font-bold border-t border-gray-100 text-[11px] uppercase tracking-widest">
+                        {data.length} total record found
                     </div>
                 </div>
             </div>
-
-            {/* 📦 FOOTER PRODUCT SECTION */}
-            <div className="px-[40px] pb-16">
-                <div className="bg-white border border-gray-100 rounded-2xl p-12 shadow-sm">
-                    <div className="text-2xl font-black text-gray-800 mb-10 pb-4 border-b border-gray-50 uppercase tracking-tighter">Arihant Product</div>
-                    <div className="flex flex-wrap justify-between gap-8 text-[#34b350] font-black text-[14px]">
-                        {[
-                            { label: "Official Website", url: "https://www.arihantcapital.com/" },
-                            { label: "Demat your MF Units", url: "https://eservices.nsdl.com/cas-stmt-mf-conv/#/login" },
-                            { label: "Insta Options", url: "https://instaoptions.arihantplus.com/login" },
-                            { label: "Trade Bridge", url: "https://tradebridge.arihantplus.com/signup" },
-                            { label: "Value Stocks", url: "https://arihantplus.valuestocks.in/" },
-                            { label: "Stock Stack", url: "https://tradebridge.arihantplus.com/sso/login?api_key=IBOFTIrFIx1AYBWz0a&source=DESEO" }
-                        ].map(p => (
-                            <a key={p.label} href={p.url} target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform">{p.label}</a>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </div>
+        </PayoutLayout>
     );
 };
 
 export default CancelRequest;
+

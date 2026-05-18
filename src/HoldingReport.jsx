@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronDown, Search, Download, Calendar, ChevronUp, ChevronsUpDown } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { getHoldingReport } from './api/korpApiService';
 
 export default function HoldingReport() {
   const [selectedOption, setSelectedOption] = useState('Select Option');
@@ -245,7 +246,7 @@ export default function HoldingReport() {
       >
         <i className="fa fa-chevron-left text-[10px] text-gray-500"></i>
       </button>
-      
+
       <div className="flex gap-2">
         <div className="relative">
           <select
@@ -344,7 +345,7 @@ export default function HoldingReport() {
             </div>
 
             {/* Apply Button */}
-            <button 
+            <button
               onClick={handleApply}
               className="bg-[#27ae60] hover:bg-[#219150] text-white px-8 h-[48px] rounded-full font-bold text-sm transition-all shadow-md flex items-center justify-center gap-2"
             >

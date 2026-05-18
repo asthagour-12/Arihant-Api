@@ -1,77 +1,76 @@
-import React from "react";
-import Header from "./Header.jsx";
+import React, { useState } from "react";
+import PayoutLayout from "./PayoutLayout.jsx";
+import { AlertCircle } from "lucide-react";
+import { toast } from "react-toastify";
 
 const BulkPayout = () => {
-    return (
-        <div className="min-h-screen bg-[#f6f6f6] font-sans selection:bg-[#34b350] selection:text-white">
-            <Header />
-            
-            {/* 🔵 BREADCRUMB */}
-            <div className="bg-[#e6f7ff] px-[40px] py-[14px] flex items-center gap-3 text-[12px] text-gray-800 font-bold uppercase tracking-widest mt-[60px]">
-                <div className="w-[8px] h-[8px] bg-[#34b350] rounded-full shadow-[0_0_10px_rgba(52,179,80,0.4)]"></div>
-                <span>Report</span>
-                <span className="text-gray-300">/</span>
-                <span className="text-[#34b350]">Bulk Payout</span>
-            </div>
+  const [file, setFile] = useState(null);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-            {/* 📑 SECONDARY TABS */}
-            <div className="bg-white border-b border-gray-100 px-[40px] pt-[24px]">
-                <div className="flex flex-wrap gap-x-[100px] gap-y-4 mb-4">
-                    {["Payout", "Bulk Payout", "Payout Report", "Cancel Request"].map((tab) => (
-                        <div
-                            key={tab}
-                            className={`pb-3 text-[15px] font-bold transition-all relative cursor-pointer tracking-tighter ${tab === "Bulk Payout" ? "text-gray-900 after:content-[''] after:absolute after:bottom-[-1px] after:left-0 after:w-full after:h-[4px] after:bg-[#34b350]" : "text-gray-400"
-                                }`}
-                        >
-                            {tab}
-                        </div>
-                    ))}
-                </div>
-            </div>
+  const handleSubmit = () => {
+    if (!file) {
+      setErrorMessage("Please Select File First");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
+      return;
+    }
+    // Handle submission logic here
+    console.log("File submitted:", file);
+  };
 
-            {/* 🖥 CONTENT AREA */}
-            <div className="px-[40px] py-[40px] pb-16 min-h-[600px]">
-                <div className="bg-white rounded-2xl shadow-[0_10px_30px_rgb(0,0,0,0.03)] border border-gray-100 p-12 transition-all">
-                    <div className="space-y-16">
-                        <div className="bg-gray-50/50 border border-dashed border-gray-200 p-16 rounded-3xl flex flex-col items-center gap-8 shadow-inner max-w-6xl mx-auto">
-                            <div className="bg-white border border-gray-100 rounded-2xl p-6 flex items-center w-full max-w-lg shadow-sm group hover:border-[#34b350] transition-all">
-                                <input
-                                    type="file"
-                                    className="text-[13px] text-gray-500 file:mr-8 file:py-3 file:px-10 file:rounded-xl file:border-0 file:text-[12px] file:font-black file:bg-[#34b350] file:text-white hover:file:bg-[#2e7d32] file:cursor-pointer file:shadow-md cursor-pointer w-full"
-                                />
-                            </div>
-                            <button className="bg-[#34b350] text-white px-16 h-16 rounded-full font-black text-sm uppercase tracking-widest shadow-[0_10px_25px_-5px_rgba(52,179,80,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(52,179,80,0.5)] active:scale-[0.98] transition-all">
-                                SUBMIT &gt;
-                            </button>
-                            <div className="text-gray-400 text-[11px] font-bold uppercase tracking-[0.2em] opacity-60 mt-4">Accepted Formats: .xlsx, .csv (Max 10MB)</div>
-                        </div>
-                        <div className="text-center text-[13px] font-medium text-gray-400 mt-28 italic opacity-80">
-                            What we mean when we say - <span className="font-bold text-gray-600 tracking-tight">(Z): Zone, (R): Region, (Br): Branch, (AP): Authorized Person/Sub Broker</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* 📦 FOOTER PRODUCT SECTION */}
-            <div className="px-[40px] pb-16">
-                <div className="bg-white border border-gray-100 rounded-2xl p-12 shadow-sm">
-                    <div className="text-2xl font-black text-gray-800 mb-10 pb-4 border-b border-gray-50 uppercase tracking-tighter">Arihant Product</div>
-                    <div className="flex flex-wrap justify-between gap-8 text-[#34b350] font-black text-[14px]">
-                        {[
-                            { label: "Official Website", url: "https://www.arihantcapital.com/" },
-                            { label: "Demat your MF Units", url: "https://eservices.nsdl.com/cas-stmt-mf-conv/#/login" },
-                            { label: "Insta Options", url: "https://instaoptions.arihantplus.com/login" },
-                            { label: "Trade Bridge", url: "https://tradebridge.arihantplus.com/signup" },
-                            { label: "Value Stocks", url: "https://arihantplus.valuestocks.in/" },
-                            { label: "Stock Stack", url: "https://tradebridge.arihantplus.com/sso/login?api_key=IBOFTIrFIx1AYBWz0a&source=DESEO" }
-                        ].map(p => (
-                            <a key={p.label} href={p.url} target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform">{p.label}</a>
-                        ))}
-                    </div>
-                </div>
-            </div>
+  return (
+    <PayoutLayout>
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="flex justify-between items-center px-1">
+          <div className="text-[13px] text-black font-bold uppercase tracking-[0.15em]">
+            Bulk Payout Upload
+          </div>
         </div>
-    );
+
+        <div className="bg-gray-50/50 border border-gray-100 p-4 rounded-3xl flex flex-col sm:flex-row items-end gap-6 shadow-sm">
+          <div className="flex flex-col gap-2 flex-grow max-w-sm w-full">
+            <label className="text-[12px] font-bold text-black uppercase tracking-[0.1em] px-1">Upload Bulk Payout File</label>
+            <div className={`bg-white border rounded-lg px-4 py-2 flex items-center shadow-inner group transition-all ${showError && !file ? "border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.5)]" : "border-gray-200 hover:border-[#27ae60]"}`}>
+              <input
+                type="file"
+                onChange={(e) => {
+                  setFile(e.target.files[0]);
+                }}
+                className="text-[13px] text-gray-500 cursor-pointer w-full outline-none file:mr-4 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[11px] file:font-bold file:bg-green-50 file:text-[#27ae60] hover:file:bg-green-100"
+              />
+            </div>
+          </div>
+          <button 
+            onClick={handleSubmit}
+            className="bg-[#27ae60] hover:bg-[#219150] text-white px-8 h-[48px] rounded-lg font-bold text-[13px] transition-all shadow-lg shadow-[#27ae60]/20 flex items-center justify-center gap-2 w-full sm:w-auto active:scale-[0.98]"
+          >
+            <span>SUBMIT FILE</span>
+            <i className="fas fa-upload text-xs opacity-70"></i>
+          </button>
+        </div>
+      </div>
+
+      {/* 🚨 CUSTOM ERROR TOAST */}
+      <div
+        className={`fixed top-5 right-5 bg-[#e50046] text-white rounded-xl shadow-2xl px-6 py-2 min-w-[360px]
+                flex items-center justify-between z-[60000]
+                transition-all duration-500 transform ${showError ? "translate-x-0 opacity-100" : "translate-x-[120%] opacity-0"}`}
+      >
+        <div>
+          <h2 className="text-2xl font-bold -mb-1 text-white">Error</h2>
+          <p className="text-base font-semibold text-white">{errorMessage}</p>
+        </div>
+        <div className="ml-6 flex items-center">
+          <div className="w-9 h-9 border-[3px] border-white rounded-full relative">
+            <span className="absolute top-1/2 left-1/2 w-4 h-[2.5px] bg-white -translate-x-1/2 -translate-y-1/2 rotate-[-45deg] rounded"></span>
+            <span className="absolute top-1/2 left-1/2 w-4 h-[2.5px] bg-white -translate-x-1/2 -translate-y-1/2 rotate-[45deg] rounded"></span>
+          </div>
+        </div>
+      </div>
+    </PayoutLayout>
+  );
 };
 
 export default BulkPayout;

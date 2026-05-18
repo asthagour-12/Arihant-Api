@@ -43,100 +43,109 @@ export const brokerageVerifyOTP = (manager_id, otp) =>
   axiosInstance.post("/api/reports/brokerage/verify-otp", { manager_id, otp });
 
 // ── 📊 DASHBOARD API ──────────────────────────────────────────────────────────
-// GET /api/dashboard/stats
-// Response: { totalClients, activeClients, newClients, inactiveClients, totalAppLogin }
-export const getDashboardStats = () =>
-  axiosInstance.get("/api/dashboard/stats");
+export const getDashboardStats = (clientCode = "AP2100001") =>
+  axiosInstance.get("/dashboard/getdashboarddata", { params: { Search: clientCode } });
 
-// ── 👤 CLIENT APIs ────────────────────────────────────────────────────────────
-// GET /api/clients?status=active|inactive|new|all
-// Response: { total, clients: [{ clientCode, clientName, pan(masked), mobile(masked), email(masked), status, appLoginCount }] }
-export const getClients = (params = {}) =>
-  axiosInstance.get("/api/clients", { params });
+export const getProfile = () =>
+  axiosInstance.get("/dashboard/getprofile");
+
+export const getKorpZoneDashboardData = () =>
+  axiosInstance.get("/dashboard/korpZonedashboarddata");
+
+export const getKorpClientDetail = (params = {}) =>
+  axiosInstance.get("/dashboard/korpgetclientDetail", { params });
+
+export const getClients = (params = {}) => {
+  let type = "TC";
+  if (params.status === "active") type = "AC";
+  if (params.status === "inactive") type = "IC";
+  if (params.status === "new") type = "NC";
+  return axiosInstance.get("/dashboard/korpgetclientDetail", { params: { clientCode: params.clientCode || params.search || "", Type: type } });
+};
 
 // GET /api/reports/nominee-pending
 export const getNomineePending = (params = {}) =>
-  axiosInstance.get("/api/reports/nominee-pending", { params });
+  axiosInstance.get("/reports/getNomineenotdoneDetails", { params });
 
 // GET /api/reports/inactive-clients
 export const getInactiveClients = (params = {}) =>
-  axiosInstance.get("/api/reports/inactive-clients", { params });
+  axiosInstance.get("/dashboard/korpgetclientDetail", { params: { clientCode: params.clientCode || params.search || "", Type: "IC" } });
 
 // ── 📈 HOLDINGS & POSITIONS APIs ──────────────────────────────────────────────
 // GET /api/reports/holdings?client_code=AP2100001&date=2026-04-06
 // Response: { total, holdings: [{ clientName, clientCode, scriptCode, scriptName, isin, pledgePOA, freePOA, mtfQty, netQty, stockValue, closeRate, date }] }
 export const getHoldings = (params = {}) =>
-  axiosInstance.get("/api/reports/holdings", { params });
+  axiosInstance.get("/reports/KorpHoldingReport", { params: { clientCode: params.client_code || params.clientCode || "" } });
 
 // GET /api/reports/positions?type=open|global|fo_global&client_code=AP2100001
 // Response: { total, positions: [{ clientName, clientCode, positionType, scriptName, exchange, product, buyQty, sellQty, netQty, buyAvg, sellAvg, ltp, value, pnl, date }] }
 export const getOpenPositions = (params = {}) =>
-  axiosInstance.get("/api/reports/positions", { params: { type: "open", ...params } });
+  axiosInstance.get("/reports/KorpglobalPositionReport", { params: { clientCode: params.clientCode || params.client_code || "" } });
 
 export const getGlobalPositions = (params = {}) =>
-  axiosInstance.get("/api/reports/positions", { params: { type: "global", ...params } });
+  axiosInstance.get("/reports/KorpglobalPositionReport", { params: { clientCode: params.clientCode || params.client_code || "" } });
 
 export const getFOGlobalPositions = (params = {}) =>
-  axiosInstance.get("/api/reports/positions", { params: { type: "fo_global", ...params } });
+  axiosInstance.get("/reports/KorpFoGlobalPosition", { params: { clientCode: params.clientCode || params.client_code || "" } });
 
 // ── 📊 BROKERAGE APIs ─────────────────────────────────────────────────────────
 // All accept params: { datefrom, dateto, clientCode, pageNumber, size }
 export const getBrokerageCapital = (params = {}) =>
-  axiosInstance.get("/api/reports/brokerage/capital", { params });
+  axiosInstance.get("/reports/korpgetbrokerageclientwise", { params: { clientCode: params.clientCode || "" } });
 
 export const getBrokerageThirdParty = (params = {}) =>
-  axiosInstance.get("/api/reports/brokerage/third-party", { params });
+  axiosInstance.get("/reports/korpgetbrokeragedatewise", { params });
 
 export const getBrokerageResearch = (params = {}) =>
-  axiosInstance.get("/api/reports/brokerage/research", { params });
+  axiosInstance.get("/reports/getResearchCallDisplay", { params: { SearchType: params.type || "ALL" } });
 
 export const getBrokerageLedger = (params = {}) =>
-  axiosInstance.get("/api/reports/brokerage/ledger", { params });
+  axiosInstance.get("/reports/korpgetclientledger", { params: { Search: params.clientCode || "" } });
 
 export const getBrokerageSummary = (params = {}) =>
-  axiosInstance.get("/api/reports/brokerage/summary", { params });
+  axiosInstance.get("/reports/korpgetbrokeragedatewise", { params });
 
 // ── 📉 REPORTS APIs ───────────────────────────────────────────────────────────
 // All accept params: { datefrom, dateto, search, pageNumber, size }
 export const getMobileLoginReport = (params = {}) =>
-  axiosInstance.get("/api/reports/mobile-login-report", { params });
+  axiosInstance.get("/reports/getMobileAppLogin", { params });
 
 export const getBranchPerformance = (params = {}) =>
-  axiosInstance.get("/api/reports/branch-performance", { params });
+  axiosInstance.get("/AdminDashboard/korpBranchPerformanceReportAdmin", { params });
 
 export const getReactivationReport = (params = {}) =>
-  axiosInstance.get("/api/reports/reactivation-report", { params });
+  axiosInstance.get("/reports/SendWhatsAppInActiveClient", { params });
 
 export const getSamparkReport = (params = {}) =>
-  axiosInstance.get("/api/reports/sampark-report", { params });
+  axiosInstance.post("/sampark/samparkclientlog", params);
 
 export const getKRAStatus = (params = {}) =>
-  axiosInstance.get("/api/reports/kra-status", { params });
+  axiosInstance.get("/reports/getKRAClientData", { params });
 
 export const getHoldKRA = (params = {}) =>
-  axiosInstance.get("/api/reports/hold-kra", { params });
+  axiosInstance.get("/reports/GetKRAHOLD", { params });
 
 export const getModificationReport = (params = {}) =>
-  axiosInstance.get("/api/reports/modification", { params });
+  axiosInstance.get("/reports/GetPhysicalModification", { params: { status: params.status || "" } });
 
 export const getPhysicalAccountReport = (params = {}) =>
-  axiosInstance.get("/api/reports/physical-account", { params });
+  axiosInstance.get("/reports/GetPhysicalAccountOpening", { params: { status: params.status || "" } });
 
 export const getFollowupReport = (params = {}) =>
-  axiosInstance.get("/api/reports/followup-report", { params });
+  axiosInstance.get("/reports/SendWhatsAppInActiveClient", { params });
 
 // ── 📜 FILES APIs ─────────────────────────────────────────────────────────────
 export const getComplianceCircular = (params = {}) =>
-  axiosInstance.get("/api/reports/compliance-circular", { params });
+  axiosInstance.get("/reports/getCompliancefiles", { params });
 
 export const getCertificate = (params = {}) =>
-  axiosInstance.get("/api/reports/certificate", { params });
+  axiosInstance.get("/reports/getCompliancefiles", { params });
 
 export const getDownloadFiles = (params = {}) =>
-  axiosInstance.get("/api/reports/download-files", { params });
+  axiosInstance.get("/reports/getCompliancefiles", { params });
 
 export const getMarketingMaterial = (params = {}) =>
-  axiosInstance.get("/api/reports/marketing-material", { params });
+  axiosInstance.get("/reports/getCompliancefiles", { params });
 
 // POST /api/reports/upload-certificate — multipart/form-data
 export const uploadCertificate = (formData) =>
@@ -146,29 +155,29 @@ export const uploadCertificate = (formData) =>
 
 // ── 💰 FINANCIAL APIs ─────────────────────────────────────────────────────────
 export const getMTFBalance = (params = {}) =>
-  axiosInstance.get("/api/reports/mtf-balance", { params });
+  axiosInstance.get("/mtf/korpgetclientmtfBalance", { params: { clientCode: params.clientCode || params.client_code || "" } });
 
 export const getDPSlip = (params = {}) =>
-  axiosInstance.get("/api/reports/dp-slip", { params });
+  axiosInstance.post("/reports/KorpdpSlip", params);
 
 export const getClientBalance = (params = {}) =>
-  axiosInstance.get("/api/payout/client-balance", { params });
+  axiosInstance.get("/payout/korpgetclientBalance", { params: { clientCode: params.clientCode || "" } });
 
 // ── 🔍 MF & RESEARCH APIs ─────────────────────────────────────────────────────
 export const getResearchCall = (params = {}) =>
-  axiosInstance.get("/api/reports/research-call", { params });
+  axiosInstance.get("/reports/getResearchCallDisplay", { params: { SearchType: params.type || "ALL" } });
 
 export const getMutualFundReport = (params = {}) =>
-  axiosInstance.get("/api/reports/mutual-fund-report", { params });
+  axiosInstance.post("/ThirdpartyAdmin/reports/MfAp", params);
 
 export const getMFRejectionReport = (params = {}) =>
-  axiosInstance.get("/api/reports/mf-rejection-report", { params });
+  axiosInstance.post("/MF/reports/SipRejection", params);
 
 export const getMFMandateReport = (params = {}) =>
-  axiosInstance.get("/api/reports/mf-mandate-report", { params });
+  axiosInstance.post("/MF/reports/MfMandate", params);
 
 export const getMFStructure = (params = {}) =>
-  axiosInstance.get("/api/reports/mf-structure", { params });
+  axiosInstance.post("/MF/reports/MfMandate", params);
 
 // ── 🧾 OTHER APIs ─────────────────────────────────────────────────────────────
 export const getContestData = (params = {}) =>
@@ -176,10 +185,10 @@ export const getContestData = (params = {}) =>
 
 // ── 💸 PAYOUT APIs ────────────────────────────────────────────────────────────
 export const getPayoutReport = (params = {}) =>
-  axiosInstance.get("/api/payout/payout-report", { params });
+  axiosInstance.get("/payout/korpgetpayoutrequestreport", { params: { clientCode: params.clientCode || params.search || "" } });
 
 export const getCancelRequest = (params = {}) =>
-  axiosInstance.get("/api/payout/cancel-request", { params });
+  axiosInstance.post("/payout/getPayOutCancelData", params);
 
 // POST /api/payout/bulk-upload — multipart/form-data
 export const bulkUploadPayout = (formData) =>

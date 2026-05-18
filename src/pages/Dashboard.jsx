@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Calendar, Wifi, User, Folder, Loader2 } from "lucide-react";
-import Header from "./Header.jsx";
-import korpInstance, { getDashboardData, korpSendOtp, getClientDetailByType } from "./api/korpApiService";
-import { verifyOtp } from "./api/authApi";
+import Header from "../Header.jsx";
+import korpInstance, { getDashboardData, korpSendOtp, getClientDetailByType } from "../api/korpApiService";
+import { verifyOtp } from "../api/authApi";
 import "@fortawesome/fontawesome-free/css/all.css";
 import { toast as toastify } from "react-toastify";
 

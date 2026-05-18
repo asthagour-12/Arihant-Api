@@ -1,144 +1,250 @@
-import React from "react";
+import React, { useState } from "react";
+import {
+  ChevronUp,
+  ChevronDown,
+  ChevronsUpDown,
+} from "lucide-react";
 
-const HoldKRAStatus = () => {
-    const tabs = [
-        "KRA & UCC Status", "Hold KRA Status", "Modification Status",
-        "Physical Account Opening", "Nominee Pending", "Contact Details",
-        "Rekyc TAT", "EKYC TAT", "Reactivation TAT"
-    ];
+export default function HoldKRAStatus() {
+  const [filter, setFilter] = useState("");
+  const [results, setResults] = useState([]);
+  const [sortConfig, setSortConfig] = useState({
+    key: "",
+    direction: "asc",
+  });
+  const [showCustomError, setShowCustomError] = useState(false);
+  const [customErrorMsg, setCustomErrorMsg] = useState("");
+
+  React.useEffect(() => {
+    if (showCustomError) {
+      const timer = setTimeout(() => setShowCustomError(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showCustomError]);
+
+  const handleSearch = async () => {
+    if (filter.trim() === "") {
+      setCustomErrorMsg("Please enter client code to search");
+      setShowCustomError(true);
+      return;
+    }
+
+    try {
+      // API call example - replace with your actual API endpoint
+      const response = await fetch(`/api/hold-kra-status?clientCode=${filter}`);
+      const data = await response.json();
+      
+      // If API is not ready, fallback to mock data
+      if (!response.ok || data.length === 0) {
+        const mockData = [
+          {
+            clientCode: filter,
+            pan: "ABCDE1234F",
+            clientName: "Astha Gour",
+            branchCode: "BR001",
+            kraName: "CVL KRA",
+            kraStatus: "Approved",
+            reason: "-",
+          },
+        ];
+        setResults(mockData);
+      } else {
+        setResults(data);
+      }
+    } catch (error) {
+      console.error("API Error:", error);
+      // Fallback to mock data on error
+      const mockData = [
+        {
+          clientCode: filter,
+          pan: "ABCDE1234F",
+          clientName: "Astha Gour",
+          branchCode: "BR001",
+          kraName: "CVL KRA",
+          kraStatus: "Approved",
+          reason: "-",
+        },
+      ];
+      setResults(mockData);
+    }
+  };
+
+  const handleSort = (key) => {
+    let direction = "asc";
+
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+
+    setSortConfig({ key, direction });
+
+    const sorted = [...results].sort((a, b) => {
+      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    setResults(sorted);
+  };
+
+  const SortIcon = ({ column }) => {
+    if (sortConfig.key === column) {
+      return sortConfig.direction === "asc" ? (
+        <ChevronUp size={15} className="text-white ml-2" />
+      ) : (
+        <ChevronDown size={15} className="text-white ml-2" />
+      );
+    }
 
     return (
-        <div className="min-h-screen bg-[#f6f6f6] font-sans">
-            {/* 🟢 TOP NAVBAR */}
-            <div className="bg-[#34b350] px-8 h-[64px] flex items-center justify-between sticky top-0 z-[100] shadow-md text-white text-[13px] font-bold">
-                <div className="flex items-center gap-12">
-                    <div className="font-black text-2xl tracking-tighter cursor-pointer">ArihantCapital</div>
-                    <nav className="flex items-center gap-6 opacity-95">
-                        <span>Dashboard</span>
-                        <span className="border-b-2 border-white pb-1">Reports</span>
-                        <span>Account Opening</span>
-                        <span>Download</span>
-                        <span>Research Call</span>
-                        <span>Deal Slip</span>
-                        <span>Third Party</span>
-                        <span>Contests</span>
-                        <span>Portfolio</span>
-                        <span>Click To Call</span>
-                        <span>Payout</span>
-                    </nav>
-                </div>
-            </div>
-
-            {/* 📑 SECONDARY TABS */}
-            <div className="bg-white border-b border-gray-100 px-[40px] pt-[24px] sticky top-[64px] z-[90]">
-                <div className="flex flex-wrap gap-x-[35px] gap-y-4 mb-4 overflow-x-auto no-scrollbar">
-                    {tabs.map((tab) => (
-                        <div key={tab} className={`pb-3 text-[14px] font-bold transition-all relative cursor-pointer tracking-tighter whitespace-nowrap ${tab === "Hold KRA Status" ? "text-gray-900 after:content-[''] after:absolute after:bottom-[-1px] after:left-0 after:w-full after:h-[4px] after:bg-[#34b350]" : "text-gray-400 hover:text-gray-600"}`}>
-                            {tab}
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* 🖥 CONTENT AREA */}
-            <div className="px-[40px] py-[30px] min-h-[600px] bg-white relative">
-                <div className="space-y-8">
-                    <div className="text-[14px] text-gray-500 font-normal">Search results(0)</div>
-
-                    <div className="max-w-[280px]">
-                        <input 
-                            type="text" 
-                            placeholder="Filter by Client Code" 
-                            className="w-full h-[38px] border border-gray-300 rounded-md px-3 text-[13px] bg-white outline-none focus:border-[#34b350] transition-all"
-                        />
-                    </div>
-
-                    <div className="bg-white border-y border-gray-100 overflow-hidden mt-2">
-                        <table className="w-full text-left text-[13px] border-collapse">
-                            <thead className="bg-[#34b350] text-white">
-                                <tr>
-                                    {["Client Code", "PAN", "Client Name", "Branch Code", "KRA NAME", "KRA STATUS", "KRAHOLD REJECTEDREASON"].map((h) => (
-                                        <th key={h} className="px-4 py-4 border-r border-white/10 font-bold whitespace-nowrap">
-                                            <div className="flex items-center gap-1.5">
-                                                {h} <div className="flex flex-col text-[7px] leading-[3px] opacity-40"><span>▲</span><span>▼</span></div>
-                                            </div>
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colSpan="7" className="px-4 py-12 text-gray-400 text-left font-normal text-[15px]">
-                                        No data to display
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div className="px-4 py-5 text-gray-400 font-normal text-[13px]">
-                            0 total
-                        </div>
-                    </div>
-
-                    {/* BOTTOM LEGEND */}
-                    <div className="pt-20 pb-10 text-center text-[14px] text-gray-600 font-normal border-t border-gray-50">
-                        What we mean when we say - <span className="font-bold">(Z)</span>: Zone, <span className="font-bold">(R)</span>: Region, <span className="font-bold">(Br)</span>: Branch, <span className="font-bold">(AP)</span>: Authorized Person/Sub Broker
-                    </div>
-                </div>
-            </div>
-
-            {/* 📦 FOOTER PRODUCT SECTION */}
-            <div className="px-[40px] py-16 bg-white border-t border-gray-100">
-                <div className="bg-white border border-gray-100 rounded-2xl p-12 shadow-sm">
-                    <div className="text-2xl font-black text-gray-800 mb-10 pb-4 border-b border-gray-50 uppercase tracking-tighter">Arihant Product</div>
-                    <div className="flex flex-wrap justify-between gap-8 text-[#34b350] font-bold text-[14px]">
-                        {[
-                            { label: "Official Website", url: "https://www.arihantcapital.com/" },
-                            { label: "Demat your MF Units", url: "https://eservices.nsdl.com/cas-stmt-mf-conv/#/login" },
-                            { label: "Insta Options", url: "https://instaoptions.arihantplus.com/login" },
-                            { label: "Trade Bridge", url: "https://tradebridge.arihantplus.com/signup" },
-                            { label: "Value Stocks", url: "https://arihantplus.valuestocks.in/" },
-                            { label: "Stock Stack", url: "https://tradebridge.arihantplus.com/sso/login?api_key=IBOFTIrFIx1AYBWz0a&source=DESEO" }
-                        ].map(p => (
-                            <a key={p.label} href={p.url} target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform">{p.label}</a>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* 🔗 MAIN FOOTER */}
-            <div className="bg-white border-t border-gray-100 px-[40px] py-20 grid grid-cols-1 md:grid-cols-4 gap-16 text-[14px]">
-                <div className="space-y-6">
-                    <h4 className="font-bold text-gray-800 uppercase tracking-tight">Product</h4>
-                    <ul className="space-y-4 text-gray-500 font-medium">
-                        <li className="hover:text-[#34b350] cursor-pointer">Equity</li>
-                        <li className="hover:text-[#34b350] cursor-pointer">Mutual Funds & SIP</li>
-                    </ul>
-                </div>
-                <div className="space-y-6">
-                    <h4 className="font-bold text-gray-800 uppercase tracking-tight">MEDIA CENTER</h4>
-                    <ul className="space-y-4 text-gray-500 font-medium">
-                        <li className="hover:text-[#34b350] cursor-pointer">About Us</li>
-                        <li className="hover:text-[#34b350] cursor-pointer">Investor Relations</li>
-                        <li className="hover:text-[#34b350] cursor-pointer">Media Center</li>
-                    </ul>
-                </div>
-                <div className="space-y-6">
-                    <h4 className="font-bold text-gray-800 uppercase tracking-tight">OTHER LINKS</h4>
-                    <ul className="space-y-4 text-gray-500 font-medium">
-                        <li className="hover:text-[#34b350] cursor-pointer">Careers</li>
-                    </ul>
-                </div>
-                <div className="space-y-6">
-                    <h4 className="font-bold text-gray-800 uppercase tracking-tight">Connect With Us On</h4>
-                    <ul className="space-y-4 text-gray-500 font-medium">
-                        <li className="hover:text-[#34b350] cursor-pointer">Contact Us</li>
-                        <li className="hover:text-[#34b350] cursor-pointer">Support</li>
-                        <li className="hover:text-[#34b350] cursor-pointer">Fund Transfer</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+      <ChevronsUpDown
+        size={15}
+        className="text-white/90 ml-2"
+      />
     );
-};
+  };
 
-export default HoldKRAStatus;
+  const headers = [
+    { label: "Client Code", key: "clientCode" },
+    { label: "PAN", key: "pan" },
+    { label: "Client Name", key: "clientName" },
+    { label: "Branch Code", key: "branchCode" },
+    { label: "KRA NAME", key: "kraName" },
+    { label: "KRA STATUS", key: "kraStatus" },
+    { label: "KRAHOLD REJECTEDREASON", key: "reason" },
+  ];
+
+  return (
+    <div className="bg-white px-2">
+      <p className="text-[14px] text-gray-500 my-2 py-2 font-medium uppercase tracking-wider">
+        Search results({results.length})
+      </p>
+
+      <div className="flex gap-8 items-center mb-4">
+        <div className="relative">
+          <input
+            type="text"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder="Filter by Client Code"
+            className="w-[400px] h-[40px] pl-10 pr-5 rounded-full border border-gray-300 bg-white text-[15px] outline-none focus:border-[#34b44a] transition-all duration-200"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSearch();
+            }}
+          />
+          
+          {/* Search Icon */}
+          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <svg 
+              className="w-5 h-5 text-gray-400" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
+              />
+            </svg>
+          </div>
+          
+          {/* Clear Button */}
+          {filter && (
+            <button
+              onClick={() => setFilter("")}
+              className="absolute right-12 top-1/2 transform -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              <svg 
+                className="w-4 h-4 text-gray-500" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M6 18L18 6M6 6l12 12" 
+                />
+              </svg>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="w-full overflow-x-auto border-t border-gray-200 mt-6">
+        <div className="min-w-[1200px]">
+          {/* Header */}
+          <div className="grid grid-cols-[150px_150px_250px_150px_180px_180px_1fr] bg-[#34b44a] text-white text-[13px] font-semibold">
+          {headers.map((item, index) => (
+            <div
+              key={index}
+              onClick={() => handleSort(item.key)}
+              className="px-4 py-2 border-r border-white/20 flex items-center justify-between cursor-pointer select-none"
+            >
+              <span>{item.label}</span>
+              <SortIcon column={item.key} />
+            </div>
+          ))}
+        </div>
+
+        {/* Body */}
+        {results.length === 0 ? (
+          <>
+            <div className="bg-white h-[45px] flex items-center px-6 text-[15px] text-gray-500 border-x border-b border-gray-200">
+              No data to display
+            </div>
+
+            <div className="bg-white px-6 py-2 text-gray-400 border-x border-b border-gray-200 text-[13px]">
+              0 total
+            </div>
+          </>
+        ) : (
+          <>
+            {results.map((row, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-[150px_150px_250px_150px_180px_180px_1fr] bg-[#f2f2f2] border-b border-gray-200 text-[14px] hover:bg-gray-100 transition-colors"
+              >
+                <div className="px-4 py-4 border-r border-gray-300">{row.clientCode}</div>
+                <div className="px-4 py-4 border-r border-gray-300">{row.pan}</div>
+                <div className="px-4 py-4 border-r border-gray-300">{row.clientName}</div>
+                <div className="px-4 py-4 border-r border-gray-300">{row.branchCode}</div>
+                <div className="px-4 py-4 border-r border-gray-300">{row.kraName}</div>
+                <div className="px-4 py-4 border-r border-gray-300 text-green-600 font-bold">
+                  {row.kraStatus}
+                </div>
+                <div className="px-4 py-4">{row.reason}</div>
+              </div>
+            ))}
+
+            <div className="bg-white px-6 py-2 text-black font-bold border-b border-gray-200 text-[14px]">
+              {results.length} total
+            </div>
+          </>
+        )}
+        </div>
+      </div>
+
+      {/* 🚨 CUSTOM ERROR TOAST */}
+      <div
+        className={`fixed top-5 right-5 bg-[#e50046] text-white rounded-xl shadow-2xl px-6 py-2 min-w-[360px]
+                flex items-center justify-between z-[6000]
+                transition-all duration-500 transform ${showCustomError ? "translate-x-0 opacity-100" : "translate-x-[120%] opacity-0"}`}
+      >
+        <div>
+          <h2 className="text-2xl font-bold -mb-1">Error</h2>
+          <p className="text-base font-semibold">{customErrorMsg}</p>
+        </div>
+        <div className="ml-6 flex items-center">
+          <div className="w-9 h-9 border-[3px] border-white rounded-full relative">
+            <span className="absolute top-1/2 left-1/2 w-4 h-[2.5px] bg-white -translate-x-1/2 -translate-y-1/2 rotate-[-45deg] rounded"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

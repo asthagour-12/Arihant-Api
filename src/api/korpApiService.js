@@ -74,7 +74,25 @@ export const getMfPerformanceReport = (clientCode) => korpInstance.get("/reports
 
 // ── 🏢 DASHBOARD & ADMIN APIs ───────────────────────────────────────────────
 
-export const getDashboardData = () => korpInstance.get("/dashboard/getdashboarddata");
+export const getDashboardData = async (clientCode = "AP2100001") => {
+  try {
+    const response = await korpInstance.get(
+      "/dashboard/getdashboarddata",
+      {
+        params: {
+          Search: clientCode
+        }
+      }
+    );
+
+    console.log("Dashboard API Success:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Dashboard API Error:", error.response?.data);
+    console.error("Status Code:", error.response?.status);
+    throw error;
+  }
+};
 export const getClientDetailByType = (clientCode, type) => korpInstance.get("/dashboard/korpgetclientDetail", { params: { clientCode, Type: type } });
 export const getUserProfile = () => korpInstance.get("/dashboard/getprofile");
 export const getAdminSubbrokerCount = () => korpInstance.get("/AdminDashboard/getAdminsubbrokerclientcount");
@@ -152,5 +170,14 @@ export const getClientPositionFNO = (data) => korpInstance.post("/reports/Client
 export const getCombinePeakMargin = (data) => korpInstance.post("/reports/CombinePeakMargin", data);
 export const getRealtimeMargin = (data) => korpInstance.post("/reports/RealtimrMargin", data);
 export const getMTFBalance = (clientCode) => korpInstance.get("/mtf/korpgetclientmtfBalance", { params: { clientCode } });
+
+// ── 🆕 NEWLY ADDED UAT APIs ──────────────────────────────────────────────────
+export const getClientList = (params) => korpInstance.get("/reports/getclientlist", { params });
+export const getKRAData = (params) => korpInstance.get("/reports/getKRAData", { params });
+export const getKRADataNew = (params) => korpInstance.get("/reports/getKRADataNew", { params });
+export const getComplianceFolder = () => korpInstance.get("/reports/getCompliancefolder");
+export const getFTPDirectory = (params) => korpInstance.get("/FTP/FTPDirectory", { params });
+export const getFTPDirectoryFiles = (params) => korpInstance.get("/FTP/FTPDirectoryFiles", { params });
+export const getFTPFile1 = (params) => korpInstance.get("/FTP/getftpFile1", { params });
 
 export default korpInstance;

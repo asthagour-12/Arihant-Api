@@ -88,7 +88,7 @@ const Footer = () => {
         <div className="mt-4">
           <div className="bg-transparent border-none p-1.5 text-[#1b5e20] w-full overflow-visible whitespace-normal">
             <div className="relative">
-              <marquee behavior="scroll" direction="left" onMouseOver={(e) => e.target.stop()} onMouseOut={(e) => e.target.start()} scrollDelay="150">
+              <marquee behavior="scroll" direction="left" onMouseOver={(e) => e.target.stop()} onMouseOut={(e) => e.target.start()} scrolldelay="150">
                 <span className="text-[#656465] text-[14px]">
                   <strong>Investor Alert:-</strong> conducting appropriate analysis of respective companies and not to blindly follow unfounded rumors, tips etc. Further, you are also requested to share your
                 </span>

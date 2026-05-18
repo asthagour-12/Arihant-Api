@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../Header";
+import Header from "../Header";
+import ArihantProductsSection from "../ArihantProducts.jsx";
 import ThirdPartyHeader from "../components/layout/ThirdPartyHeader";
 
 
@@ -103,12 +104,31 @@ export default function SipRevenueCalculator() {
     const [totalIncome, setTotalIncome] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
+    const [customErrorMsg, setCustomErrorMsg] = useState("");
+    const [showCustomError, setShowCustomError] = useState(false);
+
+    useEffect(() => {
+        if (showCustomError) {
+            const timer = setTimeout(() => setShowCustomError(false), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [showCustomError]);
 
     useEffect(() => {
         document.body.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
     }, []);
 
     const handleCalculate = () => {
+        if (amount <= 0) {
+            setCustomErrorMsg("Please Select Amount");
+            setShowCustomError(true);
+            return;
+        }
+        if (returns <= 0) {
+            setCustomErrorMsg("Please Select Assumed Returns");
+            setShowCustomError(true);
+            return;
+        }
         let monthlyRate = (returns / 100) / 12;
         let months = years * 12;
         let data = [];
@@ -149,112 +169,147 @@ export default function SipRevenueCalculator() {
     const totalPages = Math.ceil(tableData.length / rowsPerPage);
 
     return (
-        <div className="bg-gray-50 min-h-screen">
-            <Header />
-            <div className="p-4 pt-[60px]">
-                <ThirdPartyHeader />
-                <div className="py-[30px] selection:bg-[#34b350] selection:text-white" style={{ fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" }}>
-                    <div className="flex flex-col xl:flex-row gap-8 max-w-full mx-auto">
+        <>
+            <div className="bg-gray-50 min-h-screen">
+                <Header />
+                <div className="p-4 pt-[60px]">
+                    <ThirdPartyHeader />
+                    <div className="py-[30px] selection:bg-[#34b350] selection:text-white" style={{ fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" }}>
+                        <div className="flex flex-col xl:flex-row gap-8 max-w-full mx-auto">
 
-                    {/* 📊 LEFT: CALCULATOR INPUTS */}
-                    <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-10">
-                        <div className="text-2xl font-normal text-gray-800 mb-10 tracking-tight">SIP Revenue Calculator</div>
+                            {/* 📊 LEFT: CALCULATOR INPUTS */}
+                            <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-10">
+                                <div className="text-2xl font-normal text-gray-800 mb-10 tracking-tight">SIP Revenue Calculator</div>
 
-                        <SliderComponent label="Select Amount" value={amount} setValue={setAmount} min={0} max={10000000} type="currency" step={500} />
-                        <SliderComponent label="Select Duration" value={years} setValue={setYears} min={1} max={40} type="year" />
-                        <SliderComponent label="No. of SIP Registered" value={sipCount} setValue={setSipCount} min={1} max={999} />
-                        <SliderComponent label="Annualized Assumed Returns" value={returns} setValue={setReturns} min={0} max={30} type="percent" step={0.1} />
-                        <SliderComponent label="Trail Income" value={trail} setValue={setTrail} min={0} max={100} type="percent" step={0.05} />
+                                <SliderComponent label="Select Amount" value={amount} setValue={setAmount} min={0} max={10000000} type="currency" step={500} />
+                                <SliderComponent label="Select Duration" value={years} setValue={setYears} min={1} max={40} type="year" />
+                                <SliderComponent label="No. of SIP Registered" value={sipCount} setValue={setSipCount} min={1} max={999} />
 
-                        <div className="flex gap-2 mt-10 justify-end">
-                            <button onClick={handleReset} className="px-4 h-10 border border-gray-200 rounded text-[13px] text-gray-600 font-medium uppercase bg-white hover:bg-gray-50 transition-all">RESET</button>
-                            <button onClick={handleCalculate} className="px-6 h-10 bg-[#007bff] text-white rounded text-[13px] font-bold uppercase hover:bg-blue-600 transition-all">CALCULATE</button>
-                            <button className="px-6 h-10 bg-[#28a745] text-white rounded text-[13px] font-bold hover:bg-green-700 transition-all">Export Excel</button>
-                        </div>
-                    </div>
-
-                    {/* 📈 RIGHT: RESULTS BREAKUP */}
-                    <div className="flex-[1.6] bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col min-h-[700px]">
-                        <div className="p-8">
-                            <div className="text-2xl font-normal text-gray-800 mb-2 tracking-tight">SIP Revenue Breakup</div>
-                            <div className="text-blue-500 font-normal text-sm mb-8">Total Income/Trail: <span className="font-normal">₹{parseFloat(totalIncome).toLocaleString()}</span></div>
-
-                            <div className="overflow-hidden rounded-lg border border-gray-100 bg-white flex-1 flex flex-col">
-                                <div className="overflow-y-auto flex-1 group min-h-[400px]">
-                                    <table className="w-full text-left text-[12px] font-normal text-gray-500">
-                                        <thead className="bg-gray-50 sticky top-0 z-10 border-b border-gray-100">
-                                            <tr>
-                                                <th className="px-6 py-4 font-normal uppercase">MONTHS</th>
-                                                <th className="px-6 py-4 font-normal uppercase text-center">INFLOW (₹)</th>
-                                                <th className="px-6 py-4 font-normal uppercase text-center">AUM (₹)</th>
-                                                <th className="px-6 py-4 font-normal uppercase text-right">INCOME/TRAIL (₹)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {currentRows.length > 0 ? (
-                                                currentRows.map((row, i) => (
-                                                    <tr key={i} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                                                        <td className="px-6 py-4 text-gray-600">#{row.month}</td>
-                                                        <td className="px-6 py-4 text-gray-600 text-center">₹{row.inflow.toLocaleString()}</td>
-                                                        <td className="px-6 py-4 text-gray-600 text-center">₹{row.aum.toLocaleString()}</td>
-                                                        <td className="px-6 py-4 text-gray-600 text-right font-medium">₹{row.income.toLocaleString()}</td>
-                                                    </tr>
-                                                ))
-                                            ) : (
-                                                <tr>
-                                                    <td colSpan="4" className="py-32 text-center">
-                                                        <div className="text-gray-400 font-normal text-sm">No data available. Please calculate SIP.</div>
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        </tbody>
-                                    </table>
+                                <div className="grid grid-cols-2 gap-4 mb-8">
+                                    <div className="flex flex-col gap-2">
+                                        <div className="text-[12px] font-bold text-gray-400 uppercase tracking-wider">Assumed Returns (%)</div>
+                                        <div className="relative">
+                                            <input type="number" value={returns} onChange={(e) => setReturns(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded px-4 py-3 text-[14px] font-normal outline-none focus:border-blue-500 transition-all" />
+                                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">%</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <div className="text-[12px] font-bold text-gray-400 uppercase tracking-wider">Trail Income (%)</div>
+                                        <div className="relative">
+                                            <input type="number" value={trail} onChange={(e) => setTrail(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded px-4 py-3 text-[14px] font-normal outline-none focus:border-blue-500 transition-all" />
+                                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">%</span>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                {/* 🔢 PAGINATION */}
-                                <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
-                                    <div className="text-[12px] text-gray-500 font-normal">
-                                        {tableData.length > 0 
-                                            ? `Showing ${startIndex + 1}-${Math.min(startIndex + rowsPerPage, tableData.length)} of ${tableData.length} rows`
-                                            : "Showing 0-0 of 0 rows"}
-                                    </div>
-                                    <div className="flex gap-4 items-center">
-                                        <div className="flex gap-1">
-                                            <button
-                                                disabled={currentPage === 1}
-                                                onClick={() => setCurrentPage(p => p - 1)}
-                                                className="w-8 h-8 rounded border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-100 disabled:opacity-30 transition-all"
-                                            >&lt;</button>
-                                            <button
-                                                disabled={currentPage >= totalPages}
-                                                onClick={() => setCurrentPage(p => p + 1)}
-                                                className="w-8 h-8 rounded border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-100 disabled:opacity-30 transition-all"
-                                            >&gt;</button>
+                                <div className="flex gap-4">
+                                    <button onClick={handleReset} className="px-4 h-10 border border-gray-200 rounded text-[13px] text-gray-600 font-medium uppercase bg-white hover:bg-gray-50 transition-all">RESET</button>
+                                    <button onClick={handleCalculate} className="px-6 h-10 bg-[#007bff] text-white rounded text-[13px] font-bold uppercase hover:bg-blue-600 transition-all">CALCULATE</button>
+                                    <button className="px-6 h-10 bg-[#28a745] text-white rounded text-[13px] font-bold hover:bg-green-700 transition-all">Export Excel</button>
+                                </div>
+                            </div>
+
+                            {/* 📈 RIGHT: RESULTS BREAKUP */}
+                            <div className="flex-[1.6] bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col min-h-[700px]">
+                                <div className="p-8">
+                                    <div className="text-2xl font-normal text-gray-800 mb-2 tracking-tight">SIP Revenue Breakup</div>
+                                    <div className="text-blue-500 font-normal text-sm mb-8">Total Income/Trail: <span className="font-normal">₹{parseFloat(totalIncome).toLocaleString()}</span></div>
+
+                                    <div className="overflow-hidden rounded-lg border border-gray-100 bg-white flex-1 flex flex-col">
+                                        <div className="overflow-y-auto flex-1 group min-h-[400px]">
+                                            <table className="w-full text-left text-[12px] font-normal text-gray-500">
+                                                <thead className="bg-gray-50 sticky top-0 z-10 border-b border-gray-100">
+                                                    <tr>
+                                                        <th className="px-6 py-4 font-normal uppercase">MONTHS</th>
+                                                        <th className="px-6 py-4 font-normal uppercase text-center">INFLOW (₹)</th>
+                                                        <th className="px-6 py-4 font-normal uppercase text-center">AUM (₹)</th>
+                                                        <th className="px-6 py-4 font-normal uppercase text-right">INCOME/TRAIL (₹)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {currentRows.length > 0 ? (
+                                                        currentRows.map((row, i) => (
+                                                            <tr key={i} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                                                                <td className="px-6 py-4 text-gray-600">#{row.month}</td>
+                                                                <td className="px-6 py-4 text-gray-600 text-center">₹{row.inflow.toLocaleString()}</td>
+                                                                <td className="px-6 py-4 text-gray-600 text-center">₹{row.aum.toLocaleString()}</td>
+                                                                <td className="px-6 py-4 text-gray-600 text-right font-medium">₹{row.income.toLocaleString()}</td>
+                                                            </tr>
+                                                        ))
+                                                    ) : (
+                                                        <tr>
+                                                            <td colSpan="4" className="py-32 text-center">
+                                                                <div className="text-gray-400 font-normal text-sm">No data available. Please calculate SIP.</div>
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-[12px] text-gray-500">Rows per page:</span>
-                                            <select 
-                                                value={rowsPerPage}
-                                                onChange={(e) => {
-                                                    setRowsPerPage(parseInt(e.target.value));
-                                                    setCurrentPage(1);
-                                                }}
-                                                className="px-1 py-1 border border-gray-200 rounded text-[12px] font-normal outline-none bg-white"
-                                            >
-                                                <option>10</option>
-                                                <option>25</option>
-                                                <option>50</option>
-                                            </select>
+
+                                        {/* 🔢 PAGINATION */}
+                                        <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                                            <div className="text-[12px] text-gray-500 font-normal">
+                                                {tableData.length > 0
+                                                    ? `Showing ${startIndex + 1}-${Math.min(startIndex + rowsPerPage, tableData.length)} of ${tableData.length} rows`
+                                                    : "Showing 0-0 of 0 rows"}
+                                            </div>
+                                            <div className="flex gap-4 items-center">
+                                                <div className="flex gap-1">
+                                                    <button
+                                                        disabled={currentPage === 1}
+                                                        onClick={() => setCurrentPage(p => p - 1)}
+                                                        className="w-8 h-8 rounded border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-100 disabled:opacity-30 transition-all"
+                                                    >&lt;</button>
+                                                    <button
+                                                        disabled={currentPage >= totalPages}
+                                                        onClick={() => setCurrentPage(p => p + 1)}
+                                                        className="w-8 h-8 rounded border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-100 disabled:opacity-30 transition-all"
+                                                    >&gt;</button>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-[12px] text-gray-500">Rows per page:</span>
+                                                    <select
+                                                        value={rowsPerPage}
+                                                        onChange={(e) => {
+                                                            setRowsPerPage(parseInt(e.target.value));
+                                                            setCurrentPage(1);
+                                                        }}
+                                                        className="px-1 py-1 border border-gray-200 rounded text-[12px] font-normal outline-none bg-white"
+                                                    >
+                                                        <option>10</option>
+                                                        <option>25</option>
+                                                        <option>50</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    <ArihantProductsSection />
                 </div>
             </div>
-        </div>
-    </div>
+
+            {/* 🚨 CUSTOM ERROR TOAST */}
+            <div
+                className={`fixed top-5 right-5 bg-[#e50046] text-white rounded-xl shadow-2xl px-6 py-2 min-w-[360px]
+                        flex items-center justify-between z-[60000]
+                        transition-all duration-500 transform ${showCustomError ? "translate-x-0 opacity-100" : "translate-x-[120%] opacity-0"}`}
+            >
+                <div>
+                    <h2 className="text-2xl font-bold -mb-1">Error</h2>
+                    <p className="text-base font-semibold">{customErrorMsg}</p>
+                </div>
+                <div className="ml-6 flex items-center">
+                    <div className="w-9 h-9 border-[3px] border-white rounded-full relative">
+                        <span className="absolute top-1/2 left-1/2 w-4 h-[2.5px] bg-white -translate-x-1/2 -translate-y-1/2 rotate-[-45deg] rounded"></span>
+                    </div>
+                </div>
+            </div>
+        </>
     );
 }

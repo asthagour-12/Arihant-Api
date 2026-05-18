@@ -1,27 +1,27 @@
 import React from 'react';
-import Dashboard from './Dashboard';
-import Payout from './Payout';
-import PayoutReport from './PayoutReport';
+import Dashboard from './pages/Dashboard';
+import Payout from './pages/Payout';
+import PayoutReport from './pages/PayoutReport';
 import BulkPayout from './BulkPayout.jsx';
-import CancelRequest from './CancelRequest';
-import DealSlip from './DealSlip';
+import CancelRequest from './pages/CancelRequest';
+import DealSlip from './pages/DealSlip';
 import Footer from './Footer';
-import ContestsData from './ContestsData';
+import ContestsData from './pages/ContestsData';
 import Contests from './Contests.jsx';
 import ClickToCall from './ClickToCall.jsx';
-import ContestsVideo from './ContestsVideo';
-import MinorDriveCreatives from './MinorDriveCreatives';
-import ResearchCall from './ResearchCall'
-import FundamentalCall from './FundamentalCall'
+import ContestsVideo from './pages/ContestsVideo';
+import MinorDriveCreatives from './pages/MinorDriveCreatives';
+import ResearchCall from './pages/ResearchCall'
+import FundamentalCall from './pages/FundamentalCall'
 import ReportsPage from './ReportsPage.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './Index.css'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ZoomResearch from "./ZoomResearch";
-import FollowUpReport from "./FollowUpReport"
-import ProfileBeta from "./ProfileBeta"
+import ZoomResearch from "./pages/ZoomResearch";
+import FollowUpReport from "./pages/FollowUpReport"
+import ProfileBeta from "./pages/ProfileBeta"
 import ThirdParty from './ThirdParty.jsx';
 import MutualFund from './MutualFund.jsx';
 import Rejection from './Rejection.jsx';
@@ -33,7 +33,7 @@ import SIPCalculator from './SipRevenueCalculator.jsx';
 import Bonds from './Bonds.jsx';
 import AlgoBrokerage from './AlgoBrokerage.jsx';
 import Download from './Download.jsx';
-import MarketingMaterial from "./MarketingMaterial";
+import MarketingMaterial from "./pages/MarketingMaterial";
 import KRAStatusPage from './KRAStatusPage.jsx';
 import HoldingReport from './HoldingReport.jsx';
 import ArihantProducts from './ArihantProducts.jsx';
