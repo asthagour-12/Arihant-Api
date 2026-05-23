@@ -96,7 +96,7 @@ export default function Header() {
 
             <Link 
               to="/clicktocall" 
-              className="text-white cursor-pointer hover:text-gray-200 transition-colors"
+              className="text-white cursor-pointer hover:text-gray-200 transition-colors outline-none border-none"
             >
               Click To Call
             </Link>

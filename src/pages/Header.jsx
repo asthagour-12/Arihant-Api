@@ -111,7 +111,7 @@ const Header = () => {
           </span>
           <Link
             to="/clicktocall"
-            className={`no-underline transition-all hover:text-white py-5 ${location.pathname.startsWith("/clicktocall") || location.pathname.startsWith("/followupreport") ? "text-white font-black" : "text-white/90"}`}
+            className={`outline-none border-none no-underline transition-all hover:text-white py-5 ${location.pathname.startsWith("/clicktocall") || location.pathname.startsWith("/followupreport") ? "text-white font-black" : "text-white/90"}`}
           >
             Click To Call
           </Link>
