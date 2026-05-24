@@ -36,8 +36,13 @@ const OTPLogin = () => {
         }
     };
 
-    const handleVerifyOTP = async (e) => {
-        e.preventDefault();
+    const handleVerifyOTP = async (eOrOtp) => {
+        if (eOrOtp && eOrOtp.preventDefault) {
+            eOrOtp.preventDefault();
+        }
+        
+        const currentOtp = typeof eOrOtp === 'string' ? eOrOtp : otp;
+
         setLoading(true);
         setError('');
         setSuccess('');
@@ -45,7 +50,7 @@ const OTPLogin = () => {
         try {
             const response = await axios.post('http://localhost:5000/api/verify-otp', {
                 mobile: mobile,
-                otp: otp
+                otp: currentOtp
             });
 
             if (response.data.success) {
@@ -139,20 +144,24 @@ const OTPLogin = () => {
                                     type="text"
                                     id="otp"
                                     value={otp}
-                                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                    onChange={(e) => {
+                                        const newOtp = e.target.value.replace(/\D/g, '').slice(0, 6);
+                                        setOtp(newOtp);
+                                        if (newOtp.length === 6) {
+                                            handleVerifyOTP(newOtp);
+                                        }
+                                    }}
                                     placeholder="••••••"
                                     className="w-full text-center tracking-[0.8em] text-2xl bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-gray-900 font-black outline-none focus:bg-white focus:border-[#34b350] transition-all shadow-inner"
                                     required
                                 />
                             </div>
 
-                            <button
-                                type="submit"
-                                className="w-full bg-[#34b350] hover:bg-[#2e9e47] text-white py-4 rounded-2xl font-black text-sm tracking-widest uppercase shadow-xl shadow-green-500/20 transition-all disabled:bg-gray-200 active:scale-[0.98]"
-                                disabled={loading || otp.length !== 6}
-                            >
-                                {loading ? 'VERIFYING...' : 'VERIFY OTP'}
-                            </button>
+                            {loading && (
+                                <div className="w-full bg-[#34b350] text-white py-4 rounded-2xl font-black text-sm tracking-widest uppercase shadow-xl shadow-green-500/20 transition-all text-center">
+                                    VERIFYING...
+                                </div>
+                            )}
                         </form>
                     )}
 

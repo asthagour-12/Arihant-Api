@@ -85,11 +85,17 @@ const LoginPage = () => {
     }
   };
 
-  const handleVerifyOTP = async (e) => {
-    e.preventDefault();
+  const handleVerifyOTP = async (eOrOtp) => {
+    if (eOrOtp && eOrOtp.preventDefault) {
+      eOrOtp.preventDefault();
+    }
+    
+    const currentOtp = typeof eOrOtp === 'string' ? eOrOtp : otp;
 
-    if (otp.length !== 6) {
-      toast.error('Please enter valid 6-digit OTP');
+    if (currentOtp.length !== 6) {
+      if (typeof eOrOtp !== 'string') {
+        toast.error('Please enter valid 6-digit OTP');
+      }
       return;
     }
 
@@ -98,7 +104,7 @@ const LoginPage = () => {
     setSuccess('');
 
     try {
-      const response = await verifyOtp(branchCode, otp, csrfToken);
+      const response = await verifyOtp(branchCode, currentOtp, csrfToken);
 
       if (response.data && response.data.success) {
         setSuccess('OTP verified successfully!');
@@ -243,7 +249,12 @@ const LoginPage = () => {
                     value={otp}
                     onChange={(e) => {
                       const val = e.target.value.replace(/\D/g, '');
-                      if (val.length <= 6) setOTP(val);
+                      if (val.length <= 6) {
+                        setOTP(val);
+                        if (val.length === 6) {
+                          handleVerifyOTP(val);
+                        }
+                      }
                       if (otpError) setOTPError('');
                       if (error) setError('');
                     }}
@@ -251,9 +262,11 @@ const LoginPage = () => {
                   />
                   {(otpError || error) && <span className="block text-red-500 text-xs mt-1 font-medium">{otpError || error}</span>}
                 </div>
-                <button type="submit" className="w-fit min-w-[200px] mx-auto px-10 py-3.5 bg-[#42ba61] text-white border-none rounded-xl text-base font-bold cursor-pointer transition-all hover:bg-[#34b350] hover:shadow-lg active:scale-[0.98] disabled:opacity-70 flex items-center justify-center gap-2" disabled={loading}>
-                  {loading ? 'VERIFYING...' : 'VERIFY OTP >'}
-                </button>
+                {loading && (
+                    <div className="w-fit min-w-[200px] mx-auto px-10 py-3.5 bg-[#42ba61] text-white border-none rounded-xl text-base font-bold text-center flex items-center justify-center gap-2">
+                      VERIFYING...
+                    </div>
+                )}
               </form>
 
               <div className="mt-4 text-center">
