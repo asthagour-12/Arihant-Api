@@ -32,12 +32,9 @@ const LedgerTable = ({ data = [] }) => {
   };
 
   const headers = [
-    { label: "VOUCHER", key: "voucher" },
-    { label: "VOUCHER DATE", key: "voucherDate" },
-    { label: "NARRATION", key: "narration" },
-    { label: "EXCHANGE", key: "exchange" },
-    { label: "BOOK TYPE", key: "bookType" },
+    { label: "FINANCIAL DATE", key: "voucherDate" },
     { label: "TRANSACTION DATE", key: "transactionDate" },
+    { label: "NARRATION", key: "narration" },
     { label: "DEBIT", key: "debit" },
     { label: "CREDIT", key: "credit" },
     { label: "BALANCE", key: "balance" },
@@ -75,7 +72,7 @@ const LedgerTable = ({ data = [] }) => {
         {/* Table Header */}
         <div className="grid gap-0 bg-[#1EB04C] text-white text-[11px] font-bold uppercase"
           style={{
-            gridTemplateColumns: "repeat(9, 1fr)"
+            gridTemplateColumns: `repeat(${headers.length}, 1fr)`
           }}>
           {headers.map((header, index) => (
             <div
@@ -101,18 +98,26 @@ const LedgerTable = ({ data = [] }) => {
                 key={index}
                 className="grid gap-0 border-b border-gray-100 text-[11px] hover:bg-gray-50 transition-colors group"
                 style={{
-                  gridTemplateColumns: "repeat(9, 1fr)"
+                  gridTemplateColumns: `repeat(${headers.length}, 1fr)`
                 }}
               >
-                <div className="px-2 py-2.5 border-r border-gray-100 text-gray-600 truncate">{row.voucher || "-"}</div>
-                <div className="px-2 py-2.5 border-r border-gray-100 text-gray-600 truncate">{row.voucherDate || "-"}</div>
-                <div className="px-2 py-2.5 border-r border-gray-100 text-gray-800 font-medium truncate">{row.narration || "-"}</div>
-                <div className="px-2 py-2.5 border-r border-gray-100 text-gray-600 text-center">{row.exchange || "-"}</div>
-                <div className="px-2 py-2.5 border-r border-gray-100 text-gray-600 text-center">{row.bookType || "-"}</div>
-                <div className="px-2 py-2.5 border-r border-gray-100 text-gray-600 truncate">{row.transactionDate || "-"}</div>
-                <div className="px-2 py-2.5 border-r border-gray-100 text-right text-red-600 font-bold">{row.debit || "0.00"}</div>
-                <div className="px-2 py-2.5 border-r border-gray-100 text-right text-green-600 font-bold">{row.credit || "0.00"}</div>
-                <div className="px-2 py-2.5 text-right font-black text-gray-900">{row.balance || "0.00"}</div>
+                {headers.map((col, colIdx) => {
+                  const value = row[col.key];
+                  // Determine alignment: numeric columns right-aligned, others left
+                  const isNumeric = ['debit', 'credit', 'balance'].includes(col.key);
+                  const cellClass = `px-2 py-2.5 border-r border-gray-100 truncate ${isNumeric ? 'text-right font-bold' : ''}`;
+                  const extraClass =
+                    col.key === 'debit'
+                      ? 'text-red-600'
+                      : col.key === 'credit'
+                      ? 'text-green-600'
+                      : col.key === 'balance'
+                      ? 'font-black text-gray-900'
+                      : '';
+                  return (
+                    <div key={colIdx} className={`${cellClass} ${extraClass}`.trim()}>{value ?? '-'}</div>
+                  );
+                })}
               </div>
             ))}
             <div className="bg-[#fcfcfc] px-4 py-3 text-[11px] text-gray-500 font-bold border-b border-gray-200 tracking-wider">

@@ -93,6 +93,9 @@ export const getTrialBalance = (params) => korpInstance.get("/reports/korpgettri
 export const getContractNote = (params) => korpInstance.get("/reports/KorpContractNote", { params });
 export const getBrokerageClientWise = (params) => korpInstance.get("/reports/korpgetbrokerageclientwise", { params });
 export const getBrokerageDateWise = (params) => korpInstance.get("/reports/korpgetbrokeragedatewise", { params });
+// New endpoints for third party and research reports
+export const getThirdPartyReport = (params) => korpInstance.post("/reports/GetThirdPartyReport", {}, { params });
+export const getResearchCallReportAP = (params) => korpInstance.post("/reports/ResearchCallReportAP", {}, { params });
 export const getDPSlip = (params) => korpInstance.post("/reports/KorpdpSlip", params);
 export const getClientPortfolio = (params = {}, body = {}) => korpInstance.post("/reports/GetClientPortpolio", body, { params });
 export const getResearchCalls = (type) => korpInstance.get("/reports/getResearchCallDisplay", { params: { SearchType: type } });
@@ -104,12 +107,10 @@ export const getMobileLoginData = (params) => {
     params: { pageNumber, size }
   });
 };
-export const getGeneralLedgerList = (params) => {
-  const { pageNumber, size, ...body } = params;
-  return korpInstance.post("/reports/genralLedgerList", body, {
-    params: { pageNumber, size }
+export const getBranchLedger = (clientCode, pageNumber = 0, size = 50) =>
+  korpInstance.post(`/reports/korpBranchLedger`, {}, {
+    params: { size, pageNumber, ClientCode: clientCode }
   });
-};
 export const getCertificate = (params) => {
   const { pageNumber, size, ...body } = params;
   return korpInstance.post("/reports/GetCertificate", body, {

@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { validateDates } from "../utils/dateValidation";
 import { toast } from "react-toastify";
 import { getBrokerageLedger } from "../api/apiService";
-import { getGeneralLedgerList } from "../api/korpApiService";
+import { getBranchLedger } from "../api/korpApiService";
 import CalendarHeader from "../components/common/CalendarHeader";
 
 const clientCodesList = [
@@ -120,68 +120,93 @@ const Ledger = () => {
     };
 
     const handleGeneralSearch = async () => {
-        if (!selectedClient) {
-            setCustomErrorMsg("Please select client code");
-            setShowCustomError(true);
-            return;
-        }
+  // Parse selected client code
+  const clientCodeParsed = selectedClient ? selectedClient.split(' - ')[0] : '';
+  if (!clientCodeParsed) {
+    toast.error('Please select a client code');
+    return;
+  }
 
-        const clientCodeParsed = selectedClient.split(" - ")[0];
-        setLoading(true);
-        try {
-            const params = {
-                pageNumber: 0,
-                size: 50,
-                clientCode: clientCodeParsed,
-                ClientCode: clientCodeParsed,
-                Search: clientCodeParsed,
-            };
-            const response = await getGeneralLedgerList(params);
-            console.log("General Ledger API Response:", response.data);
+  setLoading(true);
+  try {
+    const response = await getBranchLedger(clientCodeParsed, 0, 50);
 
-            const items = response?.data?.data || response?.data?.Data || response?.data?.result?.userList || response?.data || [];
-            
-            if (Array.isArray(items)) {
-                const formatted = items.map(item => ({
-                    voucher: item.voucher || item.Voucher || item.voucherNo || "-",
-                    voucherDate: item.voucherDate || item.VoucherDate || item.date || "-",
-                    narration: item.narration || item.Narration || "-",
-                    exchange: item.exchange || item.Exchange || "-",
-                    bookType: item.bookType || item.BookType || "-",
-                    transactionDate: item.transactionDate || item.TransactionDate || "-",
-                    debit: item.debit || item.Debit || "0.00",
-                    credit: item.credit || item.Credit || "0.00",
-                    balance: item.balance || item.Balance || "0.00",
-                }));
-                setLedgerData(formatted);
-            } else {
-                setLedgerData([]);
-            }
-            setHasSearched(true);
-            toast.success("Data loaded for: " + clientCodeParsed);
-        } catch (err) {
-            console.error("General Ledger API Error:", err);
-            toast.error("Failed to fetch General Ledger data");
-            setLedgerData([]);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // Verify API success flag
+      // Some APIs return success:false even when data is present.
+      // Only treat it as a fatal error when there is no usable payload.
+      if (response?.data?.success === false &&
+          !(response?.data?.data?.length ||
+            response?.data?.result?.list?.length ||
+            response?.data?.result?.userList?.length)) {
+        toast.error(response?.data?.message || 'Failed to fetch Branch Ledger data');
+        setLedgerData([]);
+        return;
+      }
+
+    console.log('Branch Ledger API Response:', response.data);
+    const items =
+      response?.data?.data ||
+      response?.data?.Data ||
+      response?.data?.result?.userList ||
+      response?.data?.result?.list ||
+      response?.data || [];
+
+    if (Array.isArray(items) && items.length) {
+        const regionMap = {
+          GJ02: "Gujarat",
+          ZO3: "Zone 3",
+          // Add more CROCODE to region mappings as needed
+        };
+        const zoneMap = {
+          ZO3: "Zone 3",
+          CZOCODE: "Custom Zone",
+          // Add more CZOCODE to zone mappings as needed
+        };
+          const formatted = items.map(item => ({
+            voucher: item.VOUCHER || item.voucher || item.voucherNo || '-',
+            region: item.CROCODE || item.REGION || item.region || item.BranchCode || '-',
+            zone: item.CZOCODE || item.ZONE || item.zone || '-',
+            voucherDate: item.FADate || item.voucherDate || item.VoucherDate || item.date || '-',
+            narration: item.PARTICULARS || item.narration || item.Narration || '-',
+            exchange: item.exchange || item.Exchange || '-',
+            bookType: item.bookType || item.BookType || '-',
+            transactionDate: item.TRXN_Date || item.transactionDate || item.TransactionDate || '-',
+            debit: item.DEBIT || item.debit || item.Debit || '0.00',
+            credit: item.CREDIT || item.credit || item.Credit || '0.00',
+            balance: item.BALANCE || item.balance || item.Balance || '0.00',
+          }));
+          setLedgerData(formatted);
+    } else {
+      setLedgerData([]);
+    }
+
+    setHasSearched(true);
+    toast.success('Data loaded for: ' + clientCodeParsed);
+  } catch (err) {
+    console.error('Branch Ledger API Error:', err);
+    toast.error('Failed to fetch Branch Ledger data');
+    setLedgerData([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
     const handleDownload = () => {
-        const headers = ["VOUCHER", "VOUCHER DATE", "NARRATION", "EXCHANGE", "BOOK TYPE", "TRANSACTION DATE", "DEBIT", "CREDIT", "BALANCE"];
-        const csvContent = "data:text/csv;charset=utf-8,"
-            + headers.join(",") + "\n"
-            + ledgerData.map(row => [
-                row.voucher || "",
-                row.voucherDate || "",
-                row.narration || "",
-                row.exchange || "",
-                row.bookType || "",
-                row.transactionDate || "",
-                row.debit || "0.00",
-                row.credit || "0.00",
-                row.balance || "0.00"
+        const headers = ["VOUCHER", "REGION", "ZONE", "VOUCHER DATE", "NARRATION", "EXCHANGE", "BOOK TYPE", "TRANSACTION DATE", "DEBIT", "CREDIT", "BALANCE"]; 
+        const csvContent = "data:text/csv;charset=utf-8," 
+            + headers.join(",") + "\n" 
+            + ledgerData.map(row => [ 
+                row.voucher || "", 
+                row.region || "", 
+                row.zone || "", 
+                row.voucherDate || "", 
+                row.narration || "", 
+                row.exchange || "", 
+                row.bookType || "", 
+                row.transactionDate || "", 
+                row.debit || "0.00", 
+                row.credit || "0.00", 
+                row.balance || "0.00" 
             ].join(",")).join("\n");
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");

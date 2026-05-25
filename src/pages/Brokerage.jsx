@@ -6,7 +6,7 @@ import { validateDates } from "../utils/dateValidation";
 import { toast } from "react-toastify";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { getBrokerageClientWise, getBrokerageDateWise } from "../api/korpApiService";
+import { getBrokerageClientWise, getBrokerageDateWise, getThirdPartyReport, getResearchCallReportAP } from "../api/korpApiService";
 
 const Brokerage = () => {
     const [activeSubTab, setActiveSubTab] = useState("Capital Brokerage");
@@ -60,28 +60,29 @@ const Brokerage = () => {
                 const response = await getBrokerageClientWise(params);
                 const rows = response?.data?.result?.userList || response?.data?.result?.result1 || response?.data?.data || response?.data?.Data || [];
                 setTableData(Array.isArray(rows) ? rows : []);
-            } 
+            }
             else if (activeSubTab === "Third Party Brokerage") {
                 const params = {
                     pageNumber: 0,
                     size: 50
                 };
                 if (tpFromDate) params.fromDate = formatDateForApi(tpFromDate);
-                if (tpToDate) params.toDate = formatDateForApi(tpToDate);
+                if (tpToDate) params.ToDate = formatDateForApi(tpToDate);
 
-                const response = await getBrokerageDateWise(params);
-                const rows = response?.data?.result?.userList || response?.data?.result?.result1 || response?.data?.data || response?.data?.Data || [];
+                const response = await getThirdPartyReport(params);
+                const rows = response?.data?.result?.resultlist || response?.data?.result?.list || response?.data?.result?.userList || response?.data?.result?.result1 || response?.data?.data || response?.data?.Data || [];
+                console.log('Third Party rows fetched:', rows?.length);
                 setTableData(Array.isArray(rows) ? rows : []);
-            } 
+            }
             else if (activeSubTab === "Research Brokerage") {
                 const params = {
                     pageNumber: 0,
                     size: 50
                 };
-                if (tradeDate) params.fromDate = formatDateForApi(tradeDate);
+                if (tradeDate) params.TradeDate = formatDateForApi(tradeDate);
 
-                const response = await getBrokerageDateWise(params);
-                const rows = response?.data?.result?.userList || response?.data?.result?.result1 || response?.data?.data || response?.data?.Data || [];
+                const response = await getResearchCallReportAP(params);
+                const rows = response?.data?.result?.resultlist || response?.data?.result?.list || response?.data?.result?.userList || response?.data?.result?.result1 || response?.data?.data || response?.data?.Data || [];
                 setTableData(Array.isArray(rows) ? rows : []);
             }
         } catch (err) {
@@ -271,32 +272,49 @@ const Brokerage = () => {
                 ];
             });
             return { headers, rows };
-        } 
+        }
         else if (activeSubTab === "Third Party Brokerage") {
             const headers = ["BranchCode", "MF Brokerage", "Unlisted Brokerage", "Insurance Brokerage", "Bonds Brokerage", "Wealth Basket Brokerage", "Value Stock", "PMS Brokerage"];
             const rows = tableData.map(item => {
-                const branchCode = item.branchCode || item.BranchCode || item.branch || item.Branch || item.branch_code || item.branchcode || item.Apcode || "-";
-                const mfBrokerage = parseFloat(item.mfBrokerage || item.MfBrokerage || item.mf || item.MF || item.mf_brokerage || item.mfbrokerage || item.mfBrokerageAmt || 0);
-                const unlistedBrokerage = parseFloat(item.unlistedBrokerage || item.UnlistedBrokerage || item.unlisted || item.Unlisted || item.unlisted_brokerage || item.unlistedbrokerage || 0);
-                const insuranceBrokerage = parseFloat(item.insuranceBrokerage || item.InsuranceBrokerage || item.insurance || item.Insurance || item.insurance_brokerage || item.insurancebrokerage || 0);
-                const bondsBrokerage = parseFloat(item.bondsBrokerage || item.BondsBrokerage || item.bonds || item.Bonds || item.bonds_brokerage || item.bondsbrokerage || 0);
-                const wealthBasketBrokerage = parseFloat(item.wealthBasketBrokerage || item.WealthBasketBrokerage || item.wealthBasket || item.WealthBasket || item.wealth_basket_brokerage || item.wealthbasketbrokerage || 0);
-                const valueStock = parseFloat(item.valueStock || item.ValueStock || item.valuestock || item.value_stock || item.ValueStockAmt || 0);
-                const pmsBrokerage = parseFloat(item.pmsBrokerage || item.PmsBrokerage || item.pms || item.PMS || item.pms_brokerage || item.pmsbrokerage || 0);
-
+                const branchCode = getVal(item, ["BranchCode", "branchCode", "branch", "Branch"]);
+                const mfBrokerage = getVal(item, ["MFBrokerage", "mfBrokerage", "MF Brokerage", "MFbrokerage", "mfBrokerageAmt"]) || 0;
+                const unlistedBrokerage = getVal(item, ["UnlistedBrokerage", "unlistedBrokerage", "Unlisted Brokerage"]) || 0;
+                const insuranceBrokerage = getVal(item, ["InsuranceBrokerage", "insuranceBrokerage", "Insurance Brokerage"]) || 0;
+                const bondsBrokerage = getVal(item, ["BondBrokerage", "bondsBrokerage", "Bond Brokerage", "BondsBrokerage"]) || 0;
+                const wealthBasketBrokerage = getVal(item, ["WealthBasketBrokerage", "wealthBasketBrokerage", "Wealth Basket Brokerage"]) || 0;
+                const valueStock = getVal(item, ["ValueStock", "valueStock", "Value Stock"]) || 0;
+                const pmsBrokerage = getVal(item, ["PMSBrokerage", "pmsBrokerage", "PMS Brokerage"]) || 0;
                 return [
-                    branchCode,
-                    `₹ ${mfBrokerage.toFixed(2)}`,
-                    `₹ ${unlistedBrokerage.toFixed(2)}`,
-                    `₹ ${insuranceBrokerage.toFixed(2)}`,
-                    `₹ ${bondsBrokerage.toFixed(2)}`,
-                    `₹ ${wealthBasketBrokerage.toFixed(2)}`,
-                    `₹ ${valueStock.toFixed(2)}`,
-                    `₹ ${pmsBrokerage.toFixed(2)}`
+                    branchCode || "-",
+                    `₹ ${parseFloat(mfBrokerage).toFixed(2)}`,
+                    `₹ ${parseFloat(unlistedBrokerage).toFixed(2)}`,
+                    `₹ ${parseFloat(insuranceBrokerage).toFixed(2)}`,
+                    `₹ ${parseFloat(bondsBrokerage).toFixed(2)}`,
+                    `₹ ${parseFloat(wealthBasketBrokerage).toFixed(2)}`,
+                    `₹ ${parseFloat(valueStock).toFixed(2)}`,
+                    `₹ ${parseFloat(pmsBrokerage).toFixed(2)}`
                 ];
             });
             return { headers, rows };
-        } 
+        }
+        else if (activeSubTab === "Research Brokerage") {
+            const headers = ["Symbol", "Instrument", "Option Type", "Strike Price", "Expire Date", "Buy/Sell", "Mkt Lot", "Quantity", "Trade Value", "Brokerage", "No Of Trade"];
+            const rows = tableData.map(item => {
+                const symbol = getVal(item, ["Symbol", "symbol", "Symbal", "symbal"]) || "-";
+                const instrument = getVal(item, ["Instrument", "instrument"]) || "-";
+                const optionType = getVal(item, ["OptionType", "optionType", "Option Type", "option_type"]) || "-";
+                const strikePrice = getVal(item, ["StrikePrice", "strikePrice", "Strike Price", "strike_price"]) || "-";
+                const expireDate = getVal(item, ["ExpireDate", "expireDate", "Expire Date", "expire_date"]) || "-";
+                const buySell = getVal(item, ["BuySell", "buySell", "Buy/Sell", "buy_sell"]) || "-";
+                const mktLot = getVal(item, ["MktLot", "mktLot", "Mkt Lot", "mkt_lot"]) || "-";
+                const quantity = getVal(item, ["Quantity", "quantity"]) || "-";
+                const tradeValue = getVal(item, ["TradeValue", "tradeValue", "Trade Value", "trade_value"]) || "-";
+                const brokerage = getVal(item, ["Brokerage", "brokerage"]) || "-";
+                const noOfTrade = getVal(item, ["NoOfTrade", "noOfTrade", "No Of Trade", "no_of_trade"]) || "-";
+                return [symbol, instrument, optionType, strikePrice, expireDate, buySell, mktLot, quantity, tradeValue, brokerage, noOfTrade];
+            });
+            return { headers, rows };
+        }
         else {
             const headers = ["TRADE DATE", "CLIENT CODE", "CLIENT NAME", "BROKERAGE", "TURNOVER"];
             const rows = tableData.map(item => [
