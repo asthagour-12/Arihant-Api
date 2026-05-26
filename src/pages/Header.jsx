@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import logo from '../logo-arihant-capital.png';
+import { getUserProfile } from '../api/korpApiService';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -74,7 +75,12 @@ const Header = () => {
             Account Opening
           </span>
           <span
-            onClick={() => navigate("/download")}
+            onClick={() => {
+              getUserProfile()
+                .then((res) => console.log("Header -> getprofile success:", res.data))
+                .catch((err) => console.error("Header -> getprofile error:", err));
+              navigate("/download");
+            }}
             className={`cursor-pointer transition-all hover:text-white py-5 ${location.pathname.startsWith("/download") || location.pathname.startsWith("/marketing-material") ? "text-white font-black" : ""}`}
           >
             Download

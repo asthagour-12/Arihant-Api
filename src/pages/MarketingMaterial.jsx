@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Header from "./Header";
+import Header from "./Header.jsx";
 import ComplianceCertificate from "./ComplianceCertificate.jsx";
 import ComplianceCircular from "./ComplianceCircular.jsx";
 import Download from "./Download.jsx";
 import Training from "./Training.jsx";
 import { ToastContainer, toast } from "react-toastify";
-import ArihantProductsSection from "./ArihantProducts";
+import ArihantProductsSection from "./ArihantProducts.jsx";
 import "react-toastify/dist/ReactToastify.css";
-import { getCertificate, getMarkrtingMaterialFiles } from "../api/korpApiService";
+import { getUserProfile, getMarkrtingMaterialFiles } from "../api/korpApiService";
 
 export default function MarketingMaterial() {
   const [activeTab, setActiveTab] = useState("Marketing Material");
@@ -17,82 +17,43 @@ export default function MarketingMaterial() {
   const [error, setError] = useState("");
   const [open, setOpen] = useState({});
   const [selected, setSelected] = useState({});
-  
-  // Certificate API specific states
-  const [certificates, setCertificates] = useState([]);
-  const [loadingCertificates, setLoadingCertificates] = useState(false);
 
-  const fetchCertificates = async () => {
-    setLoadingCertificates(true);
-    try {
-      const params = {
-        pageNumber: 0,
-        size: 50,
-      };
-      const response = await getCertificate(params);
-      console.log("Certificate API Response:", response.data);
-      const items = response?.data?.data || response?.data?.Data || response?.data?.result || response?.data || [];
-      if (Array.isArray(items)) {
-        setCertificates(items);
-      } else {
-        setCertificates([]);
-      }
-    } catch (error) {
-      console.error("Failed to fetch certificates:", error);
-      setCertificates([]);
-    } finally {
-      setLoadingCertificates(false);
-    }
-  };
+  // ── 📞 API TRIGGERS FOR NETWORKING ──────────────────────────────────────────
 
-  useEffect(() => {
-    if (activeTab === "Compliance Certificate" && activeSubTab === "certificate") {
-      fetchCertificates();
-    }
-  }, [activeTab, activeSubTab]);
-
-  // Marketing Material API specific states
-  const [marketingFiles, setMarketingFiles] = useState(null);
-  const [loadingMarketing, setLoadingMarketing] = useState(false);
-
-  const fetchMarketingMaterial = async () => {
-    setLoadingMarketing(true);
-    try {
-      const params = {
-        pageNumber: 0,
-        size: 100,
-      };
-      const response = await getMarkrtingMaterialFiles(params);
-      console.log("Marketing Material API Response:", response.data);
-      const items = response?.data?.data || response?.data?.Data || response?.data?.result || response?.data || [];
-      
-      if (Array.isArray(items) && items.length > 0) {
-        const grouped = {};
-        items.forEach((item) => {
-          const category = item.category || item.Category || item.type || item.Type || "General";
-          const fileName = item.fileName || item.Filename || item.file || item.File || "document.pdf";
-          if (!grouped[category]) {
-            grouped[category] = [];
-          }
-          if (!grouped[category].includes(fileName)) {
-            grouped[category].push(fileName);
-          }
-        });
-        setMarketingFiles(grouped);
-      } else {
-        setMarketingFiles(null);
-      }
-    } catch (error) {
-      console.error("Failed to fetch marketing material files:", error);
-      setMarketingFiles(null);
-    } finally {
-      setLoadingMarketing(false);
-    }
-  };
-
+  // 1. Trigger POST /reports/GetMarkrtingMaterialFiles when "Marketing Material" tab is active
   useEffect(() => {
     if (activeTab === "Marketing Material") {
-      fetchMarketingMaterial();
+      const fetchMarketingFiles = async () => {
+        try {
+          console.log("Hitting GetMarkrtingMaterialFiles API...");
+          const response = await getMarkrtingMaterialFiles({ pageNumber: 0, size: 100 });
+          console.log("GetMarkrtingMaterialFiles API Success:", response.data);
+        } catch (error) {
+          console.error("GetMarkrtingMaterialFiles API Error:", error);
+        }
+      };
+      fetchMarketingFiles();
+    }
+  }, [activeTab]);
+
+  // 2. Trigger GET /dashboard/getprofile FIRST & POST /reports/GetMarkrtingMaterialFiles SECOND when "Download" tab is clicked
+  useEffect(() => {
+    if (activeTab === "Download") {
+      const fetchProfileAndMarketingOnDownload = async () => {
+        try {
+          console.log("Hitting getprofile API on Download tab click FIRST...");
+          const profileResponse = await getUserProfile();
+          console.log("getprofile API Success on Download:", profileResponse.data);
+
+          console.log("Hitting GetMarkrtingMaterialFiles API on Download tab click SECOND...");
+          const marketingResponse = await getMarkrtingMaterialFiles({ pageNumber: 0, size: 100 });
+          console.log("GetMarkrtingMaterialFiles API Success on Download:", marketingResponse.data);
+        } catch (error) {
+          console.error("API Error on Download:", error);
+        }
+      };
+
+      fetchProfileAndMarketingOnDownload();
     }
   }, [activeTab]);
 
@@ -258,81 +219,72 @@ export default function MarketingMaterial() {
           {/* CONTENT */}
           {activeTab === "Marketing Material" && (
             <div className="mt-6">
-              {loadingMarketing ? (
-                <div className="p-16 text-center text-gray-500 font-semibold text-[15px]">
-                  Loading marketing materials from UAT...
-                </div>
-              ) : (
-                <div className="flex flex-wrap gap-10">
-                  {(() => {
-                    const displayData = marketingFiles && Object.keys(marketingFiles).length > 0 ? marketingFiles : data;
-                    return Object.keys(displayData).map((category) => (
-                      <div key={category} className="w-[200px]">
+              {/* HORIZONTAL LAYOUT */}
+              <div className="flex flex-wrap gap-10">
+                {Object.keys(data).map((category) => (
+                  <div key={category} className="w-[200px]">
 
-                        {/* CATEGORY */}
-                        <div
-                          className="flex items-center gap-3 cursor-pointer"
-                          onClick={() => toggleCategory(category)}
-                        >
+                    {/* CATEGORY */}
+                    <div
+                      className="flex items-center gap-3 cursor-pointer"
+                      onClick={() => toggleCategory(category)}
+                    >
+                      <div
+                        className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 min-w-[20px] min-h-[20px]
+                        ${open[category]
+                            ? "bg-[#34b350] border-[#34b350]"
+                            : "border-gray-400"
+                          }`}
+                      >
+                        {open[category] && (
+                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                        )}
+                      </div>
+
+                      <span className="font-medium text-gray-800">
+                        {category}
+                      </span>
+                    </div>
+
+                    {/* FILE LIST */}
+                    <div
+                      className={`ml-6 mt-3 transition-all duration-300 overflow-hidden
+                      ${open[category]
+                          ? "max-h-[400px] opacity-100"
+                          : "max-h-0 opacity-0"
+                        }`}
+                    >
+                      {data[category].map((file, i) => (
+                        <div key={i} className="flex items-center gap-3 mt-2">
                           <div
-                            className={`w-5 h-5 rounded-full border flex items-center justify-center
-                            ${open[category]
-                                ? "bg-[#34b350] border-[#34b350]"
+                            onClick={() => toggleFile(file)}
+                            className={`w-4 h-4 rounded-full border flex items-center justify-center cursor-pointer flex-shrink-0 min-w-[16px] min-h-[16px]
+                            ${selected[file]
+                                ? "bg-blue-600 border-blue-600"
                                 : "border-gray-400"
                               }`}
                           >
-                            {open[category] && (
+                            {selected[file] && (
                               <div className="w-2 h-2 bg-white rounded-full"></div>
                             )}
                           </div>
 
-                          <span className="font-medium text-gray-800">
-                            {category}
-                          </span>
+                          <a
+                            href={`https://intranet.arihantcapital.com/Files/ConnectFile/${file}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-blue-600 hover:underline cursor-pointer no-underline break-all"
+                          >
+                            {file}
+                          </a>
                         </div>
-
-                        {/* FILE LIST */}
-                        <div
-                          className={`ml-6 mt-3 transition-all duration-300 overflow-hidden
-                          ${open[category]
-                              ? "max-h-[400px] opacity-100"
-                              : "max-h-0 opacity-0"
-                            }`}
-                        >
-                          {displayData[category].map((file, i) => (
-                            <div key={i} className="flex items-center gap-3 mt-2">
-                              <div
-                                onClick={() => toggleFile(file)}
-                                className={`w-4 h-4 rounded-full border flex items-center justify-center cursor-pointer
-                                ${selected[file]
-                                    ? "bg-blue-600 border-blue-600"
-                                    : "border-gray-400"
-                                  }`}
-                              >
-                                {selected[file] && (
-                                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                                )}
-                              </div>
-
-                              <a
-                                href={file.startsWith("http") ? file : `https://intranet.arihantcapital.com/Files/ConnectFile/${file}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-sm text-blue-600 hover:underline cursor-pointer no-underline break-all"
-                              >
-                                {file}
-                              </a>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ));
-                  })()}
-                </div>
-              )}
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
-
 
           {activeTab === "Compliance Certificate" && (
             <div className="mt-6">
@@ -370,57 +322,8 @@ export default function MarketingMaterial() {
 
               {/* CERTIFICATE SECTION */}
               {activeSubTab === "certificate" && (
-                <div className="w-full mt-4">
-                  {loadingCertificates ? (
-                    <div className="p-16 text-center text-gray-500 font-semibold text-[15px]">
-                      Loading compliance certificates from UAT...
-                    </div>
-                  ) : certificates.length === 0 ? (
-                    <div className="p-16 text-center text-gray-400 font-medium border border-dashed rounded-xl">
-                      No certificates available to display
-                    </div>
-                  ) : (
-                    <div className="overflow-x-auto rounded-xl border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.02)] bg-white">
-                      <table className="w-full text-left text-sm text-gray-700">
-                        <thead className="bg-[#34b350] text-white font-bold text-xs uppercase tracking-wider">
-                          <tr>
-                            <th className="px-6 py-4">Sr. No</th>
-                            <th className="px-6 py-4">Certificate Name</th>
-                            <th className="px-6 py-4">Description</th>
-                            <th className="px-6 py-4">Uploaded Date</th>
-                            <th className="px-6 py-4 text-center">Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {certificates.map((cert, index) => {
-                            const fileName = cert.fileName || cert.Filename || cert.name || cert.Name || "Certificate";
-                            const uploadDate = cert.uploadDate || cert.CreatedDate || cert.date || "-";
-                            const desc = cert.description || cert.Description || "Compliance Certificate";
-                            const fileUrl = cert.fileUrl || cert.url || cert.Url || `https://korpapuatapi.arihantcapital.com/api/V1/reports/downloadCertificate?fileName=${fileName}`;
-
-                            return (
-                              <tr key={index} className="border-b last:border-0 hover:bg-gray-50/50 transition-colors">
-                                <td className="px-6 py-4 font-semibold text-gray-900">{index + 1}</td>
-                                <td className="px-6 py-4 font-bold text-gray-800 break-all">{fileName}</td>
-                                <td className="px-6 py-4 text-gray-600 font-medium">{desc}</td>
-                                <td className="px-6 py-4 text-gray-500 font-medium">{uploadDate}</td>
-                                <td className="px-6 py-4 text-center">
-                                  <a
-                                    href={fileUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1.5 px-6 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full font-bold text-[11px] uppercase tracking-wider transition-all shadow-md hover:shadow-lg cursor-pointer no-underline active:scale-95"
-                                  >
-                                    Download
-                                  </a>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
+                <div className="w-full h-2">
+                  {/* Certificate content area */}
                 </div>
               )}
             </div>

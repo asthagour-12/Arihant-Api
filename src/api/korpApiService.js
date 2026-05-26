@@ -4,14 +4,12 @@ import axios from "axios";
 const korpInstance = axios.create({
   baseURL: "https://korpapuatapi.arihantcapital.com/api/V1",
   withCredentials: true,
-  headers: { "Content-Type": "application/json" },
 });
 
 // Secondary instance for apuatapi (SSO/Admin/Login)
 const ssoInstance = axios.create({
   baseURL: "https://apuatapi.arihantcapital.com/api/V1",
   withCredentials: true,
-  headers: { "Content-Type": "application/json" },
 });
 
 // ── 🛡️ INTERCEPTORS (Shared Logic) ────────────────────────────────────────────
@@ -96,7 +94,7 @@ export const getBrokerageDateWise = (params) => korpInstance.get("/reports/korpg
 // New endpoints for third party and research reports
 export const getThirdPartyReport = (params) => korpInstance.post("/reports/GetThirdPartyReport", {}, { params });
 export const getResearchCallReportAP = (params) => korpInstance.post("/reports/ResearchCallReportAP", {}, { params });
-export const getDPSlip = (params) => korpInstance.post("/reports/KorpdpSlip", params);
+export const getDPSlip = (params) => korpInstance.post("/reports/KorpdpSlip", {}, { params });
 export const getClientPortfolio = (params = {}, body = {}) => korpInstance.post("/reports/GetClientPortpolio", body, { params });
 export const getResearchCalls = (type) => korpInstance.get("/reports/getResearchCallDisplay", { params: { SearchType: type } });
 export const getOneClickEarlyPaying = (clientCode) => korpInstance.get("/reports/OneClickEarlypaying", { params: { clientCode } });
@@ -210,9 +208,9 @@ export const getPhysicalModification = (params = {}) => korpInstance.get("/repor
 export const getPhysicalAccountOpening = (params = {}) => korpInstance.get("/reports/GetPhysicalAccountOpening", { params });
 export const getRekycModification = (params = {}) => korpInstance.get("/reports/Rekycmodificationlist", { params });
 export const getComplianceFiles = (params = {}) => {
-  const { pageNumber, size, ...body } = params;
+  const { pageNumber, size, SearchType, Search, ...body } = params;
   return korpInstance.post("/ComplianceCircular/CircularList", body, {
-    params: { pageNumber, size }
+    params: { pageNumber, size, SearchType, Search }
   });
 };
 export const getAriTradeFileUpload = () => korpInstance.get("/reports/GetAriTradeFileUpload");

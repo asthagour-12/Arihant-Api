@@ -5,7 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import '@fortawesome/fontawesome-free/css/all.css';
 import ArihantProducts from "./ArihantProducts";
 import Footer from "./Footer";
-import { getUserProfile } from "../api/korpApiService";
+import { getUserProfile, getDPSlip } from "../api/korpApiService";
 
 function DealSlip() {
   const [fromDate, setFromDate] = useState(null);
@@ -13,6 +13,9 @@ function DealSlip() {
   const [clientCode, setClientCode] = useState("");
   const [showCustomError, setShowCustomError] = useState(false);
   const [customErrorMsg, setCustomErrorMsg] = useState("");
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [errorResponse, setErrorResponse] = useState(null);
   const fromRef = useRef();
   const toRef = useRef();
 
@@ -21,6 +24,14 @@ function DealSlip() {
       try {
         const response = await getUserProfile();
         console.log("UserProfile Response on DealSlip:", response.data);
+        
+        if (response.data && response.data.success === false) {
+          setErrorResponse(response.data);
+          setCustomErrorMsg(response.data.message || "Invalid Client Code");
+          setShowCustomError(true);
+          return;
+        }
+
         const data = response?.data?.data || response?.data?.Data || response?.data?.result || response?.data;
         if (data) {
           const code = data.clientCode || data.clientcode || data.ClientCode || data.uccCode || data.ucc || "";
@@ -41,6 +52,15 @@ function DealSlip() {
       return () => clearTimeout(timer);
     }
   }, [showCustomError]);
+
+  const formatDate = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
 
   const handleApply = async () => {
     if (!clientCode.trim()) {
@@ -69,14 +89,109 @@ function DealSlip() {
       return;
     }
     
-    // Call API endpoint
+    setIsDownloading(true);
     try {
-      const response = await getUserProfile();
+      const datefrm = formatDate(fromDate);
+      const dateto = formatDate(toDate);
+
+      const response = await getDPSlip({
+        ClientCode: clientCode.trim(),
+        datefrm,
+        dateto,
+      });
+
       console.log("Deal Slip API Response:", response.data);
+      const responseData = response?.data;
+
+      if (responseData) {
+        // If success is false, display the message in the error toast & error response panel
+        if (responseData.success === false) {
+          setErrorResponse(responseData);
+          setPdfUrl(null);
+          setCustomErrorMsg(responseData.message || "Invalid Client Code");
+          setShowCustomError(true);
+          return;
+        }
+
+        // Reset error response on success
+        setErrorResponse(null);
+
+        // Extract base64 PDF from FileData
+        const base64PDF = responseData.result?.FileData || responseData.result?.fileData || responseData.FileData || responseData.data?.FileData;
+
+        if (base64PDF) {
+          const formattedBase64 = base64PDF.startsWith("data:") ? base64PDF.trim() : `data:application/pdf;base64,${base64PDF.trim()}`;
+          setPdfUrl(formattedBase64);
+
+          try {
+            // Convert base64 to Blob URL for clean preview and direct download
+            const byteCharacters = atob(base64PDF.trim());
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+              byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: "application/pdf" });
+            const blobUrl = URL.createObjectURL(blob);
+            
+            // Set pdfUrl to blobUrl for cleaner in-app rendering
+            setPdfUrl(blobUrl);
+
+            // Open PDF preview in a new tab (if popup blockers allow)
+            window.open(blobUrl, "_blank");
+
+            // Automatically download the file
+            const link = document.createElement("a");
+            link.href = blobUrl;
+            link.setAttribute("download", `DealSlip_${clientCode.trim()}_${datefrm}_${dateto}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          } catch (e) {
+            console.error("Failed to parse base64 PDF FileData:", e);
+            // Fallback to direct data URL download
+            const link = document.createElement("a");
+            link.href = formattedBase64;
+            link.setAttribute("download", `DealSlip_${clientCode.trim()}_${datefrm}_${dateto}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        } else {
+          // Additional fallbacks for fileUrl/base64Data
+          const fileUrl = responseData.fileUrl || responseData.url || responseData.Url || responseData.data?.fileUrl || responseData.data?.url;
+          const base64Data = responseData.base64 || responseData.Base64 || responseData.pdfBase64 || responseData.data?.base64;
+
+          if (fileUrl && typeof fileUrl === "string" && fileUrl.startsWith("http")) {
+            const link = document.createElement("a");
+            link.href = fileUrl;
+            link.setAttribute("download", `DealSlip_${clientCode.trim()}_${datefrm}_${dateto}.pdf`);
+            link.setAttribute("target", "_blank");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          } else if (base64Data) {
+            const link = document.createElement("a");
+            link.href = base64Data.startsWith("data:") ? base64Data : `data:application/pdf;base64,${base64Data}`;
+            link.setAttribute("download", `DealSlip_${clientCode.trim()}_${datefrm}_${dateto}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          } else {
+            setCustomErrorMsg("No document file (FileData) found in response");
+            setShowCustomError(true);
+          }
+        }
+      } else {
+        setCustomErrorMsg("Invalid response from server");
+        setShowCustomError(true);
+      }
     } catch (error) {
       console.error("Deal Slip API Error:", error);
-      setCustomErrorMsg("Failed to fetch profile");
+      setCustomErrorMsg(error.response?.data?.message || "Failed to download Deal Slip. Please try again.");
       setShowCustomError(true);
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -190,7 +305,7 @@ function DealSlip() {
                   onFocus={(e) => e.target.blur()}
                 />
                 <i
-                  className="fas fa-calendar-alt absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-[11px] cursor-pointer group-hover:text-[#34b350] transition-colors"
+                  className="fas fa-calendar-alt absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-[16px] cursor-pointer group-hover:text-[#34b350] transition-colors"
                   onClick={() => fromRef.current.setOpen(true)}
                 ></i>
               </div>
@@ -216,7 +331,7 @@ function DealSlip() {
                   onFocus={(e) => e.target.blur()}
                 />
                 <i
-                  className="fas fa-calendar-alt absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-[11px] cursor-pointer group-hover:text-[#34b350] transition-colors"
+                  className="fas fa-calendar-alt absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-[16px] cursor-pointer group-hover:text-[#34b350] transition-colors"
                   onClick={() => toRef.current.setOpen(true)}
                 ></i>
               </div>
@@ -226,14 +341,85 @@ function DealSlip() {
             <div className="flex items-end">
               <button
                 onClick={handleApply}
-                className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full font-semibold whitespace-nowrap"
+                disabled={isDownloading}
+                className={`bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full font-semibold whitespace-nowrap transition-all flex items-center gap-2 ${isDownloading ? "opacity-75 cursor-not-allowed" : ""}`}
               >
-                DOWNLOAD SLIP <span className="ml-1">›</span>
+                {isDownloading ? (
+                  <>
+                    DOWNLOADING...
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  </>
+                ) : (
+                  <>
+                    DOWNLOAD SLIP <span className="ml-1">›</span>
+                  </>
+                )}
               </button>
             </div>
 
           </div>
         </div>
+
+        {/* PDF PREVIEW CONTAINER */}
+        {pdfUrl && (
+          <div className="bg-white rounded-lg shadow border border-gray-200 p-5 mt-4 transition-all duration-500">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-6 bg-green-600 rounded-full"></span>
+                <h3 className="text-lg font-bold text-gray-800">Deal Slip Preview</h3>
+              </div>
+              <div className="flex gap-3">
+                <a 
+                  href={pdfUrl} 
+                  download={`DealSlip_${clientCode.trim()}_${formatDate(fromDate)}_${formatDate(toDate)}.pdf`} 
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-full text-xs font-semibold no-underline flex items-center gap-1.5 shadow-sm transition-all"
+                >
+                  <i className="fa fa-download text-[10px]"></i> Download PDF
+                </a>
+                <button 
+                  onClick={() => setPdfUrl(null)} 
+                  className="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm transition-all"
+                >
+                  Close Preview
+                </button>
+              </div>
+            </div>
+            <div className="w-full h-[650px] border border-gray-300 rounded-lg overflow-hidden shadow-inner bg-gray-50">
+              <iframe src={pdfUrl} width="100%" height="100%" title="Deal Slip Preview" className="border-none"></iframe>
+            </div>
+          </div>
+        )}
+
+        {/* ERROR RESPONSE CONTAINER */}
+        {errorResponse && (
+          <div className="bg-white rounded-lg shadow border border-red-200 p-5 mt-4 transition-all duration-500 animate-fadeIn">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-6 bg-red-600 rounded-full"></span>
+                <h3 className="text-lg font-bold text-red-800">Response / Preview</h3>
+              </div>
+              <button 
+                onClick={() => setErrorResponse(null)} 
+                className="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm transition-all"
+              >
+                Close Response
+              </button>
+            </div>
+            
+            <div className="bg-red-50/50 p-4 rounded-lg border border-red-100 font-mono text-sm text-red-700 shadow-inner">
+              <div className="flex items-center gap-2 mb-3 text-red-600 font-semibold">
+                <i className="fa fa-exclamation-circle text-lg"></i>
+                <span>API Request Failed: {errorResponse.message || "Invalid Client Code"}</span>
+              </div>
+              <pre className="bg-gray-50 p-3 rounded text-xs text-gray-700 overflow-x-auto border border-gray-200">
+                {JSON.stringify(errorResponse, null, 2)}
+              </pre>
+            </div>
+          </div>
+        )}
 
         {/* ARIHANT PRODUCTS */}
         <div className="mt-4">

@@ -25,19 +25,61 @@ export default function ComplianceCircular() {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
+  const fetchData = async (selectedType = type) => {
     setIsLoading(true);
     try {
       const params = {
         pageNumber: 0,
-        size: 100,
+        size: 50,
       };
+      if (selectedType) {
+        params.SearchType = "CIR";
+        params.Search = selectedType === "Others" ? "Other" : selectedType;
+      }
       const response = await getComplianceFiles(params);
       console.log("Compliance Files API Response:", response.data);
-      const items = response?.data?.data || response?.data?.Data || response?.data?.result || response?.data || [];
+      
+      const responseData = response?.data;
+      let items = [];
+      if (responseData) {
+        if (Array.isArray(responseData)) {
+          items = responseData;
+        } else if (responseData.result && Array.isArray(responseData.result)) {
+          items = responseData.result;
+        } else if (responseData.result && typeof responseData.result === "object") {
+          const firstArrayKey = Object.keys(responseData.result).find(key => Array.isArray(responseData.result[key]));
+          if (firstArrayKey) {
+            items = responseData.result[firstArrayKey];
+          }
+        } else if (responseData.data && Array.isArray(responseData.data)) {
+          items = responseData.data;
+        } else if (responseData.data && typeof responseData.data === "object") {
+          const firstArrayKey = Object.keys(responseData.data).find(key => Array.isArray(responseData.data[key]));
+          if (firstArrayKey) {
+            items = responseData.data[firstArrayKey];
+          }
+        } else if (responseData.Data && Array.isArray(responseData.Data)) {
+          items = responseData.Data;
+        }
+      }
+
       if (Array.isArray(items)) {
-        setData(items);
         setOriginalData(items);
+        
+        let filtered = [...items];
+        if (fromDate) {
+          filtered = filtered.filter((item) => {
+            const itemDate = item.CircularDate || item.circularDate || item.date || item.Date || item.uploadDate || item.CreatedDate || "";
+            return new Date(itemDate) >= new Date(fromDate);
+          });
+        }
+        if (toDate) {
+          filtered = filtered.filter((item) => {
+            const itemDate = item.CircularDate || item.circularDate || item.date || item.Date || item.uploadDate || item.CreatedDate || "";
+            return new Date(itemDate) <= new Date(toDate);
+          });
+        }
+        setData(filtered);
       } else {
         setData([]);
         setOriginalData([]);
@@ -72,14 +114,14 @@ export default function ComplianceCircular() {
 
     if (fromDate) {
       filtered = filtered.filter((item) => {
-        const itemDate = item.date || item.Date || item.uploadDate || item.CreatedDate || "";
+        const itemDate = item.CircularDate || item.circularDate || item.date || item.Date || item.uploadDate || item.CreatedDate || "";
         return new Date(itemDate) >= new Date(fromDate);
       });
     }
 
     if (toDate) {
       filtered = filtered.filter((item) => {
-        const itemDate = item.date || item.Date || item.uploadDate || item.CreatedDate || "";
+        const itemDate = item.CircularDate || item.circularDate || item.date || item.Date || item.uploadDate || item.CreatedDate || "";
         return new Date(itemDate) <= new Date(toDate);
       });
     }
@@ -166,7 +208,11 @@ export default function ComplianceCircular() {
               <select
                 className="px-4 py-2 rounded bg-gray-700 text-white w-56 appearance-none pr-10"
                 value={type}
-                onChange={(e) => setType(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setType(val);
+                  fetchData(val);
+                }}
               >
                 <option value="">Select Type</option>
                 <option value="NSE">NSE</option>
@@ -267,7 +313,17 @@ export default function ComplianceCircular() {
               data.map((item, index) => {
                 const complianceType = item.complianceType || item.ComplianceType || item.circularType || item.CircularType || item.type || item.Type || item.fileType || item.FileType || "Circular";
                 const fileName = item.circularName || item.CircularName || item.file || item.File || item.fileName || item.FileName || item.name || item.Name || "Download File";
-                const circularDate = item.date || item.Date || item.uploadDate || item.CreatedDate || item.uploadedDate || item.UploadedDate || "-";
+                const rawDate = item.CircularDate || item.circularDate || item.date || item.Date || item.uploadDate || item.CreatedDate || item.uploadedDate || item.UploadedDate || "-";
+                let circularDate = "-";
+                if (rawDate && rawDate !== "-") {
+                  const firstPart = String(rawDate).split(" ")[0].split("T")[0];
+                  if (firstPart.includes("-") && firstPart.split("-")[0].length === 4) {
+                    const [yyyy, mm, dd] = firstPart.split("-");
+                    circularDate = `${dd}/${mm}/${yyyy}`;
+                  } else {
+                    circularDate = firstPart;
+                  }
+                }
                 const fileUrl = item.fileUrl || item.url || item.Url || `https://korpapuatapi.arihantcapital.com/api/V1/reports/downloadComplianceFile?fileName=${fileName}`;
 
                 return (

@@ -4,7 +4,7 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import logo from "../logo-arihant-capital.png";
 import Header from "./Header";
 import ArihantProductsSection from "./ArihantProducts";
-import { getResearchCalls } from "../api/korpApiService";
+import { getResearchCalls, getUserProfile } from "../api/korpApiService";
 
 function ResearchCall() {
   const [activeTopTab, setActiveTopTab] = useState("research");
@@ -51,6 +51,18 @@ function ResearchCall() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const checkUserProfile = async () => {
+      try {
+        const response = await getUserProfile();
+        console.log("UserProfile fetched on ResearchCall:", response.data);
+      } catch (err) {
+        console.error("Failed to check profile on ResearchCall:", err);
+      }
+    };
+    checkUserProfile();
+  }, []);
 
   useEffect(() => {
     fetchCalls(activeSubTab);
