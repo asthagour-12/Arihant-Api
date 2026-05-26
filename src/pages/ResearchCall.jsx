@@ -128,38 +128,32 @@ function ResearchCall() {
 
         {/* Research Calls Table */}
         <div className="mt-6 bg-white border border-gray-200 rounded-md overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-green-600 text-white">
+          <table className="w-full text-sm border-collapse border border-gray-200">
+            <thead className="bg-[#f8fafc] text-gray-700 border-b border-gray-200">
               <tr>
-                <th className="p-3 text-left">Date & Time</th>
-                <th className="p-3 text-left">Segment</th>
-                <th className="p-3 text-left">Message</th>
+                <th className="p-3 text-left border-r border-gray-200 last:border-r-0">Date & Time</th>
+                <th className="p-3 text-left border-r border-gray-200 last:border-r-0">Segment</th>
+                <th className="p-3 text-left border-r border-gray-200 last:border-r-0">Message</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="3" className="p-8 text-center text-gray-500 font-semibold">
+                  <td colSpan="3" className="p-8 text-center text-gray-500 font-semibold border-b">
                     Loading research calls from UAT...
                   </td>
                 </tr>
-              ) : calls.length === 0 ? (
-                <tr>
-                  <td colSpan="3" className="p-8 text-center text-gray-500 font-medium">
-                    No active research calls for this category
-                  </td>
-                </tr>
-              ) : (
+              ) : calls.length === 0 ? null : (
                 calls.map((row, index) => {
                   const dateTime = row.dateTime || row.datetime || row.Date || row.date || row.DateTime || row.updatedDate || "-";
                   const segment = row.segment || row.Segment || row.type || row.Type || "-";
                   const message = row.message || row.Message || row.callMessage || row.description || row.Description || "-";
 
                   return (
-                    <tr key={index} className="border-t hover:bg-gray-50">
-                      <td className="p-3 whitespace-nowrap">{dateTime}</td>
-                      <td className="p-3">{segment}</td>
-                      <td className="p-3">{message}</td>
+                    <tr key={index} className="border-t border-gray-200 hover:bg-gray-50">
+                      <td className="p-3 whitespace-nowrap border-r border-gray-200 last:border-r-0">{dateTime}</td>
+                      <td className="p-3 border-r border-gray-200 last:border-r-0">{segment}</td>
+                      <td className="p-3 border-r border-gray-200 last:border-r-0">{message}</td>
                     </tr>
                   );
                 })

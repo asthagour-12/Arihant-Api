@@ -86,7 +86,12 @@ const Header = () => {
             Download
           </span>
           <span
-            onClick={() => navigate("/researchcall")}
+            onClick={() => {
+              getUserProfile()
+                .then((res) => console.log("Header -> getprofile success on Research Call click:", res.data))
+                .catch((err) => console.error("Header -> getprofile error on Research Call click:", err));
+              navigate("/researchcall");
+            }}
             className={`cursor-pointer transition-all hover:text-white py-5 ${location.pathname.startsWith("/researchcall") ? "text-white font-black" : ""}`}
           >
             Research Call

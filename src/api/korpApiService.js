@@ -139,9 +139,11 @@ export const getDashboardData = async () => {
   }
 };
 export const getClientDetailByType = (clientCode, type) => korpInstance.get("/dashboard/korpgetclientDetail", { params: { clientCode, Type: type } });
-export const getUserProfile = () => korpInstance.get("/dashboard/getprofile");
+export const getUserProfile = () => {
+  return axios.get("https://korpapuatapi.arihantcapital.com/api/V1/dashboard/getprofile");
+};
 // Auditor profile endpoints
-export const getAuditorProfile = () => korpInstance.get("/dashboard/getprofile");
+export const getAuditorProfile = () => getUserProfile();
 export const getAuditorMe = () => korpInstance.get("/auditor/me");
 export const getAdminSubbrokerCount = () => korpInstance.get("/AdminDashboard/getAdminsubbrokerclientcount");
 export const getTopPerformedBrokers = (type) => ssoInstance.get("/AdminDashboard/getTopPerformedBrk", { params: { SearchType: type } });
@@ -242,7 +244,9 @@ export const getComplianceFolder = () => korpInstance.get("/reports/getComplianc
 export const getFTPDirectory = (params) => korpInstance.get("/FTP/FTPDirectory", { params });
 export const getFTPDirectoryFiles = (params) => korpInstance.get("/FTP/FTPDirectoryFiles", { params });
 export const getFTPFile1 = (params) => korpInstance.get("/FTP/getftpFile1", { params });
-export const getAlgoBrokerage = (params = {}) => korpInstance.get("/AdminDashboard/korpIAlgoBrokerage", { params });
+export const getAlgoBrokerage = (params = {}) => {
+  return axios.get("https://korpapuatapi.arihantcapital.com/api/V1/AdminDashboard/korpIAlgoBrokerage", { params });
+};
 export const getMfStructure = (params = {}, body = {}) => korpInstance.post("/reports/GetMfStructure", body, { params });
 export const getTipsOnBondOfferData = (data = {}) => korpInstance.post("/reports/TipsonBondOfferData", data);
 export const getClientContactDetails = (params = {}) => korpInstance.get("/AdminDashboard/korpClientContactDetails", { params });

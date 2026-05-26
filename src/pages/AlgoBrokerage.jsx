@@ -279,87 +279,11 @@ export default function AlgoBrokerage() {
             </div>
           </div>
 
-          <div className="mt-4 flex items-center justify-between">
-            <div className="text-sm text-gray-700 pb-3 font-semibold">
-              Search results({data.length})
+          {loading && (
+            <div className="mt-4 text-center text-gray-500 font-medium p-8 bg-gray-50 border rounded-lg animate-pulse">
+              Loading Algo Brokerage report from UAT...
             </div>
-            <i className="fa fa-download text-green-600 text-lg cursor-pointer hover:scale-110 transition-transform" onClick={handleDownload}></i>
-          </div>
-
-          <div className="mt-2 bg-white rounded-lg overflow-hidden border">
-            <table className="w-full text-[12px] border border-gray-300 table-fixed">
-              <thead>
-                <tr className="bg-[#2fb344] text-white">
-                  <th className="px-3 py-2 border-r border-gray-200">
-                    <div onClick={() => handleSort("date")} className="flex items-center cursor-pointer">
-                      DATE
-                      <SortIcon column="date" />
-                    </div>
-                  </th>
-                  <th className="px-3 py-2 border-r border-gray-200">
-                    <div onClick={() => handleSort("clientCode")} className="flex items-center cursor-pointer">
-                      CLIENT CODE
-                      <SortIcon column="clientCode" />
-                    </div>
-                  </th>
-                  <th className="px-3 py-2 border-r border-gray-200">
-                    <div onClick={() => handleSort("clientName")} className="flex items-center cursor-pointer">
-                      CLIENT NAME
-                      <SortIcon column="clientName" />
-                    </div>
-                  </th>
-                  <th className="px-3 py-2 border-r border-gray-200">
-                    <div onClick={() => handleSort("algoName")} className="flex items-center cursor-pointer">
-                      ALGO NAME
-                      <SortIcon column="algoName" />
-                    </div>
-                  </th>
-                  <th className="px-3 py-2">
-                    <div onClick={() => handleSort("brokerage")} className="flex items-center cursor-pointer">
-                      BROKERAGE AMOUNT
-                      <SortIcon column="brokerage" />
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan="5" className="p-4 text-center text-gray-500 font-medium">
-                      Loading Algo Brokerage report from UAT...
-                    </td>
-                  </tr>
-                ) : data.length > 0 ? (
-                  data.map((item, index) => {
-                    const dateStr = item.date || item.tradeDate || item.TradeDate || item.datetime || "-";
-                    const code = item.clientCode || item.clientcode || item.ClientCode || item.ucc || "-";
-                    const name = item.clientName || item.clientname || item.ClientName || "-";
-                    const algo = item.algoName || item.strategy || item.algo || "-";
-                    const amount = item.brokerage || item.Brokerage || item.amount || item.brokerageAmount || "-";
-
-                    return (
-                      <tr key={index} className="border-b border-gray-200 h-[28px] hover:bg-gray-50 transition-colors">
-                        <td className="px-3 py-[4px] border-r border-gray-200">{dateStr}</td>
-                        <td className="px-3 py-[4px] border-r border-gray-200">{code}</td>
-                        <td className="px-3 py-[4px] border-r border-gray-200">{name}</td>
-                        <td className="px-3 py-[4px] border-r border-gray-200 font-semibold">{algo}</td>
-                        <td className="px-3 py-[4px] font-bold">{amount}</td>
-                      </tr>
-                    );
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan="5" className="p-4 text-left text-gray-500 text-base font-medium">
-                      No data to display
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-          <div className="mt-4 p-4 text-left text-gray-500 text-base font-bold">
-            Total: {data.length}
-          </div>
+          )}
         </div>
         <ArihantProductsSection />
       </div>

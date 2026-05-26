@@ -339,8 +339,8 @@ export default function Rejection() {
               border: 1px solid rgba(255, 255, 255, 0.1);
             }
           `}</style>
-          <div className="mt-2 bg-white rounded-lg overflow-x-auto">
-            <table className="w-full holding-table border-collapse" style={{ fontFamily: 'futura, sans-serif' }}>
+          <div className="mt-2 bg-white rounded-lg overflow-hidden border">
+            <table className="w-full holding-table border-collapse table-fixed" style={{ fontFamily: 'futura, sans-serif' }}>
               <thead>
                 <tr style={{ backgroundColor: '#1EB04C' }} className="text-white">
                   {[
@@ -360,9 +360,9 @@ export default function Rejection() {
                     { label: "SIP REGN DATE", key: "sipRegnDate" },
                     { label: "UNITS", key: "units" }
                   ].map((col) => (
-                    <th key={col.key} className="px-4 py-3 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort(col.key)}>
-                      <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
-                        <span>{col.label}</span>
+                    <th key={col.key} className="px-1 py-2 cursor-pointer hover:bg-[#18a045] transition-colors w-[6.66%]" onClick={() => handleSort(col.key)} title={col.label}>
+                      <div className="flex items-center justify-between text-left text-[10px] font-bold tracking-tighter">
+                        <span className="truncate">{col.label}</span>
                         {renderSortIcon(col.key)}
                       </div>
                     </th>
@@ -396,21 +396,21 @@ export default function Rejection() {
 
                     return (
                       <tr key={index} className={`transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-[#f8fafc]'} h-[28px] hover:bg-gray-50`}>
-                        <td className="px-3 py-[4px] text-xs text-gray-700 font-medium">{code}</td>
-                        <td className="px-3 py-[4px] text-xs text-gray-700 font-medium">{name}</td>
-                        <td className="px-3 py-[4px] text-xs text-gray-700 font-bold">{amount}</td>
-                        <td className="px-3 py-[4px] text-xs text-gray-700">{buySell}</td>
-                        <td className="px-3 py-[4px] text-xs text-gray-700">{dpTransfer}</td>
-                        <td className="px-3 py-[4px] text-xs text-gray-700">{dpFolioNo}</td>
-                        <td className="px-3 py-[4px] text-xs text-gray-700">{eun}</td>
-                        <td className="px-3 py-[4px] text-xs text-gray-700">{orderNo}</td>
-                        <td className="px-3 py-[4px] text-xs text-gray-700">{orderRemark}</td>
-                        <td className="px-3 py-[4px] text-xs text-gray-700">{orderType}</td>
-                        <td className="px-3 py-[4px] text-xs text-gray-700">{schemeName}</td>
-                        <td className="px-3 py-[4px] text-xs text-gray-700">{setType}</td>
-                        <td className="px-3 py-[4px] text-xs text-gray-700">{sipDate}</td>
-                        <td className="px-3 py-[4px] text-xs text-gray-700">{sipRegnDate}</td>
-                        <td className="px-3 py-[4px] text-xs text-gray-700">{units}</td>
+                        <td className="px-1 py-[4px] text-[9px] text-gray-700 font-medium truncate" title={code}>{code}</td>
+                        <td className="px-1 py-[4px] text-[9px] text-gray-700 font-medium truncate" title={name}>{name}</td>
+                        <td className="px-1 py-[4px] text-[9px] text-gray-700 font-bold truncate" title={amount}>{amount}</td>
+                        <td className="px-1 py-[4px] text-[9px] text-gray-700 truncate" title={buySell}>{buySell}</td>
+                        <td className="px-1 py-[4px] text-[9px] text-gray-700 truncate" title={dpTransfer}>{dpTransfer}</td>
+                        <td className="px-1 py-[4px] text-[9px] text-gray-700 truncate" title={dpFolioNo}>{dpFolioNo}</td>
+                        <td className="px-1 py-[4px] text-[9px] text-gray-700 truncate" title={eun}>{eun}</td>
+                        <td className="px-1 py-[4px] text-[9px] text-gray-700 truncate" title={orderNo}>{orderNo}</td>
+                        <td className="px-1 py-[4px] text-[9px] text-gray-700 truncate" title={orderRemark}>{orderRemark}</td>
+                        <td className="px-1 py-[4px] text-[9px] text-gray-700 truncate" title={orderType}>{orderType}</td>
+                        <td className="px-1 py-[4px] text-[9px] text-gray-700 truncate" title={schemeName}>{schemeName}</td>
+                        <td className="px-1 py-[4px] text-[9px] text-gray-700 truncate" title={setType}>{setType}</td>
+                        <td className="px-1 py-[4px] text-[9px] text-gray-700 truncate" title={sipDate}>{sipDate}</td>
+                        <td className="px-1 py-[4px] text-[9px] text-gray-700 truncate" title={sipRegnDate}>{sipRegnDate}</td>
+                        <td className="px-1 py-[4px] text-[9px] text-gray-700 truncate" title={units}>{units}</td>
                       </tr>
                     );
                   })

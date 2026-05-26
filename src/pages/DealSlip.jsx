@@ -393,33 +393,7 @@ function DealSlip() {
           </div>
         )}
 
-        {/* ERROR RESPONSE CONTAINER */}
-        {errorResponse && (
-          <div className="bg-white rounded-lg shadow border border-red-200 p-5 mt-4 transition-all duration-500 animate-fadeIn">
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-6 bg-red-600 rounded-full"></span>
-                <h3 className="text-lg font-bold text-red-800">Response / Preview</h3>
-              </div>
-              <button 
-                onClick={() => setErrorResponse(null)} 
-                className="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm transition-all"
-              >
-                Close Response
-              </button>
-            </div>
-            
-            <div className="bg-red-50/50 p-4 rounded-lg border border-red-100 font-mono text-sm text-red-700 shadow-inner">
-              <div className="flex items-center gap-2 mb-3 text-red-600 font-semibold">
-                <i className="fa fa-exclamation-circle text-lg"></i>
-                <span>API Request Failed: {errorResponse.message || "Invalid Client Code"}</span>
-              </div>
-              <pre className="bg-gray-50 p-3 rounded text-xs text-gray-700 overflow-x-auto border border-gray-200">
-                {JSON.stringify(errorResponse, null, 2)}
-              </pre>
-            </div>
-          </div>
-        )}
+
 
         {/* ARIHANT PRODUCTS */}
         <div className="mt-4">
