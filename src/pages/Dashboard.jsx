@@ -109,15 +109,18 @@ const VideoCard = () => {
   );
 };
 
-const StatItem = ({ icon, label, value }) => {
+const StatItem = ({ icon, label, value, onEyeClick, isRevealed }) => {
   const renderIcon = () => {
-    if (typeof icon === 'string') {
+    if (typeof icon === "string") {
       return <i className={`${icon} text-[#34b350] text-[18px]`}></i>;
     } else {
       const Icon = icon;
       return <Icon size={18} />;
     }
   };
+
+  // Render the value or masked placeholder
+  const displayValue = isRevealed ? value : "XXXXX";
 
   return (
     <div className="flex items-center gap-3 p-[15px] bg-[#f9f9f9] rounded-md border border-[#e0e0e0] flex-1 min-w-[140px]">
@@ -128,7 +131,15 @@ const StatItem = ({ icon, label, value }) => {
       <div className="flex-1">
         <p className="m-0 mb-1.5 text-[13px] text-gray-600 font-medium">{label}</p>
         <div className="flex items-center justify-between gap-2.5">
-          <span className="text-sm font-semibold text-gray-800">{value || "0"}</span>
+          <span className="text-sm font-semibold text-gray-800">{displayValue}</span>
+          {/* Eye toggle */}
+          <button
+            type="button"
+            onClick={onEyeClick}
+            className="text-gray-500 hover:text-gray-800 focus:outline-none"
+          >
+            {isRevealed ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
         </div>
       </div>
     </div>
@@ -141,9 +152,13 @@ function Dashboard() {
   // OTP States
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otp, setOtp] = useState("");
-  const [isRevealed, setIsRevealed] = useState(() => {
-    return sessionStorage.getItem("revenue_verified") === "true";
-  });
+  const [isRevealed, setIsRevealed] = useState(false);
+
+  // Ensure masking is reset on component mount
+  useEffect(() => {
+    sessionStorage.removeItem("revenue_verified");
+    setIsRevealed(false);
+  }, []);
   const [resendTimer, setResendTimer] = useState(120); // 2 minutes in seconds
   const [canResend, setCanResend] = useState(false);
   const [toast, setToast] = useState({

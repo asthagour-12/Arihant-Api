@@ -11,7 +11,7 @@ export default function TotalClient() {
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+
   // Custom Error Toast State
   const [showCustomError, setShowCustomError] = useState(false);
   const [customErrorMsg, setCustomErrorMsg] = useState("");
@@ -157,7 +157,7 @@ export default function TotalClient() {
           {/* Search Section */}
           <div className="bg-[#f2f2f2] rounded-md p-6 mb-8">
             <div className="flex items-center gap-4 flex-wrap">
-              
+
               {/* Search Input */}
               <div className="relative w-full max-w-[380px]">
                 <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-base"></i>
@@ -172,7 +172,7 @@ export default function TotalClient() {
               </div>
 
               {/* Apply Button */}
-              <button 
+              <button
                 onClick={handleApply}
                 className="h-[46px] px-8 rounded-full bg-[#35b34a] hover:bg-[#2da043] text-white text-[16px] font-semibold flex items-center gap-2 shadow-md transition-all cursor-pointer border-none"
               >
@@ -193,7 +193,7 @@ export default function TotalClient() {
               <thead>
                 <tr className="bg-[#37b34a] text-white uppercase">
                   {headers.map((h) => (
-                    <th 
+                    <th
                       key={h.field}
                       onClick={() => handleSort(h.field)}
                       className="px-3 py-2.5 text-left font-bold select-none cursor-pointer hover:bg-[#2da043] transition-colors border-r border-white/10 last:border-0 group"
@@ -214,20 +214,19 @@ export default function TotalClient() {
                   const isEmailRevealed = !!revealState[`${index}-email`];
 
                   return (
-                    <tr 
-                      key={index} 
-                      className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${
-                        index % 2 === 0 ? "bg-white" : "bg-[#f9f9f9]"
-                      }`}
+                    <tr
+                      key={index}
+                      className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${index % 2 === 0 ? "bg-white" : "bg-[#f9f9f9]"
+                        }`}
                     >
                       <td className="px-3 py-2 text-gray-700 text-[11px] border-r border-gray-100">{item.clientCode}</td>
                       <td className="px-3 py-2 text-gray-700 text-[11px] border-r border-gray-100">{item.clientName}</td>
-                      
+
                       {/* PAN Cell */}
                       <td className="px-3 py-2 text-gray-700 text-[11px] border-r border-gray-100">
                         <div className="flex items-center justify-between">
                           <span>{getMaskedValue(item.pan, isPanRevealed, "pan")}</span>
-                          <button 
+                          <button
                             onClick={() => toggleReveal(index, "pan")}
                             className="bg-transparent border-none cursor-pointer p-0.5 text-gray-400 hover:text-[#35b34a] flex items-center justify-center ml-2"
                           >
@@ -240,7 +239,7 @@ export default function TotalClient() {
                       <td className="px-3 py-2 text-gray-700 text-[11px] border-r border-gray-100">
                         <div className="flex items-center justify-between">
                           <span>{getMaskedValue(item.mobile, isMobileRevealed, "mobile")}</span>
-                          <button 
+                          <button
                             onClick={() => toggleReveal(index, "mobile")}
                             className="bg-transparent border-none cursor-pointer p-0.5 text-gray-400 hover:text-[#35b34a] flex items-center justify-center ml-2"
                           >
@@ -253,7 +252,7 @@ export default function TotalClient() {
                       <td className="px-3 py-2 text-gray-700 text-[11px]">
                         <div className="flex items-center justify-between">
                           <span>{getMaskedValue(item.email, isEmailRevealed, "email")}</span>
-                          <button 
+                          <button
                             onClick={() => toggleReveal(index, "email")}
                             className="bg-transparent border-none cursor-pointer p-0.5 text-gray-400 hover:text-[#35b34a] flex items-center justify-center ml-2"
                           >

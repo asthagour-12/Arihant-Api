@@ -36,25 +36,25 @@ export default function OpenPosition() {
         size: 50,
       });
       console.log("Open Position API Response:", response.data);
-
       const rows =
-        response?.data?.data ||
-        response?.data?.Data ||
-        response?.data?.result ||
-        response?.data ||
+        response?.data?.result?.userList ||
+        response?.data?.result?.userlist ||
+        response?.data?.userList ||
+        response?.data?.userlist ||
         [];
+      console.log('Extracted rows count:', rows.length);
 
       const rawRows = Array.isArray(rows) ? rows : [];
       const normalized = rawRows.map(item => ({
-        clientName: item.clientName || item.ClientName || item.name || item.Name || "-",
-        clientCode: item.clientCode || item.ClientCode || item.code || item.Code || "-",
-        scriptName: item.scriptName || item.ScriptName || item.scriptCode || item.ScriptCode || item.symbol || item.Symbol || item.description || item.Description || "-",
-        optionType: item.optionType || item.OptionType || item.optType || item.OptType || "-",
+        clientName: item.clientName || item.ClientName || item.clientname || item.name || item.Name || "-",
+        clientCode: item.clientCode || item.ClientCode || item.clientcode || item.code || item.Code || "-",
+        scriptName: item.scriptName || item.ScriptName || item.script || item.Script || item.scriptCode || item.ScriptCode || item.symbol || item.Symbol || item.description || item.Description || "-",
+        optionType: item.optionType || item.OptionType || item.optiontype || item.optType || item.OptType || "-",
         mtm: item.mtm !== undefined ? item.mtm : (item.MTM !== undefined ? item.MTM : (item.mtmValue || item.MtmValue || "-")),
-        strikePrice: item.strikePrice !== undefined ? item.strikePrice : (item.StrikePrice !== undefined ? item.StrikePrice : (item.strike || item.Strike || "-")),
-        expDate: item.expDate || item.ExpDate || item.expiryDate || item.ExpiryDate || item.expiry || item.Expiry || "-",
-        openBuy: item.openBuy !== undefined ? item.openBuy : (item.OpenBuy !== undefined ? item.OpenBuy : (item.buyQty || item.BuyQty || "-")),
-        openSell: item.openSell !== undefined ? item.openSell : (item.OpenSell !== undefined ? item.OpenSell : (item.sellQty || item.SellQty || "-"))
+        strikePrice: item.strikePrice !== undefined ? item.strikePrice : (item.StrikePrice !== undefined ? item.StrikePrice : (item.strikeprice || item.Strike || "-")),
+        expDate: item.expDate || item.ExpDate || item.expiryDate || item.ExpiryDate || item.expiry || item.Expiry || item.EXPIRYDATE || "-",
+        openBuy: item.openBuy !== undefined ? item.openBuy : (item.OpenBuy !== undefined ? item.OpenBuy : (item.openbuy || item.OpenBuy || item.buyQty || item.BuyQty || "-")),
+        openSell: item.openSell !== undefined ? item.openSell : (item.OpenSell !== undefined ? item.OpenSell : (item.opensell || item.OpenSell || item.sellQty || item.SellQty || "-"))
       }));
 
       setTableData(normalized);
@@ -230,7 +230,7 @@ export default function OpenPosition() {
             </div>
 
             {/* Apply Button */}
-            <button 
+            <button
               onClick={handleApply}
               className="bg-[#27ae60] hover:bg-[#219150] text-white px-8 h-[48px] rounded-full font-bold text-sm transition-all shadow-md flex items-center justify-center gap-2"
             >
@@ -331,9 +331,8 @@ export default function OpenPosition() {
               {sortedData.map((row, idx) => (
                 <tr
                   key={idx}
-                  className={`transition-colors ${
-                    idx % 2 === 0 ? 'bg-white' : 'bg-[#f8fafc]'
-                  }`}
+                  className={`transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-[#f8fafc]'
+                    }`}
                 >
                   <td className="px-3 py-2 text-xs text-gray-700 font-medium">
                     {row.clientName}

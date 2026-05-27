@@ -45,8 +45,8 @@ const DataTable = ({ headers, rows, showMaskIcon = false, resultsCount, onDownlo
           <thead className="bg-[#1EB04C] text-white">
             <tr>
               {headers.map((h, i) => (
-                <th 
-                  key={i} 
+                <th
+                  key={i}
                   onClick={() => handleSort(i)}
                   className="px-6 py-4 text-[13px] font-semibold border-r border-white/10 last:border-0 cursor-pointer select-none hover:bg-[#18a045] transition-colors"
                   style={{ width: colWidth }}
@@ -63,15 +63,15 @@ const DataTable = ({ headers, rows, showMaskIcon = false, resultsCount, onDownlo
             {sortedRows.map((row, rowIndex) => (
               <tr key={rowIndex} className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
                 {row.map((cell, cellIndex) => (
-                  <td 
-                    key={cellIndex} 
+                  <td
+                    key={cellIndex}
                     className="px-6 py-4 border-r border-gray-50 last:border-0 text-[13px] text-gray-700 font-medium overflow-hidden"
                     style={{ width: colWidth }}
                   >
                     <div className="flex items-center gap-2 truncate">
                       <span className="truncate">{cell}</span>
                       {showMaskIcon && cell?.toString().includes('xxx') && (
-                        <i 
+                        <i
                           onClick={onMaskToggle}
                           className="fas fa-eye-slash text-[10px] text-gray-300 cursor-pointer hover:text-[#1EB04C]"
                         ></i>

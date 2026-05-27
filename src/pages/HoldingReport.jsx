@@ -117,9 +117,9 @@ export default function HoldingReport() {
     'Script Name',
   ];
 
-  const [filteredData, setFilteredData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
+  // Infinite scroll state
+  const [visibleCount, setVisibleCount] = useState(10);
+  const rowsPerPage = 10; // keep for consistency
 
   const handleApply = async (
     pageNumber = 0,
@@ -285,20 +285,9 @@ export default function HoldingReport() {
     }
   };
 
-  const displayData = filteredData.length > 0 || hasSearched ? filteredData : tableData;
+  // Compute visible rows for infinite scroll
+  const visibleData = sortedData.slice(0, visibleCount);
 
-  const sortedData = [...displayData].sort((a, b) => {
-    if (!sortConfig.key) return 0;
-    const aVal = getCellValue(a, sortConfig.key);
-    const bVal = getCellValue(b, sortConfig.key);
-    if (aVal < bVal) {
-      return sortConfig.direction === "asc" ? -1 : 1;
-    }
-    if (aVal > bVal) {
-      return sortConfig.direction === "asc" ? 1 : -1;
-    }
-    return 0;
-  });
 
   const handleDownload = () => {
     const csv = [
@@ -525,129 +514,136 @@ export default function HoldingReport() {
               border: 1px solid rgba(255, 255, 255, 0.1);
             }
           `}</style>
-          <table className="w-full holding-table border-collapse" style={{ fontFamily: 'futura, sans-serif' }}>
-            <thead>
-              <tr style={{ backgroundColor: '#1EB04C' }} className="text-white">
-                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("clientName")}>
-                  <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
-                    <span>CLIENT NAME</span>
-                    {renderSortIcon("clientName")}
-                  </div>
-                </th>
-                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("clientCode")}>
-                  <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
-                    <span>CLIENT CODE</span>
-                    {renderSortIcon("clientCode")}
-                  </div>
-                </th>
-                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("scriptCode")}>
-                  <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
-                    <span>SCRIPT CODE</span>
-                    {renderSortIcon("scriptCode")}
-                  </div>
-                </th>
-                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("scriptName")}>
-                  <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
-                    <span>SCRIPT NAME</span>
-                    {renderSortIcon("scriptName")}
-                  </div>
-                </th>
-                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("isin")}>
-                  <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
-                    <span>ISIN</span>
-                    {renderSortIcon("isin")}
-                  </div>
-                </th>
-                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("pledgePOA")}>
-                  <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
-                    <span>PLEDGE POA</span>
-                    {renderSortIcon("pledgePOA")}
-                  </div>
-                </th>
-                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("freePOA")}>
-                  <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
-                    <span>FREE POA</span>
-                    {renderSortIcon("freePOA")}
-                  </div>
-                </th>
-                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("mtfQty")}>
-                  <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
-                    <span>MTF QTY</span>
-                    {renderSortIcon("mtfQty")}
-                  </div>
-                </th>
-                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("netQty")}>
-                  <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
-                    <span>NET QTY</span>
-                    {renderSortIcon("netQty")}
-                  </div>
-                </th>
-                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("stockValue")}>
-                  <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
-                    <span>STOCK VALUE</span>
-                    {renderSortIcon("stockValue")}
-                  </div>
-                </th>
-                <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("closeRate")}>
-                  <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
-                    <span>CLOSE RATE</span>
-                    {renderSortIcon("closeRate")}
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading ? (
-                <tr>
-                  <td colSpan={11} className="py-16 text-center">
-                    <div className="flex flex-col items-center gap-3">
-                      <Loader2 size={32} className="animate-spin text-[#1EB04C]" />
-                      <span className="text-sm text-gray-500 font-medium">Fetching holding data...</span>
+          <div className="overflow-y-auto no-scrollbar" style={{ maxHeight: "500px" }} onScroll={(e) => {
+            const bottom = e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 5;
+            if (bottom) {
+              setVisibleCount((prev) => prev + 10);
+            }
+          }}>
+            <table className="w-full holding-table border-collapse" style={{ fontFamily: 'futura, sans-serif' }}>
+              <thead>
+                <tr style={{ backgroundColor: '#1EB04C' }} className="text-white">
+                  <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("clientName")}>
+                    <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
+                      <span>CLIENT NAME</span>
+                      {renderSortIcon("clientName")}
                     </div>
-                  </td>
+                  </th>
+                  <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("clientCode")}>
+                    <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
+                      <span>CLIENT CODE</span>
+                      {renderSortIcon("clientCode")}
+                    </div>
+                  </th>
+                  <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("scriptCode")}>
+                    <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
+                      <span>SCRIPT CODE</span>
+                      {renderSortIcon("scriptCode")}
+                    </div>
+                  </th>
+                  <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("scriptName")}>
+                    <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
+                      <span>SCRIPT NAME</span>
+                      {renderSortIcon("scriptName")}
+                    </div>
+                  </th>
+                  <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("isin")}>
+                    <div className="flex items-center justify-between text-left text-[12px] font-bold tracking-wider whitespace-nowrap">
+                      <span>ISIN</span>
+                      {renderSortIcon("isin")}
+                    </div>
+                  </th>
+                  <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("pledgePOA")}>
+                    <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
+                      <span>PLEDGE POA</span>
+                      {renderSortIcon("pledgePOA")}
+                    </div>
+                  </th>
+                  <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("freePOA")}>
+                    <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
+                      <span>FREE POA</span>
+                      {renderSortIcon("freePOA")}
+                    </div>
+                  </th>
+                  <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("mtfQty")}>
+                    <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
+                      <span>MTF QTY</span>
+                      {renderSortIcon("mtfQty")}
+                    </div>
+                  </th>
+                  <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("netQty")}>
+                    <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
+                      <span>NET QTY</span>
+                      {renderSortIcon("netQty")}
+                    </div>
+                  </th>
+                  <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("stockValue")}>
+                    <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
+                      <span>STOCK VALUE</span>
+                      {renderSortIcon("stockValue")}
+                    </div>
+                  </th>
+                  <th className="px-4 py-3 border-r border-white/10 cursor-pointer hover:bg-[#18a045] transition-colors" onClick={() => handleSort("closeRate")}>
+                    <div className="flex items-center justify-between text-center text-[12px] font-bold tracking-wider whitespace-nowrap">
+                      <span>CLOSE RATE</span>
+                      {renderSortIcon("closeRate")}
+                    </div>
+                  </th>
                 </tr>
-              ) : sortedData.length === 0 ? (
-                <tr>
-                  <td colSpan={11} className="py-16 text-center text-gray-400 text-sm font-medium">
-                    {hasSearched ? "No records found." : "Enter a search term and click Apply to view holding data."}
-                  </td>
-                </tr>
-              ) : (
-                sortedData.map((row, idx) => {
-                  const clientName = row.CLIENT_NAME || row.clientName || "-";
-                  const clientCode = row.Client_Code || row.CLIENT_CODE || row.clientCode || "-";
-                  const scriptCode = row.SCRIPT_CODE || row.scriptCode || "-";
-                  const scriptName = row.SCRIPT_NAME || row.scriptName || "-";
-                  const isin = row['ISIN '] || row.ISIN || row.isin || "-";
-                  const pledgePoa = row.PLEDGE_POA || row.pledgePOA || "-";
-                  const freePoa = row.FREE_POA || row.freePOA || "-";
-                  const mtfQty = row.MTF_QTY || row.mtfQty || "-";
-                  const netQty = row.NETQTY || row.netQty || "-";
-                  const stockValue = row.STOCK_VALUE || row.stockValue || "-";
-                  const closeRate = row.MARKET1 || row.closeRate || "-";
+              </thead>
+              <tbody>
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={11} className="py-16 text-center">
+                      <div className="flex flex-col items-center gap-3">
+                        <Loader2 size={32} className="animate-spin text-[#1EB04C]" />
+                        <span className="text-sm text-gray-500 font-medium">Fetching holding data...</span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : sortedData.length === 0 ? (
+                  <tr>
+                    <td colSpan={11} className="py-16 text-center text-gray-400 text-sm font-medium">
+                      {hasSearched ? "No records found." : "Enter a search term and click Apply to view holding data."}
+                    </td>
+                  </tr>
+                ) : (
+                  visibleData.map((row, idx) => {
+                    const clientName = row.CLIENT_NAME || row.clientName || "-";
+                    const clientCode = row.Client_Code || row.CLIENT_CODE || row.clientCode || "-";
+                    const scriptCode = row.SCRIPT_CODE || row.scriptCode || "-";
+                    const scriptName = row.SCRIPT_NAME || row.scriptName || "-";
+                    const isin = row['ISIN '] || row.ISIN || row.isin || "-";
+                    const pledgePoa = row.PLEDGE_POA || row.pledgePOA || "-";
+                    const freePoa = row.FREE_POA || row.freePOA || "-";
+                    const mtfQty = row.MTF_QTY || row.mtfQty || "-";
+                    const netQty = row.NETQTY || row.netQty || "-";
+                    const stockValue = row.STOCK_VALUE || row.stockValue || "-";
+                    const closeRate = row.MARKET1 || row.closeRate || "-";
 
-                  return (
-                    <tr
-                      key={idx}
-                      className={`transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-[#f8fafc]'}`}
-                    >
-                      <td className="px-3 py-2 text-xs text-gray-700 font-medium">{clientName}</td>
-                      <td className="px-3 py-2 text-xs text-gray-700 font-medium">{clientCode}</td>
-                      <td className="px-3 py-2 text-xs text-gray-700">{scriptCode}</td>
-                      <td className="px-3 py-2 text-xs text-gray-700">{scriptName}</td>
-                      <td className="px-3 py-2 text-xs text-gray-700">{isin}</td>
-                      <td className="px-3 py-2 text-xs text-gray-700 text-center">{pledgePoa}</td>
-                      <td className="px-3 py-2 text-xs text-gray-700 text-center font-bold">{freePoa}</td>
-                      <td className="px-3 py-2 text-xs text-gray-700 text-center">{mtfQty}</td>
-                      <td className="px-3 py-2 text-xs text-gray-700 text-center font-bold">{netQty}</td>
-                      <td className="px-3 py-2 text-xs text-gray-700 text-center">{stockValue}</td>
-                      <td className="px-3 py-2 text-xs text-gray-700 text-center">{closeRate}</td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+                    return (
+                      <tr
+                        key={idx}
+                        className={`transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-[#f8fafc]'}`}
+                      >
+                        <td className="px-3 py-2 text-xs text-gray-700 font-medium">{clientName}</td>
+                        <td className="px-3 py-2 text-xs text-gray-700 font-medium">{clientCode}</td>
+                        <td className="px-3 py-2 text-xs text-gray-700">{scriptCode}</td>
+                        <td className="px-3 py-2 text-xs text-gray-700">{scriptName}</td>
+                        <td className="px-3 py-2 text-xs text-gray-700">{isin}</td>
+                        <td className="px-3 py-2 text-xs text-gray-700 text-center">{pledgePoa}</td>
+                        <td className="px-3 py-2 text-xs text-gray-700 text-center font-bold">{freePoa}</td>
+                        <td className="px-3 py-2 text-xs text-gray-700 text-center">{mtfQty}</td>
+                        <td className="px-3 py-2 text-xs text-gray-700 text-center font-bold">{netQty}</td>
+                        <td className="px-3 py-2 text-xs text-gray-700 text-center">{stockValue}</td>
+                        <td className="px-3 py-2 text-xs text-gray-700 text-center">{closeRate}</td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* 🚨 CUSTOM ERROR TOAST */}
