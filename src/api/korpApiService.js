@@ -139,9 +139,7 @@ export const getDashboardData = async () => {
   }
 };
 export const getClientDetailByType = (clientCode, type) => korpInstance.get("/dashboard/korpgetclientDetail", { params: { clientCode, Type: type } });
-export const getUserProfile = () => {
-  return axios.get("https://korpapuatapi.arihantcapital.com/api/V1/dashboard/getprofile");
-};
+export const getUserProfile = () => korpInstance.get("/dashboard/getprofile");
 // Auditor profile endpoints
 export const getAuditorProfile = () => getUserProfile();
 export const getAuditorMe = () => korpInstance.get("/auditor/me");
@@ -249,7 +247,9 @@ export const getAlgoBrokerage = (params = {}) => {
 };
 export const getMfStructure = (params = {}, body = {}) => korpInstance.post("/reports/GetMfStructure", body, { params });
 export const getTipsOnBondOfferData = (data = {}) => korpInstance.post("/reports/TipsonBondOfferData", data);
-export const getClientContactDetails = (params = {}) => korpInstance.get("/AdminDashboard/korpClientContactDetails", { params });
+export const getClientContactDetails = (params = {}) => {
+  return axios.get("https://korpapuatapi.arihantcapital.com/api/V1/AdminDashboard/korpClientContactDetails", { params });
+};
 export const getClientPayoutBalance = (params = {}) => korpInstance.get("/payout/korpgetclientBalance", { params });
 
 // Re-activation clients (supports optional datefrom/dateto, pageNumber, size)
