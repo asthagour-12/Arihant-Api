@@ -31,10 +31,13 @@ export default function ContestsData() {
       
       const response = await getClientContactDetails(params);
       console.log("✅ ClientContactDetails API Response:", response.data);
-      const items = response?.data?.data || response?.data?.Data || response?.data?.result || response?.data || [];
-
-      if (Array.isArray(items) && items.length > 0) {
-        setData(items);
+      const responseData = response?.data?.data || response?.data?.result || response?.data?.Data || response?.data || [];
+      if (Array.isArray(responseData)) {
+        setData(responseData);
+      } else if (responseData && Array.isArray(responseData.list)) {
+        setData(responseData.list);
+      } else if (responseData && Array.isArray(responseData.results)) {
+        setData(responseData.results);
       } else {
         setData([]);
       }
@@ -63,8 +66,31 @@ export default function ContestsData() {
 
     if (direction !== "") {
       sorted.sort((a, b) => {
-        if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
-        if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
+        let aVal = "";
+        let bVal = "";
+
+        if (key === "branchCode") {
+          aVal = a.BranchCode || a.branchCode || a.branchcode || a.branch || "";
+          bVal = b.BranchCode || b.branchCode || b.branchcode || b.branch || "";
+        } else if (key === "clientCode") {
+          aVal = a.AccountId || a.clientCode || a.clientcode || a.client || "";
+          bVal = b.AccountId || b.clientCode || b.clientcode || b.client || "";
+        } else if (key === "clientName") {
+          aVal = a.Name || a.clientName || a.clientname || a.name || "";
+          bVal = b.Name || b.clientName || b.clientname || b.name || "";
+        } else if (key === "email") {
+          aVal = a.ContactEmail || a.email || a.emailId || "";
+          bVal = b.ContactEmail || b.email || b.emailId || "";
+        } else if (key === "mobile") {
+          aVal = a.Contactno || a.mobile || a.mobileNo || "";
+          bVal = b.Contactno || b.mobile || b.mobileNo || "";
+        } else {
+          aVal = a[key] || "";
+          bVal = b[key] || "";
+        }
+
+        if (aVal < bVal) return direction === "asc" ? -1 : 1;
+        if (aVal > bVal) return direction === "asc" ? 1 : -1;
         return 0;
       });
     }
@@ -198,11 +224,11 @@ export default function ContestsData() {
                     </tr>
                   ) : data.length > 0 ? (
                     data.map((item, i) => {
-                      const branch = item.branchCode || item.branchcode || item.branch || item.Branch || item.BranchCode || "-";
-                      const client = item.clientCode || item.clientcode || item.client || item.ClientCode || item.Client || "-";
-                      const name = item.clientName || item.clientname || item.name || item.ClientName || item.Name || "-";
-                      const emailVal = item.email || item.emailId || item.emailaddress || item.Email || item.EmailId || "-";
-                      const mobileVal = item.mobile || item.mobileNo || item.mobileNumber || item.phone || item.Mobile || item.MobileNo || "-";
+                      const branch = item.BranchCode || item.branchCode || item.branchcode || item.branch || item.Branch || "-";
+                      const client = item.AccountId || item.clientCode || item.clientcode || item.client || item.ClientCode || item.Client || "-";
+                      const name = item.Name || item.clientName || item.clientname || item.name || item.contactperson || "-";
+                      const emailVal = item.ContactEmail || item.email || item.emailId || item.emailaddress || item.Email || item.EmailId || "-";
+                      const mobileVal = item.Contactno || item.mobile || item.mobileNo || item.mobileNumber || item.phone || item.Mobile || item.MobileNo || "-";
 
                       return (
                         <tr key={i} className="border-b border-gray-200 h-[28px] hover:bg-gray-50 transition-colors">

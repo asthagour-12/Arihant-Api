@@ -17,7 +17,9 @@ const ssoInstance = axios.create({
 const attachInterceptors = (instance) => {
   instance.interceptors.request.use((config) => {
     const token = localStorage.getItem("connect_token");
-    if (token) config.headers.Authorization = `Bearer ${token}`;
+    if (token && token !== "undefined" && token !== "null" && token.trim() !== "") {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   }, (error) => Promise.reject(error));
 

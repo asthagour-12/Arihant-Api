@@ -12,7 +12,7 @@ const navigate = useNavigate();
       <Header />
 
       {/* CONTENT WRAPPER */}
-      <div className="bg-yellow-50 p-6 mt-16 rounded-md shadow-md border">
+      <div className="bg-white p-6 mt-16 rounded-md shadow-md border">
 
         {/* Tabs */}
         <div className="flex gap-8 bg-white px-6 py-4 rounded-t-md text-[14px] border mt-1">
@@ -46,21 +46,32 @@ const navigate = useNavigate();
 
             <div className="flex justify-between items-center text-sm py-3">
 
-              <p className="text-blue-600 cursor-pointer">
-                Gifting My Daughter 1 Crore on Her 1st Birthday
-              </p>
+              <a
+                href="https://download.arihantcapital.com/account/video-2.mp4"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 cursor-pointer hover:underline no-underline"
+              >
+                Gifting My Daughter ₹1 Crore on Her 1st Birthday
+              </a>
 
-              <p className="text-gray-700">
-                Parents, want to build 1 CRORE for your child with  
-                <br />
-                <span className="text-blue-600 ml-1 cursor-pointer">
-                  4,000/month? Basic step.
-                </span>
-              </p>
+              <a
+                href="https://download.arihantcapital.com/account/video-3.mp4"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 cursor-pointer hover:underline no-underline"
+              >
+                Parents, want to build ₹1 CRORE for your child with ₹4,000/month? Bas ek step.
+              </a>
 
-              <p className="text-blue-600 cursor-pointer pr-20">
+              <a
+                href="https://download.arihantcapital.com/account/video-1.mp4"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 cursor-pointer hover:underline no-underline pr-20"
+              >
                 Child Event
-              </p>
+              </a>
 
             </div>
 

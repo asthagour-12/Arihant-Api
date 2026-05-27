@@ -22,7 +22,7 @@ const useFetch = (apiFn, params = {}, autoFetch = true) => {
     if (autoFetch) fetchData();
   }, [JSON.stringify(params), autoFetch]);
 
-  return { data, loading, error, refetch: fetchData };
+  return { data, loading, error, refetch: fetchData, fetchData };
 };
 
 export default useFetch;
