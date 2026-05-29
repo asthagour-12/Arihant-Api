@@ -7,6 +7,8 @@ const NomineePending = () => {
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 10;
 
     const topTabs = [
         "KRA & UCC Status",
@@ -41,6 +43,7 @@ const NomineePending = () => {
             const items = response?.data?.result || [];
 
             setResults(items);
+            setCurrentPage(1);
 
         } catch (error) {
 
@@ -61,6 +64,17 @@ const NomineePending = () => {
     useEffect(() => {
         fetchData();
     }, []);
+
+    const totalPages = Math.ceil(results.length / rowsPerPage);
+    const visibleData = results.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+    const handleNext = () => {
+        if (currentPage < totalPages) setCurrentPage(prev => prev + 1);
+    };
+
+    const handlePrev = () => {
+        if (currentPage > 1) setCurrentPage(prev => prev - 1);
+    };
 
     return (
         <div className="min-h-screen bg-[#f6f6f6] font-sans selection:bg-[#34b350] selection:text-white">
@@ -244,7 +258,7 @@ const NomineePending = () => {
 
                                 ) : (
 
-                                    results.map((row, index) => {
+                                    visibleData.map((row, index) => {
 
                                         // ✅ CORRECT API KEYS
                                         const clientCode =
@@ -294,10 +308,30 @@ const NomineePending = () => {
                         </table>
 
                         {/* FOOTER */}
-                        <div className="px-10 py-5 bg-gray-50/20 text-gray-400 font-black border-t border-gray-100 uppercase italic text-[11px] tracking-[2px]">
-
-                            {results.length} total
-
+                        <div className="px-10 py-5 bg-gray-50/20 text-gray-400 font-black border-t border-gray-100 uppercase italic text-[11px] tracking-[2px] flex items-center justify-between">
+                            <div>
+                                Showing {results.length === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1} to {Math.min(currentPage * rowsPerPage, results.length)} of {results.length} total
+                            </div>
+                            
+                            {results.length > rowsPerPage && (
+                                <div className="flex items-center gap-2 font-sans not-italic tracking-normal">
+                                    <button 
+                                        onClick={handlePrev} 
+                                        disabled={currentPage === 1}
+                                        className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+                                    >
+                                        Prev
+                                    </button>
+                                    <span className="px-3 py-1.5 bg-[#1EB04C] text-white rounded font-bold">{currentPage}</span>
+                                    <button 
+                                        onClick={handleNext} 
+                                        disabled={currentPage === totalPages}
+                                        className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+                                    >
+                                        Next
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                     </div>

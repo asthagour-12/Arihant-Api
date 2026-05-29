@@ -120,8 +120,8 @@ export default function HoldingReport() {
     'Script Name',
   ];
 
-  // Infinite scroll state
-  const [visibleCount, setVisibleCount] = useState(10);
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10; // keep for consistency
 
   const handleApply = async (
@@ -137,7 +137,7 @@ export default function HoldingReport() {
 
     setIsLoading(true);
     setHasSearched(true);
-    setVisibleCount(10);
+    setCurrentPage(1);
 
     try {
       let params = {};
@@ -316,8 +316,17 @@ export default function HoldingReport() {
     return sortableItems;
   }, [tableData, sortConfig]);
 
-  // Compute visible rows for infinite scroll
-  const visibleData = sortedData.slice(0, visibleCount);
+  // Compute visible rows for pagination
+  const totalPages = Math.ceil(sortedData.length / rowsPerPage);
+  const visibleData = sortedData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage(prev => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage(prev => prev - 1);
+  };
 
 
   const handleDownload = () => {
@@ -528,7 +537,7 @@ export default function HoldingReport() {
         <div className="overflow-x-auto max-w-[1600px] mx-auto">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-gray-800 font-semibold text-sm">
-              Showing {visibleData.length} of {sortedData.length} records
+              Showing {sortedData.length === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1} to {Math.min(currentPage * rowsPerPage, sortedData.length)} of {sortedData.length} records
             </h2>
             <Download
               size={18}
@@ -545,12 +554,7 @@ export default function HoldingReport() {
               border: 1px solid rgba(255, 255, 255, 0.1);
             }
           `}</style>
-          <div className="overflow-y-auto" style={{ maxHeight: "400px" }} onScroll={(e) => {
-            const bottom = e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 5;
-            if (bottom && visibleCount < sortedData.length) {
-              setVisibleCount((prev) => prev + rowsPerPage);
-            }
-          }}>
+          <div className="overflow-x-auto">
             <table className="w-full holding-table border-collapse" style={{ fontFamily: 'futura, sans-serif' }}>
               <thead>
                 <tr style={{ backgroundColor: '#1EB04C' }} className="text-white">
@@ -675,6 +679,28 @@ export default function HoldingReport() {
               </tbody>
             </table>
           </div>
+
+          {sortedData.length > rowsPerPage && (
+            <div className="px-4 py-3 bg-white text-gray-500 font-medium flex items-center justify-end mt-2">
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={handlePrev} 
+                  disabled={currentPage === 1}
+                  className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+                >
+                  Prev
+                </button>
+                <span className="px-3 py-1.5 bg-[#1EB04C] text-white rounded font-bold">{currentPage}</span>
+                <button 
+                  onClick={handleNext} 
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 🚨 CUSTOM ERROR TOAST */}

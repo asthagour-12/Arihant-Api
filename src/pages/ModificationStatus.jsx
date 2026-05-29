@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 const ModificationStatus = () => {
     const [subTab, setSubTab] = useState("Rekyc Modification");
+    const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 10;
 
     const tabs = [
         "KRA & UCC Status", "Hold KRA Status", "Modification Status",
@@ -13,6 +15,13 @@ const ModificationStatus = () => {
         { code: "206400028", pan: "XXXXXXXXX", name: "VIVEK SHAH", type: "Segment", date: "17/Feb/2026", status: "Updated" },
         { code: "206400023", pan: "XXXXXXXXX", name: "DHRUVIK BHAVESHKUMAR SHAH", type: "Segment", date: "23/Nov/2023", status: "Updated" }
     ];
+
+    const activeData = subTab === "Rekyc Modification" ? rekycData : [];
+    const totalPages = Math.ceil(activeData.length / rowsPerPage);
+    const visibleData = activeData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+    const handleNext = () => { if (currentPage < totalPages) setCurrentPage(p => p + 1); };
+    const handlePrev = () => { if (currentPage > 1) setCurrentPage(p => p - 1); };
 
     return (
         <div className="min-h-screen bg-[#f6f6f6] font-sans">
@@ -65,7 +74,7 @@ const ModificationStatus = () => {
 
                     {/* CONTENT AREA INNER */}
                     <div className="space-y-6">
-                        <div className="text-[14px] text-gray-500 font-normal">Search results({subTab === "Rekyc Modification" ? "2" : "0"})</div>
+                        <div className="text-[14px] text-gray-500 font-normal">Search results({subTab === "Rekyc Modification" ? rekycData.length : "0"})</div>
 
                         <div className="flex items-center gap-6">
                             <div className="relative w-[340px]">
@@ -99,7 +108,7 @@ const ModificationStatus = () => {
                                 </thead>
                                 <tbody>
                                     {subTab === "Rekyc Modification" ? (
-                                        rekycData.map((d, i) => (
+                                        visibleData.map((d, i) => (
                                             <tr key={i} className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
                                                 <td className="px-4 py-4 border-r border-gray-100 text-gray-700">{d.code}</td>
                                                 <td className="px-4 py-4 border-r border-gray-100 text-gray-700">XXXXXXXXX</td>
@@ -117,8 +126,15 @@ const ModificationStatus = () => {
                                     )}
                                 </tbody>
                             </table>
-                            <div className="px-4 py-5 text-gray-400 font-normal text-[13px]">
-                                {subTab === "Rekyc Modification" ? "2" : "0"} total
+                            <div className="px-4 py-4 text-gray-500 font-normal text-[13px] flex items-center justify-between">
+                                <span>{subTab === "Rekyc Modification" ? rekycData.length : "0"} total</span>
+                                {activeData.length > rowsPerPage && (
+                                    <div className="flex items-center gap-2">
+                                        <button onClick={handlePrev} disabled={currentPage === 1} className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-bold">Prev</button>
+                                        <span className="px-3 py-1.5 bg-[#1EB04C] text-white rounded font-bold">{currentPage}</span>
+                                        <button onClick={handleNext} disabled={currentPage === totalPages} className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-bold">Next</button>
+                                    </div>
+                                )}
                             </div>
                         </div>
 

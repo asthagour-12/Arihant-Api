@@ -9,7 +9,7 @@ const TrialBalance = () => {
     const [tableData, setTableData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
-    const [visibleCount, setVisibleCount] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 10;
 
     const fetchTableData = async (code = "") => {
@@ -47,7 +47,7 @@ const TrialBalance = () => {
             }
 
             setTableData(finalRows);
-            setVisibleCount(10);
+            setCurrentPage(1);
         } catch (error) {
             console.error("Trial Balance API Error:", error);
             setTableData([]);
@@ -141,7 +141,16 @@ const TrialBalance = () => {
         return <ChevronsUpDown size={14} className="text-white/60" />;
     };
 
-    const visibleRows = sortedRows.slice(0, visibleCount);
+    const visibleRows = sortedRows.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+    const totalPages = Math.ceil(sortedRows.length / rowsPerPage);
+
+    const handleNext = () => {
+        if (currentPage < totalPages) setCurrentPage(prev => prev + 1);
+    };
+
+    const handlePrev = () => {
+        if (currentPage > 1) setCurrentPage(prev => prev - 1);
+    };
 
     const handleDownload = () => {
         const csvHeaders = headers.map(h => h.label).join(",");
@@ -181,12 +190,7 @@ const TrialBalance = () => {
 
             {/* Custom Table — no scroller, full names, auto column widths */}
             <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-6">
-                <div className="overflow-auto" style={{ maxHeight: "400px" }} onScroll={(e) => {
-                    const bottom = e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 5;
-                    if (bottom && visibleCount < sortedRows.length) {
-                        setVisibleCount((prev) => prev + rowsPerPage);
-                    }
-                }}>
+                <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse" style={{ tableLayout: "auto" }}>
                     <thead className="bg-[#1EB04C] text-white">
                         <tr>
@@ -229,13 +233,38 @@ const TrialBalance = () => {
                 </div>
 
                 <div className="px-6 py-4 bg-gray-50/50 text-gray-500 font-bold border-t border-gray-100 text-[12px] tracking-wider flex items-center justify-between">
-                    <span>Showing {visibleRows.length} of {sortedRows.length} TOTAL RECORDS</span>
-                    {sortedRows.length > 0 && (
-                        <button onClick={handleDownload} className="flex items-center gap-1.5 text-[#1EB04C] hover:text-[#18a045] transition-colors">
-                            <Download size={14} />
-                            <span>Download CSV</span>
-                        </button>
-                    )}
+                    <div>
+                        Showing {sortedRows.length === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1} to {Math.min(currentPage * rowsPerPage, sortedRows.length)} of {sortedRows.length} RECORDS
+                    </div>
+                    
+                    <div className="flex items-center gap-4">
+                        {sortedRows.length > 0 && (
+                            <button onClick={handleDownload} className="flex items-center gap-1.5 text-[#1EB04C] hover:text-[#18a045] transition-colors font-bold">
+                                <Download size={14} />
+                                <span>Download CSV</span>
+                            </button>
+                        )}
+                        
+                        {sortedRows.length > rowsPerPage && (
+                            <div className="flex items-center gap-2">
+                                <button 
+                                    onClick={handlePrev} 
+                                    disabled={currentPage === 1}
+                                    className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+                                >
+                                    Prev
+                                </button>
+                                <span className="px-3 py-1.5 bg-[#1EB04C] text-white rounded font-bold">{currentPage}</span>
+                                <button 
+                                    onClick={handleNext} 
+                                    disabled={currentPage === totalPages}
+                                    className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

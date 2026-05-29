@@ -13,6 +13,8 @@ export default function ReKYCModification({ search = "" }) {
   const [visiblePans, setVisiblePans] = useState({});
   const [tableData, setTableData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
 
   const fetchRekycModifications = async () => {
     setIsLoading(true);
@@ -39,6 +41,7 @@ export default function ReKYCModification({ search = "" }) {
 
       console.log("FINAL ITEMS =>", items);
       setTableData(items);
+      setCurrentPage(1);
     } catch (error) {
       console.error("Failed to fetch Rekyc modifications:", error);
       setTableData([]);
@@ -68,6 +71,12 @@ export default function ReKYCModification({ search = "" }) {
     const code = item.clientCode || item.clientcode || item.ClientCode || "";
     return String(code).toLowerCase().includes(String(search).toLowerCase());
   });
+
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  const visibleData = filteredData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  const handleNext = () => { if (currentPage < totalPages) setCurrentPage(p => p + 1); };
+  const handlePrev = () => { if (currentPage > 1) setCurrentPage(p => p - 1); };
   console.log('Filtered Data count:', filteredData.length);
   console.log('Filtered Data:', filteredData);
 
@@ -119,7 +128,7 @@ export default function ReKYCModification({ search = "" }) {
               No data to display
             </div>
           ) : (
-            filteredData.map((row, index) => {
+            visibleData.map((row, index) => {
               const clientCode = row.clientCode || row.client_code || row.ClientCode || "-";
               const pan = row.PAN || row.pan || row.Pan || "-";
               const maskedPan = row.maskedPan || row.maskedpan || row.MaskedPan || (pan !== "-" ? pan.replace(/.(?=.{4})/g, "*") : "-");
@@ -229,8 +238,15 @@ export default function ReKYCModification({ search = "" }) {
             })
           )}
 
-          <div className="bg-white px-6 py-2 text-black font-bold border-b border-gray-200 text-[14px]">
-            {filteredData.length} total
+          <div className="bg-white px-6 py-3 text-black font-bold border-b border-gray-200 text-[14px] flex items-center justify-between">
+            <span>Showing {filteredData.length === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1} to {Math.min(currentPage * rowsPerPage, filteredData.length)} of {filteredData.length} total</span>
+            {filteredData.length > rowsPerPage && (
+              <div className="flex items-center gap-2">
+                <button onClick={handlePrev} disabled={currentPage === 1} className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-bold">Prev</button>
+                <span className="px-3 py-1.5 bg-[#1EB04C] text-white rounded font-bold">{currentPage}</span>
+                <button onClick={handleNext} disabled={currentPage === totalPages} className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-bold">Next</button>
+              </div>
+            )}
           </div>
         </div>
       </div>

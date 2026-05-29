@@ -17,6 +17,8 @@ export default function HoldKRAStatus() {
   const [loading, setLoading] = useState(false);
   const [showCustomError, setShowCustomError] = useState(false);
   const [customErrorMsg, setCustomErrorMsg] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
 
   React.useEffect(() => {
     if (showCustomError) {
@@ -54,6 +56,7 @@ export default function HoldKRAStatus() {
             : [];
         setAllResults(list);
         setResults(list);
+        setCurrentPage(1);
       } catch (error) {
         console.error("Hold KRA API Error:", error);
         setResults([]);
@@ -87,6 +90,7 @@ export default function HoldKRAStatus() {
     });
 
     setResults(filtered);
+    setCurrentPage(1);
   };
 
   const handleSort = (key) => {
@@ -133,6 +137,17 @@ export default function HoldKRAStatus() {
     { label: "KRA STATUS", key: "kraStatus" },
     { label: "KRAHOLD REJECTEDREASON", key: "reason" },
   ];
+
+  const totalPages = Math.ceil(results.length / rowsPerPage);
+  const visibleData = results.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage(prev => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage(prev => prev - 1);
+  };
 
   return (
     <div className="bg-white px-2">
@@ -242,7 +257,7 @@ export default function HoldKRAStatus() {
             </>
           ) : (
             <>
-              {results.map((row, index) => (
+              {visibleData.map((row, index) => (
                 <div
                   key={index}
                   className="grid grid-cols-7 bg-[#f2f2f2] border-b border-gray-200 text-[14px] hover:bg-gray-100 transition-colors"
@@ -271,8 +286,27 @@ export default function HoldKRAStatus() {
                 </div>
               ))}
 
-              <div className="bg-white px-6 py-2 text-black font-bold border-b border-gray-200 text-[14px]">
-                {results.length} total
+              <div className="bg-white px-6 py-3 text-black font-bold border-b border-gray-200 text-[14px] flex items-center justify-between">
+                <span>Showing {results.length === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1} to {Math.min(currentPage * rowsPerPage, results.length)} of {results.length} total</span>
+                {results.length > rowsPerPage && (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handlePrev}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+                    >
+                      Prev
+                    </button>
+                    <span className="px-3 py-1.5 bg-[#1EB04C] text-white rounded font-bold">{currentPage}</span>
+                    <button
+                      onClick={handleNext}
+                      disabled={currentPage === totalPages}
+                      className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
               </div>
             </>
           )}

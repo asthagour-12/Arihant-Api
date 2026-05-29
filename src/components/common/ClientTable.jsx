@@ -4,11 +4,11 @@ import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 const ClientTable = ({ data = [] }) => {
   const [visibleRows, setVisibleRows] = useState({});
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
-  const [visibleCount, setVisibleCount] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
 
   React.useEffect(() => {
-    setVisibleCount(10);
+    setCurrentPage(1);
   }, [data]);
 
   const handleSort = (key) => {
@@ -41,7 +41,16 @@ const ClientTable = ({ data = [] }) => {
     });
   }, [data, sortConfig]);
 
-  const visibleData = sortedData.slice(0, visibleCount);
+  const totalPages = Math.ceil(sortedData.length / rowsPerPage);
+  const visibleData = sortedData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage(prev => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage(prev => prev - 1);
+  };
 
   const toggleVisibility = (index) => {
     setVisibleRows(prev => ({
@@ -77,12 +86,7 @@ const ClientTable = ({ data = [] }) => {
 
   return (
     <div className="bg-white border border-gray-200 overflow-hidden shadow-none rounded-none">
-      <div className="overflow-auto" style={{ maxHeight: "400px" }} onScroll={(e) => {
-        const bottom = e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 5;
-        if (bottom && visibleCount < sortedData.length) {
-          setVisibleCount((prev) => prev + rowsPerPage);
-        }
-      }}>
+      <div className="overflow-x-auto">
         <table className="w-full text-left text-[11px] font-medium tracking-tight">
           <thead className="bg-[#1EB04C] text-white uppercase">
             <tr>
@@ -150,8 +154,30 @@ const ClientTable = ({ data = [] }) => {
           </tbody>
         </table>
       </div>
-      <div className="px-4 py-2 bg-[#f9f9f9] text-gray-500 font-medium border-t border-gray-200 text-[11px]">
-        Showing {visibleData.length} of {sortedData.length} total
+      <div className="px-4 py-3 bg-[#f9f9f9] text-gray-500 font-medium border-t border-gray-200 text-[11px] flex items-center justify-between">
+        <div>
+          Showing {sortedData.length === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1} to {Math.min(currentPage * rowsPerPage, sortedData.length)} of {sortedData.length} records
+        </div>
+
+        {sortedData.length > rowsPerPage && (
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={handlePrev} 
+              disabled={currentPage === 1}
+              className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+            >
+              Prev
+            </button>
+            <span className="px-3 py-1.5 bg-[#1EB04C] text-white rounded font-bold">{currentPage}</span>
+            <button 
+              onClick={handleNext} 
+              disabled={currentPage === totalPages}
+              className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

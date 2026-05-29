@@ -13,6 +13,8 @@ export default function PhysicalAccountOpening() {
   });
   const [showCustomError, setShowCustomError] = useState(false);
   const [customErrorMsg, setCustomErrorMsg] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
 
   useEffect(() => {
     if (showCustomError) {
@@ -68,6 +70,7 @@ export default function PhysicalAccountOpening() {
           });
         }
         setResults(Array.isArray(filtered) ? filtered : []);
+        setCurrentPage(1);
         if (filtered.length === 0 && search.trim()) {
           toast.error("No data found for the selected criteria");
         }
@@ -85,6 +88,12 @@ export default function PhysicalAccountOpening() {
       setIsLoading(false);
     }
   };
+
+  const totalPages = Math.ceil(results.length / rowsPerPage);
+  const visibleData = results.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  const handleNext = () => { if (currentPage < totalPages) setCurrentPage(p => p + 1); };
+  const handlePrev = () => { if (currentPage > 1) setCurrentPage(p => p - 1); };
 
   // SORT
   const handleSort = (key) => {
@@ -397,7 +406,7 @@ export default function PhysicalAccountOpening() {
             </>
           ) : (
             <>
-              {results.map((row, index) => {
+              {visibleData.map((row, index) => {
                 if (index === 0) {
                   console.log("ACCOUNT OPENING FIRST ROW FULL DATA =>", row);
                 }
@@ -450,8 +459,15 @@ export default function PhysicalAccountOpening() {
                 );
               })}
 
-              <div className="bg-white px-6 py-2 text-black font-bold border-b border-gray-200 text-[14px]">
-                {results.length} total
+              <div className="bg-white px-6 py-3 text-black font-bold border-b border-gray-200 text-[14px] flex items-center justify-between">
+                <span>Showing {results.length === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1} to {Math.min(currentPage * rowsPerPage, results.length)} of {results.length} total</span>
+                {results.length > rowsPerPage && (
+                  <div className="flex items-center gap-2">
+                    <button onClick={handlePrev} disabled={currentPage === 1} className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-bold">Prev</button>
+                    <span className="px-3 py-1.5 bg-[#1EB04C] text-white rounded font-bold">{currentPage}</span>
+                    <button onClick={handleNext} disabled={currentPage === totalPages} className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-bold">Next</button>
+                  </div>
+                )}
               </div>
             </>
           )}

@@ -6,6 +6,12 @@ const TrialBalanceTable = ({ data = [] }) => {
     key: "",
     direction: "asc",
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
+
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [data]);
 
   const handleSort = (key) => {
     let direction = "asc";
@@ -60,6 +66,17 @@ const TrialBalanceTable = ({ data = [] }) => {
 
   const sortedData = getSortedData();
 
+  const totalPages = Math.ceil(sortedData.length / rowsPerPage);
+  const visibleData = sortedData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage(prev => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage(prev => prev - 1);
+  };
+
   return (
     <div className="w-full overflow-x-auto no-scrollbar border border-gray-200 rounded-lg">
       <style>{`
@@ -95,7 +112,7 @@ const TrialBalanceTable = ({ data = [] }) => {
         </div>
       ) : (
         <>
-          {sortedData.map((row, index) => (
+          {visibleData.map((row, index) => (
             <div
               key={index}
               className="grid gap-0 bg-white border-b border-gray-200 text-[13px] hover:bg-gray-50 transition-colors"
@@ -114,8 +131,30 @@ const TrialBalanceTable = ({ data = [] }) => {
               <div className="px-4 py-3 text-right font-medium text-green-600">{row.netCredit}</div>
             </div>
           ))}
-          <div className="bg-gray-50 px-4 py-3 text-[13px] text-gray-600 font-medium">
-            {sortedData.length} total
+          <div className="bg-gray-50 px-4 py-3 text-[13px] text-gray-600 font-medium flex items-center justify-between">
+            <div>
+              Showing {sortedData.length === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1} to {Math.min(currentPage * rowsPerPage, sortedData.length)} of {sortedData.length} records
+            </div>
+            
+            {sortedData.length > rowsPerPage && (
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={handlePrev} 
+                  disabled={currentPage === 1}
+                  className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+                >
+                  Prev
+                </button>
+                <span className="px-3 py-1.5 bg-[#1EB04C] text-white rounded font-bold">{currentPage}</span>
+                <button 
+                  onClick={handleNext} 
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         </>
       )}

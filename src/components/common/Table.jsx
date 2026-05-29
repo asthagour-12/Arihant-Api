@@ -3,6 +3,12 @@ import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 
 const Table = ({ headers, rows }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
+
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [rows]);
 
   const handleSort = (index) => {
     let direction = 'asc';
@@ -22,6 +28,17 @@ const Table = ({ headers, rows }) => {
       return 0;
     });
   }, [rows, sortConfig]);
+
+  const totalPages = Math.ceil(sortedRows.length / rowsPerPage);
+  const visibleRows = sortedRows.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage(prev => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage(prev => prev - 1);
+  };
 
   const SortIcon = ({ index }) => {
     if (sortConfig.key === index) {
@@ -69,7 +86,7 @@ const Table = ({ headers, rows }) => {
             </tr>
           </thead>
           <tbody className="bg-white">
-            {sortedRows.map((row, rowIndex) => (
+            {visibleRows.map((row, rowIndex) => (
               <tr key={rowIndex} className="border-b border-gray-100 hover:bg-gray-50 transition-colors group">
                 {row.map((cell, cellIndex) => (
                   <td key={cellIndex} className="px-3 py-2 border-r border-gray-100 last:border-0 text-gray-700 text-[11px]">
@@ -89,8 +106,30 @@ const Table = ({ headers, rows }) => {
         </table>
       </div>
 
-      <div className="px-4 py-2 bg-[#f9f9f9] text-gray-500 font-medium border-t border-gray-200 text-[11px]">
-        {sortedRows.length} total
+      <div className="px-4 py-3 bg-[#f9f9f9] text-gray-500 font-medium border-t border-gray-200 text-[11px] flex items-center justify-between">
+        <div>
+          Showing {sortedRows.length === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1} to {Math.min(currentPage * rowsPerPage, sortedRows.length)} of {sortedRows.length} records
+        </div>
+
+        {sortedRows.length > rowsPerPage && (
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={handlePrev} 
+              disabled={currentPage === 1}
+              className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+            >
+              Prev
+            </button>
+            <span className="px-3 py-1.5 bg-[#1EB04C] text-white rounded font-bold">{currentPage}</span>
+            <button 
+              onClick={handleNext} 
+              disabled={currentPage === totalPages}
+              className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

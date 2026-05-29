@@ -3,11 +3,11 @@ import { ChevronUp, ChevronDown, ChevronsUpDown, Download } from "lucide-react";
 
 const DataTable = ({ headers, rows, showMaskIcon = false, resultsCount, onDownload, onMaskToggle, isMasked, isPlain = false }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
-  const [visibleCount, setVisibleCount] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
 
   React.useEffect(() => {
-    setVisibleCount(10);
+    setCurrentPage(1);
   }, [rows]);
 
   const handleSort = (index) => {
@@ -29,7 +29,16 @@ const DataTable = ({ headers, rows, showMaskIcon = false, resultsCount, onDownlo
     });
   }, [rows, sortConfig]);
 
-  const visibleRows = sortedRows.slice(0, visibleCount);
+  const totalPages = Math.ceil(sortedRows.length / rowsPerPage);
+  const visibleRows = sortedRows.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage(prev => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage(prev => prev - 1);
+  };
 
   const SortIcon = ({ index }) => {
     if (sortConfig.key === index) {
@@ -48,12 +57,7 @@ const DataTable = ({ headers, rows, showMaskIcon = false, resultsCount, onDownlo
     <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-6">
 
 
-      <div className="overflow-auto" style={{ maxHeight: "400px" }} onScroll={(e) => {
-        const bottom = e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 5;
-        if (bottom && visibleCount < sortedRows.length) {
-          setVisibleCount((prev) => prev + rowsPerPage);
-        }
-      }}>
+      <div className="overflow-x-auto">
         <table className="w-full text-left table-fixed border-collapse">
           <thead className="bg-[#1EB04C] text-white">
             <tr>
@@ -105,8 +109,30 @@ const DataTable = ({ headers, rows, showMaskIcon = false, resultsCount, onDownlo
         </table>
       </div>
 
-      <div className="px-6 py-4 bg-gray-50/50 text-gray-500 font-bold border-t border-gray-100 text-[12px] tracking-wider">
-        Showing {visibleRows.length} of {sortedRows.length} TOTAL RECORDS
+      <div className="px-6 py-4 bg-gray-50/50 text-gray-500 font-medium border-t border-gray-100 text-[12px] flex items-center justify-between">
+        <div>
+          Showing {sortedRows.length === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1} to {Math.min(currentPage * rowsPerPage, sortedRows.length)} of {sortedRows.length} records
+        </div>
+        
+        {sortedRows.length > rowsPerPage && (
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={handlePrev} 
+              disabled={currentPage === 1}
+              className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+            >
+              Prev
+            </button>
+            <span className="px-3 py-1.5 bg-[#1EB04C] text-white rounded font-bold">{currentPage}</span>
+            <button 
+              onClick={handleNext} 
+              disabled={currentPage === totalPages}
+              className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:hover:border-gray-200 font-bold"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
