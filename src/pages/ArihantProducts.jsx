@@ -6,6 +6,17 @@ export default function ArihantProductsSection() {
       <div className="max-w-[1700px] mx-auto px-4">
 
 
+        {/* INFO / LEGEND */}
+        <div className="flex items-center gap-4 my-10 justify-center">
+          <div className="w-32 border-t border-gray-200"></div>
+          <p className="text-base text-gray-600 text-center flex-none">
+            What we mean when we say -{" "}
+            <b>(Z)</b>: Zone, <b>(R)</b>: Region, <b>(Br)</b>: Branch,{" "}
+            <b>(AP)</b>: Authorized Person/Sub Broker
+          </p>
+          <div className="w-32 border-t border-gray-200"></div>
+        </div>
+
         {/* PRODUCT CARD */}
         <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
           <h2 className="text-2xl font-semibold text-gray-800 mb-8 border-b pb-4">

@@ -23,19 +23,37 @@ export default function ClickToCall() {
   useEffect(() => {
     const fetchInactiveData = async () => {
       try {
-        const response = await getInactiveClickToCall({ size: 50, pageNumber: 0 });
-        const data = response.data?.data || response.data || [];
-        if (Array.isArray(data)) {
-          const formattedData = data.map(item => ({
-            name: item.clientName || item.name || item.ClientName || "-",
-            clientCode: item.clientCode || item.ClientCode || "-",
-            mobile: item.mobileNo || item.mobile || item.MobileNo || "-",
-            email: item.emailId || item.email || item.EmailId || "-",
-            pan: item.panNo || item.pan || item.PanNo || "-",
-            ...item
-          }));
-          setApiData(formattedData);
+        // First hit the getprofile API as requested
+        try {
+          console.log("Calling getprofile API first...");
+          await getUserProfile();
+        } catch (profileErr) {
+          console.warn("getprofile call failed, proceeding to fetch inactive data", profileErr);
         }
+
+        // Then hit the inactive click to call API
+        const response = await getInactiveClickToCall({ size: 50, pageNumber: 0 });
+        const responseData = response.data?.result || response.data || {};
+        let items = [];
+        if (Array.isArray(responseData)) {
+          items = responseData;
+        } else if (responseData && Array.isArray(responseData.clientlist)) {
+          items = responseData.clientlist;
+        } else if (responseData && Array.isArray(responseData.list)) {
+          items = responseData.list;
+        } else if (response.data && Array.isArray(response.data.data)) {
+          items = response.data.data;
+        }
+
+        const formattedData = items.map(item => ({
+          name: item.ClientName || item.clientName || item.name || "-",
+          clientCode: item.ClientCode || item.clientCode || item.client || "-",
+          mobile: item.Mobile || item.mobile || item.MobileNo || item.mobileNo || "-",
+          email: item.Email || item.email || item.emailId || item.EmailId || "-",
+          pan: item.PanNumber || item.PanNo || item.pan || "-",
+          ...item
+        }));
+        setApiData(formattedData);
       } catch (error) {
         console.error("Error fetching inactive click to call data:", error);
       }
@@ -43,24 +61,9 @@ export default function ClickToCall() {
     fetchInactiveData();
   }, []);
 
-  // 🔹 Dummy data (UI ke liye)
+  // 🔹 Dummy data (Removed as requested)
   useEffect(() => {
-    setLocalData([
-      {
-        name: "JASPAL SINGH GOUD",
-        clientCode: "AP050001",
-        mobile: "XXXXXX4934",
-        email: "jd****@****.com",
-        pan: "ASXXXXXM",
-      },
-      {
-        name: "PRITAM JAIN",
-        clientCode: "AP050002",
-        mobile: "XXXXXX8408",
-        email: "pr****@****.com",
-        pan: "ABXXXXJ",
-      },
-    ]);
+    setLocalData([]);
   }, []);
 
   // 🔹 Merge API + Local
@@ -197,8 +200,8 @@ export default function ClickToCall() {
             <button
               onClick={() => setActiveTab("inactive")}
               className={`pb-2 ${activeTab === "inactive"
-                  ? "border-b-2 border-green-600 font-semibold text-black"
-                  : "text-gray-500"
+                ? "border-b-2 border-green-600 font-semibold text-black"
+                : "text-gray-500"
                 }`}
             >
               Click to Call Inactive
@@ -207,8 +210,8 @@ export default function ClickToCall() {
             <button
               onClick={() => navigate("/followupreport")}
               className={`pb-2 ${activeTab === "follow"
-                  ? "border-b-2 border-green-600 font-semibold text-black"
-                  : "text-gray-500"
+                ? "border-b-2 border-green-600 font-semibold text-black"
+                : "text-gray-500"
                 }`}
             >
               Follow Up Report

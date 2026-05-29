@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react';
 import Header from "./Header";
@@ -11,12 +11,54 @@ import contestImg4 from "../assets/contests/511220250451379275137.jpg";
 import contestImg5 from "../assets/contests/education cost00122025040047067047.jpg";
 import contestImg6 from "../assets/contests/require310620250231168943116.jpg";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { getUserProfile, getClientContactDetails } from "../api/korpApiService";
 
 function Contests() {
   const [activeTab, setActiveTab] = useState("contest");
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "" });
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const triggerProfileCall = async () => {
+      try {
+        await getUserProfile();
+      } catch (err) {
+        console.error("Failed to call getprofile from Contests:", err);
+      }
+    };
+    triggerProfileCall();
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === "data") {
+      const fetchContactDetails = async () => {
+        setLoading(true);
+        try {
+          const response = await getClientContactDetails({ pageNumber: 0, size: 50 });
+          console.log("korpClientContactDetails API Response:", response.data);
+          
+          const responseData = response?.data?.data || response?.data?.result || response?.data?.Data || response?.data || [];
+          if (Array.isArray(responseData)) {
+            setData(responseData);
+          } else if (responseData && Array.isArray(responseData.list)) {
+            setData(responseData.list);
+          } else if (responseData && Array.isArray(responseData.results)) {
+            setData(responseData.results);
+          } else {
+            setData([]);
+          }
+        } catch (err) {
+          console.error("Failed to fetch client contact details:", err);
+          setData([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchContactDetails();
+    }
+  }, [activeTab]);
 
   // SORT
   const handleSort = (key) => {
@@ -30,8 +72,31 @@ function Contests() {
     let sorted = [...data];
     if (direction !== "") {
       sorted.sort((a, b) => {
-        if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
-        if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
+        let aVal = "";
+        let bVal = "";
+
+        if (key === "branch") {
+          aVal = a.BranchCode || a.branchcode || a.branchCode || a.branch || "";
+          bVal = b.BranchCode || b.branchcode || b.branchCode || b.branch || "";
+        } else if (key === "client") {
+          aVal = a.AccountId || a.clientcode || a.clientCode || a.client || "";
+          bVal = b.AccountId || b.clientcode || b.clientCode || b.client || "";
+        } else if (key === "name") {
+          aVal = a.Name || a.clientname || a.clientName || a.name || "";
+          bVal = b.Name || b.clientname || b.clientName || b.name || "";
+        } else if (key === "email") {
+          aVal = a.ContactEmail || a.email || a.Email || "";
+          bVal = b.ContactEmail || b.email || b.Email || "";
+        } else if (key === "mobile") {
+          aVal = a.Contactno || a.mobile || a.Mobile || "";
+          bVal = b.Contactno || b.mobile || b.Mobile || "";
+        } else {
+          aVal = a[key] || "";
+          bVal = b[key] || "";
+        }
+
+        if (aVal < bVal) return direction === "asc" ? -1 : 1;
+        if (aVal > bVal) return direction === "asc" ? 1 : -1;
         return 0;
       });
     }
@@ -151,25 +216,47 @@ function Contests() {
                 </tr>
               </thead>
               <tbody>
-                {data.map((item, index) => (
-                  <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                    <td className="px-3 py-2 border-r border-gray-200">
-                      {item.branch}
-                    </td>
-                    <td className="px-3 py-2 border-r border-gray-200 font-semibold">
-                      {item.client}
-                    </td>
-                    <td className="px-3 py-2 border-r border-gray-200">
-                      {item.name}
-                    </td>
-                    <td className="px-3 py-2 border-r border-gray-200">
-                      {item.email}
-                    </td>
-                    <td className="px-3 py-2">
-                      {item.mobile}
+                {loading ? (
+                  <tr>
+                    <td colSpan="5" className="p-8 text-center text-gray-500 font-semibold">
+                      Loading client contact details from UAT...
                     </td>
                   </tr>
-                ))}
+                ) : data.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="p-8 text-center text-gray-500 font-medium">
+                      No records found
+                    </td>
+                  </tr>
+                ) : (
+                  data.map((item, index) => {
+                    const branch = item.BranchCode || item.branchcode || item.branchCode || item.branch || item.Branch || "-";
+                    const client = item.AccountId || item.clientcode || item.clientCode || item.client || item.ClientCode || "-";
+                    const name = item.Name || item.clientname || item.clientName || item.name || item.contactperson || "-";
+                    const email = item.ContactEmail || item.email || item.Email || item.emailId || "-";
+                    const mobile = item.Contactno || item.mobile || item.Mobile || item.mobileNumber || "-";
+
+                    return (
+                      <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                        <td className="px-3 py-2 border-r border-gray-200">
+                          {branch}
+                        </td>
+                        <td className="px-3 py-2 border-r border-gray-200 font-semibold">
+                          {client}
+                        </td>
+                        <td className="px-3 py-2 border-r border-gray-200">
+                          {name}
+                        </td>
+                        <td className="px-3 py-2 border-r border-gray-200">
+                          {email}
+                        </td>
+                        <td className="px-3 py-2">
+                          {mobile}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>

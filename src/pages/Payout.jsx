@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import Header from "./Header.jsx";
 import ArihantProducts from "./ArihantProducts.jsx";
 import { L } from "../styles/legacyStyles.jsx";
-import { Search, Download, Trash2 } from "lucide-react";
+import { Search, Download, Trash2, ChevronsUpDown, ChevronUp, ChevronDown } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Table from "../components/common/Table";
 import ResultsHeader from "../components/common/ResultsHeader";
 import CalendarHeader from "../components/common/CalendarHeader";
 import { useNavigate } from "react-router-dom";
-import korpInstance from "../api/korpApiService";
+import korpInstance, { getUserProfile } from "../api/korpApiService";
 import { toast } from "react-toastify";
 import * as XLSX from "xlsx";
 
@@ -19,6 +19,18 @@ const Payout = () => {
     const [activeTab, setActiveTab] = useState("Payout");
 
     const tabs = ["Payout", "Bulk Payout", "Payout Report", "Cancel Request"];
+
+    useEffect(() => {
+        const hitGetProfile = async () => {
+            try {
+                await getUserProfile();
+                console.log("getUserProfile API hit successfully on Payout click/tab mount!");
+            } catch (error) {
+                console.error("Error hitting getUserProfile API on Payout click:", error);
+            }
+        };
+        hitGetProfile();
+    }, [activeTab]);
 
     const renderContent = () => {
         switch (activeTab) {
@@ -552,6 +564,58 @@ const PayoutReportTab = () => {
     const [resultData, setResultData] = useState({});
     const [rows, setRows] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
+
+    const headerToKey = {
+        "Client Code": "ClientCode",
+        "Date": "RequestDate",
+        "Client Name": "ClientName",
+        "BankAccount": "BankAccount",
+        "Request Amount": "RequestAmount",
+        "Status": "Status"
+    };
+
+    const handleSort = (header) => {
+        const key = headerToKey[header];
+        if (!key) return;
+        let direction = "asc";
+        if (sortConfig.key === key && sortConfig.direction === "asc") {
+            direction = "desc";
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const sortedRows = React.useMemo(() => {
+        if (!sortConfig.key) return rows;
+        return [...rows].sort((a, b) => {
+            let aVal = a[sortConfig.key] || a[sortConfig.key.toLowerCase()] || a[sortConfig.key.charAt(0).toLowerCase() + sortConfig.key.slice(1)] || "";
+            let bVal = b[sortConfig.key] || b[sortConfig.key.toLowerCase()] || b[sortConfig.key.charAt(0).toLowerCase() + sortConfig.key.slice(1)] || "";
+            
+            // Format check for numbers
+            if (sortConfig.key === "RequestAmount") {
+                const numA = Number(String(aVal).replace(/,/g, ''));
+                const numB = Number(String(bVal).replace(/,/g, ''));
+                return sortConfig.direction === "asc" ? numA - numB : numB - numA;
+            }
+
+            if (typeof aVal === "string") aVal = aVal.toLowerCase();
+            if (typeof bVal === "string") bVal = bVal.toLowerCase();
+            
+            if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+            if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
+            return 0;
+        });
+    }, [rows, sortConfig]);
+
+    const renderSortIcon = (header) => {
+        const key = headerToKey[header];
+        if (!key || sortConfig.key !== key) {
+            return <ChevronsUpDown size={14} className="opacity-40 group-hover:opacity-100 transition-opacity" />;
+        }
+        return sortConfig.direction === "asc" 
+            ? <ChevronUp size={14} className="text-white" /> 
+            : <ChevronDown size={14} className="text-white" />;
+    };
 
     const [page, setPage] = useState({
         pageNumber: 0,
@@ -719,26 +783,21 @@ const PayoutReportTab = () => {
 
     return (
         <div style={{ ...L.wrapper, paddingTop: '8px' }}>
-            <div style={{ ...L.card, borderRadius: '16px' }}>
-                <div className="flex gap-6 items-end flex-wrap">
-                    {/* Client Code Input */}
-                    <div className="flex flex-col gap-2">
-                        <label className="text-gray-500 font-bold text-[11px] uppercase tracking-wider ml-1">Search By Client</label>
-                        <div className="relative group">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                            <input
-                                type="text"
-                                value={clientCode}
-                                onChange={(e) => setClientCode(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") handleSearch();
-                                }}
-                                placeholder="Enter client code"
-                                className="pl-11 pr-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:border-[#34b350] text-sm w-[280px] bg-white shadow-sm transition-all h-[44px] font-bold"
-                            />
-                        </div>
+            {/* Search Panel and Result Info (Merged in a single flow without L.card) */}
+            <div className="space-y-4 mb-6">
+                <div className="flex justify-between items-center px-1">
+                    <div className="text-[13px] text-black font-bold uppercase tracking-[0.15em]">
+                        Search results ({rows.length})
                     </div>
+                    <button
+                        onClick={exportAsXLSX}
+                        className="w-11 h-11 rounded-full flex items-center justify-center text-[#34b350] bg-green-50 hover:bg-[#34b350] hover:text-white transition-all shadow-sm border border-green-100 active:scale-95 animate-in fade-in"
+                    >
+                        <i className="fas fa-download text-[16px]"></i>
+                    </button>
+                </div>
 
+                <div className="flex gap-6 items-end flex-wrap">
                     {/* Date Picker Input */}
                     <div className="flex flex-col gap-2">
                         <label className="text-gray-500 font-bold text-[11px] uppercase tracking-wider ml-1">Request Date</label>
@@ -766,54 +825,46 @@ const PayoutReportTab = () => {
                         <button
                             onClick={handleSearch}
                             disabled={isLoading}
-                            className="bg-[#34b350] hover:bg-[#2e9e47] text-white px-8 h-[44px] rounded-full font-bold text-sm transition-all shadow-md flex items-center justify-center gap-2 active:scale-95 disabled:bg-gray-400"
+                            className="bg-[#34b350] hover:bg-[#2e9e47] text-white px-6 h-[44px] rounded-full font-bold text-sm transition-all shadow-md flex items-center justify-center active:scale-95 disabled:bg-gray-400"
                         >
-                            <span>{isLoading ? "SEARCHING..." : "SEARCH"}</span>
-                            <span className="text-lg">›</span>
+                            {isLoading ? "SEARCHING..." : "SEARCH"}
                         </button>
                     </div>
                 </div>
             </div>
 
             {/* Compact Summary Cards */}
-            <div className="flex flex-wrap gap-4 mt-6">
+            <div className="flex flex-wrap gap-3 mt-6 mb-6">
                 {[
-                    { label: "Total Request", value: count, bg: "bg-blue-50 text-blue-500" },
-                    { label: "Total Processed", value: rows.filter(r => (r.Status || r.status || "").toLowerCase() === "processed").length, bg: "bg-green-50 text-green-500" },
-                    {
-                        label: "Total Cancelled", value: rows.filter(r => {
-                            const s = (r.Status || r.status || "").toLowerCase();
-                            return s === "cancelled" || s === "rejected";
-                        }).length, bg: "bg-rose-50 text-rose-500"
-                    }
+                    { label: "Total Request" },
+                    { label: "Total Process" },
+                    { label: "Total Cancel" }
                 ].map(card => (
-                    <div key={card.label} className="bg-white border border-gray-100 rounded-xl py-3 px-5 shadow-sm flex items-center gap-3 min-w-[180px] flex-1 sm:flex-none">
-                        <div className={`w-9 h-9 rounded-lg ${card.bg} flex items-center justify-center font-bold text-sm`}>
-                            {card.label[6]}
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider leading-none">{card.label}</p>
-                            <h3 className="text-xl font-black text-gray-900 mt-1 leading-none">{card.value}</h3>
-                        </div>
+                    <div key={card.label} className="bg-white border border-gray-100 rounded-lg py-2 px-4 shadow-sm flex items-center justify-center min-w-[145px] h-[58px] flex-1 sm:flex-none">
+                        <span className="text-[12px] font-bold text-gray-500 uppercase tracking-wide whitespace-nowrap">
+                            {card.label}
+                        </span>
                     </div>
                 ))}
             </div>
 
             {/* 📊 PREMIUM REVIEW TABLE */}
             <div className="mt-8 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <ResultsHeader count={rows.length} onDownload={exportAsXLSX} />
-
-                <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-xl shadow-gray-200/40">
+                <div className="bg-white border border-gray-100 rounded-none overflow-hidden shadow-xl shadow-gray-200/40">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
-                            <thead className="bg-[#27ae60] text-white">
+                            <thead className="bg-[#34b350] text-white">
                                 <tr>
-                                    {["Request Date", "Client Code", "Client Name", "Request Amount", "Status"].map((header) => (
+                                    {["Client Code", "Date", "Client Name", "BankAccount", "Request Amount", "Status"].map((header) => (
                                         <th
                                             key={header}
-                                            className="px-6 py-3.5 text-[12px] font-bold uppercase tracking-wider whitespace-nowrap border-r border-white/10 last:border-0"
+                                            className="px-6 py-3.5 text-[12px] font-bold uppercase tracking-wider whitespace-nowrap cursor-pointer hover:bg-[#2e9e47] transition-colors border-r border-white/10 last:border-0"
+                                            onClick={() => handleSort(header)}
                                         >
-                                            {header}
+                                            <div className="flex items-center justify-between group">
+                                                {header}
+                                                {renderSortIcon(header)}
+                                            </div>
                                         </th>
                                     ))}
                                 </tr>
@@ -821,31 +872,35 @@ const PayoutReportTab = () => {
                             <tbody className="divide-y divide-gray-50">
                                 {isLoading ? (
                                     <tr>
-                                        <td colSpan="5" className="px-6 py-12 text-center text-gray-400 font-bold tracking-wider">
+                                        <td colSpan="6" className="px-6 py-12 text-center text-gray-400 font-bold tracking-wider">
                                             Loading report data...
                                         </td>
                                     </tr>
-                                ) : rows.length > 0 ? (
-                                    rows.map((row, index) => {
+                                ) : sortedRows.length > 0 ? (
+                                    sortedRows.map((row, index) => {
                                         const reqDate = row.RequestDate || row.Requestdate || row.date || "";
                                         const cCode = row.ClientCode || row.clientCode || "";
                                         const cName = row.ClientName || row.clientName || "";
                                         const reqAmt = row.RequestAmount || row.amount || 0;
                                         const status = row.Status || row.status || "Pending";
+                                        const bankAcc = row.BankAccount || row.BankAccountNo || row.BankAccountNumber || "-";
 
                                         return (
                                             <tr
                                                 key={index}
                                                 className="hover:bg-gray-50/50 transition-colors group"
                                             >
-                                                <td className="px-6 py-4 text-[13px] text-gray-600 font-medium whitespace-nowrap border-r border-gray-50">
-                                                    {reqDate}
-                                                </td>
                                                 <td className="px-6 py-4 text-[13px] text-gray-900 font-bold whitespace-nowrap border-r border-gray-50">
                                                     {cCode}
                                                 </td>
+                                                <td className="px-6 py-4 text-[13px] text-gray-600 font-medium whitespace-nowrap border-r border-gray-50">
+                                                    {reqDate}
+                                                </td>
                                                 <td className="px-6 py-4 text-[13px] text-gray-700 font-medium whitespace-nowrap border-r border-gray-50 uppercase">
                                                     {cName}
+                                                </td>
+                                                <td className="px-6 py-4 text-[13px] text-gray-500 font-mono whitespace-nowrap border-r border-gray-50">
+                                                    {bankAcc}
                                                 </td>
                                                 <td className="px-6 py-4 text-[14px] text-[#27ae60] font-black whitespace-nowrap border-r border-gray-50">
                                                     ₹
@@ -868,7 +923,7 @@ const PayoutReportTab = () => {
                                     })
                                 ) : (
                                     <tr>
-                                        <td colSpan="5" className="px-6 py-10 text-center text-gray-300 font-black tracking-[0.3em] uppercase">
+                                        <td colSpan="6" className="px-6 py-10 text-center text-gray-300 font-black tracking-[0.3em] uppercase">
                                             No Data Found
                                         </td>
                                     </tr>

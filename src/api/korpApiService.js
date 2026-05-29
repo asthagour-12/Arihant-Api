@@ -4,14 +4,12 @@ import axios from "axios";
 const korpInstance = axios.create({
   baseURL: "https://korpapuatapi.arihantcapital.com/api/V1",
   withCredentials: true,
-  headers: { "Content-Type": "application/json" },
 });
 
 // Secondary instance for apuatapi (SSO/Admin/Login)
 const ssoInstance = axios.create({
   baseURL: "https://apuatapi.arihantcapital.com/api/V1",
   withCredentials: true,
-  headers: { "Content-Type": "application/json" },
 });
 
 // ── 🛡️ INTERCEPTORS (Shared Logic) ────────────────────────────────────────────
@@ -19,7 +17,9 @@ const ssoInstance = axios.create({
 const attachInterceptors = (instance) => {
   instance.interceptors.request.use((config) => {
     const token = localStorage.getItem("connect_token");
-    if (token) config.headers.Authorization = `Bearer ${token}`;
+    if (token && token !== "undefined" && token !== "null" && token.trim() !== "") {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   }, (error) => Promise.reject(error));
 
@@ -96,7 +96,7 @@ export const getBrokerageDateWise = (params) => korpInstance.get("/reports/korpg
 // New endpoints for third party and research reports
 export const getThirdPartyReport = (params) => korpInstance.post("/reports/GetThirdPartyReport", {}, { params });
 export const getResearchCallReportAP = (params) => korpInstance.post("/reports/ResearchCallReportAP", {}, { params });
-export const getDPSlip = (params) => korpInstance.post("/reports/KorpdpSlip", params);
+export const getDPSlip = (params) => korpInstance.post("/reports/KorpdpSlip", {}, { params });
 export const getClientPortfolio = (params = {}, body = {}) => korpInstance.post("/reports/GetClientPortpolio", body, { params });
 export const getResearchCalls = (type) => korpInstance.get("/reports/getResearchCallDisplay", { params: { SearchType: type } });
 export const getOneClickEarlyPaying = (clientCode) => korpInstance.get("/reports/OneClickEarlypaying", { params: { clientCode } });
@@ -143,7 +143,7 @@ export const getDashboardData = async () => {
 export const getClientDetailByType = (clientCode, type) => korpInstance.get("/dashboard/korpgetclientDetail", { params: { clientCode, Type: type } });
 export const getUserProfile = () => korpInstance.get("/dashboard/getprofile");
 // Auditor profile endpoints
-export const getAuditorProfile = () => korpInstance.get("/dashboard/getprofile");
+export const getAuditorProfile = () => getUserProfile();
 export const getAuditorMe = () => korpInstance.get("/auditor/me");
 export const getAdminSubbrokerCount = () => korpInstance.get("/AdminDashboard/getAdminsubbrokerclientcount");
 export const getTopPerformedBrokers = (type) => ssoInstance.get("/AdminDashboard/getTopPerformedBrk", { params: { SearchType: type } });
@@ -210,9 +210,9 @@ export const getPhysicalModification = (params = {}) => korpInstance.get("/repor
 export const getPhysicalAccountOpening = (params = {}) => korpInstance.get("/reports/GetPhysicalAccountOpening", { params });
 export const getRekycModification = (params = {}) => korpInstance.get("/reports/Rekycmodificationlist", { params });
 export const getComplianceFiles = (params = {}) => {
-  const { pageNumber, size, ...body } = params;
+  const { pageNumber, size, SearchType, Search, ...body } = params;
   return korpInstance.post("/ComplianceCircular/CircularList", body, {
-    params: { pageNumber, size }
+    params: { pageNumber, size, SearchType, Search }
   });
 };
 export const getAriTradeFileUpload = () => korpInstance.get("/reports/GetAriTradeFileUpload");
@@ -244,10 +244,14 @@ export const getComplianceFolder = () => korpInstance.get("/reports/getComplianc
 export const getFTPDirectory = (params) => korpInstance.get("/FTP/FTPDirectory", { params });
 export const getFTPDirectoryFiles = (params) => korpInstance.get("/FTP/FTPDirectoryFiles", { params });
 export const getFTPFile1 = (params) => korpInstance.get("/FTP/getftpFile1", { params });
-export const getAlgoBrokerage = (params = {}) => korpInstance.get("/AdminDashboard/korpIAlgoBrokerage", { params });
+export const getAlgoBrokerage = (params = {}) => {
+  return axios.get("https://korpapuatapi.arihantcapital.com/api/V1/AdminDashboard/korpIAlgoBrokerage", { params });
+};
 export const getMfStructure = (params = {}, body = {}) => korpInstance.post("/reports/GetMfStructure", body, { params });
 export const getTipsOnBondOfferData = (data = {}) => korpInstance.post("/reports/TipsonBondOfferData", data);
-export const getClientContactDetails = (params = {}) => korpInstance.get("/AdminDashboard/korpClientContactDetails", { params });
+export const getClientContactDetails = (params = {}) => {
+  return axios.get("https://korpapuatapi.arihantcapital.com/api/V1/AdminDashboard/korpClientContactDetails", { params });
+};
 export const getClientPayoutBalance = (params = {}) => korpInstance.get("/payout/korpgetclientBalance", { params });
 
 // Re-activation clients (supports optional datefrom/dateto, pageNumber, size)
