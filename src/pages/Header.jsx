@@ -7,14 +7,6 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [animateFlip, setAnimateFlip] = useState(false);
-
-  useEffect(() => {
-    if (animateFlip) {
-      const timer = setTimeout(() => setAnimateFlip(false), 600);
-      return () => clearTimeout(timer);
-    }
-  }, [animateFlip]);
 
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
@@ -23,32 +15,11 @@ const Header = () => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('connect_token');
     localStorage.removeItem('connect_manager');
-    navigate('/');
+    window.location.href = '/login';
   };
 
   return (
     <>
-      <style>{`
-        @keyframes customFlip {
-          0% {
-            transform: rotateY(0deg);
-          }
-          50% {
-            transform: rotateY(180deg) scale(1.25);
-            color: #d1fae5;
-          }
-          100% {
-            transform: rotateY(360deg);
-          }
-        }
-
-        .animate-flip-active {
-          animation: customFlip 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-          display: inline-block !important;
-          transform-style: preserve-3d;
-          perspective: 1000px;
-        }
-      `}</style>
       <div className="bg-[#34b350] px-6 h-[60px] flex items-center justify-between fixed top-0 z-[1000] shadow-md w-full">
         <div className="flex items-center gap-10 h-full">
           <div className="flex items-center h-full">
@@ -147,32 +118,29 @@ const Header = () => {
 
         <div className="flex items-center gap-4 relative">
           <div
-            className="flex items-center gap-2 cursor-pointer py-2 px-3 rounded-lg hover:bg-white/10 transition-all text-white"
+            className="flex items-center gap-[3px] cursor-pointer py-2 px-1 rounded-lg transition-all text-white"
             onClick={() => {
               setDropdownOpen(!dropdownOpen);
-              setAnimateFlip(true);
             }}
           >
-            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-              <i className={`fa-solid fa-user text-[14px] ${animateFlip ? "animate-flip-active" : ""}`}></i>
-            </div>
+            <i className="fa-solid fa-user text-[14px]"></i>
             <i className="fa fa-chevron-down text-[10px] opacity-70"></i>
           </div>
 
           {dropdownOpen && (
             <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-100 rounded-xl shadow-2xl z-[1100] animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
               <div className="py-2">
-                <a href="https://connectuat.arihantcapital.com/contact" target="_blank" rel="noopener noreferrer" className="px-5 py-3 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer flex items-center no-underline transition-colors">
+                <a href="https://connectuat.arihantcapital.com/contact" target="_blank" rel="noopener noreferrer" className="px-5 py-3 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer flex items-center no-underline transition-colors whitespace-nowrap">
                   <i className="fa fa-user-circle mr-3 text-gray-400"></i>
                   Contact details
                 </a>
-                <a href="https://support.arihantcapital.com/support/home" target="_blank" rel="noopener noreferrer" className="px-5 py-3 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer flex items-center no-underline transition-colors">
+                <a href="https://support.arihantcapital.com/support/home" target="_blank" rel="noopener noreferrer" className="px-5 py-3 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer flex items-center no-underline transition-colors whitespace-nowrap">
                   <i className="fa fa-headset mr-3 text-gray-400"></i>
                   Customer Support
                 </a>
                 <div
                   onClick={handleLogout}
-                  className="px-5 py-3 text-sm text-red-600 hover:bg-red-50 cursor-pointer flex items-center border-t border-gray-50 transition-colors"
+                  className="px-5 py-3 text-sm text-red-600 hover:bg-red-50 cursor-pointer flex items-center border-t border-gray-50 transition-colors whitespace-nowrap"
                 >
                   <i className="fa fa-sign-out-alt mr-3"></i>
                   <span className="font-bold">Logout</span>

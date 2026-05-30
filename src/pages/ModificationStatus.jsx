@@ -129,10 +129,22 @@ const ModificationStatus = () => {
                             <div className="px-4 py-4 text-gray-500 font-normal text-[13px] flex items-center justify-between">
                                 <span>{subTab === "Rekyc Modification" ? rekycData.length : "0"} total</span>
                                 {activeData.length > rowsPerPage && (
-                                    <div className="flex items-center gap-2">
-                                        <button onClick={handlePrev} disabled={currentPage === 1} className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-bold">Prev</button>
-                                        <span className="px-3 py-1.5 bg-[#1EB04C] text-white rounded font-bold">{currentPage}</span>
-                                        <button onClick={handleNext} disabled={currentPage === totalPages} className="px-3 py-1.5 border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-bold">Next</button>
+                                    <div className="flex items-center gap-1.5">
+                                        <button 
+                                            onClick={handlePrev} 
+                                            disabled={currentPage === 1} 
+                                            className="w-7 h-7 flex items-center justify-center border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-bold"
+                                        >
+                                            <i className="fa fa-chevron-left text-[10px]"></i>
+                                        </button>
+                                        <span className="w-7 h-7 flex items-center justify-center bg-[#1EB04C] text-white rounded text-xs font-bold shadow-sm">{currentPage}</span>
+                                        <button 
+                                            onClick={handleNext} 
+                                            disabled={currentPage === totalPages} 
+                                            className="w-7 h-7 flex items-center justify-center border border-gray-200 rounded text-gray-600 hover:bg-[#18a045] hover:text-white hover:border-[#18a045] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-bold"
+                                        >
+                                            <i className="fa fa-chevron-right text-[10px]"></i>
+                                        </button>
                                     </div>
                                 )}
                             </div>
