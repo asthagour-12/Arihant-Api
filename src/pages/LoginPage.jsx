@@ -23,6 +23,8 @@ const LoginPage = () => {
   const [canResend, setCanResend] = useState(false);
   const [resendTimer, setResendTimer] = useState(120);
 
+
+
   useEffect(() => {
     let timer;
     if (showOTP && resendTimer > 0) {

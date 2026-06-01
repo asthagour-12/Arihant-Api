@@ -10,7 +10,9 @@ import { getBrokerageClientWise, getBrokerageDateWise, getThirdPartyReport, getR
 
 const Brokerage = () => {
     const [activeSubTab, setActiveSubTab] = useState("Capital Brokerage");
-    const [isMasked, setIsMasked] = useState(true);
+    const [isMasked, setIsMasked] = useState(() => {
+        return sessionStorage.getItem("revenue_verified") !== "true";
+    });
     const [showOtpModal, setShowOtpModal] = useState(false);
     const [timer, setTimer] = useState(115); // 1:55
     const [otp, setOtp] = useState("");
@@ -187,9 +189,10 @@ const Brokerage = () => {
     };
 
     const handleOtpSubmit = () => {
-        if (otp === "123456") {
+        if (otp === "986764") {
             setIsMasked(false);
             setShowOtpModal(false);
+            sessionStorage.setItem("revenue_verified", "true");
             setOtp("");
             toast.success("Verified successfully");
         } else {
@@ -453,16 +456,14 @@ const Brokerage = () => {
                             <div key={i} className="border border-gray-300 rounded-lg p-3 bg-white shadow-sm transition-all hover:border-[#34b350]/30 hover:shadow-md group">
                                 <div className="flex items-center justify-between mb-2">
                                     <h3 className="text-gray-500 text-[10px] font-bold uppercase tracking-wider">{s.title}</h3>
-                                    <div
-                                        onClick={handleEyeClick}
-                                        className="cursor-pointer p-0.5 hover:bg-gray-100 rounded-full transition-colors"
-                                    >
-                                        {isMasked ? (
+                                    {isMasked && (
+                                        <div
+                                            onClick={handleEyeClick}
+                                            className="cursor-pointer p-0.5 hover:bg-gray-100 rounded-full transition-colors"
+                                        >
                                             <EyeOff size={14} className="text-gray-400 group-hover:text-red-500" />
-                                        ) : (
-                                            <Eye size={14} className="text-[#34b350]" />
-                                        )}
-                                    </div>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className={`${isMasked ? "text-[14px] font-bold text-gray-400" : "text-[16px] font-black text-gray-900"} tracking-tight tabular-nums transition-all`}>
                                     {isMasked ? "xxxx" : s.value}
@@ -475,7 +476,7 @@ const Brokerage = () => {
                         headers={headers}
                         rows={rows}
                         resultsCount={5}
-                        showMaskIcon={true}
+                        showMaskIcon={isMasked}
                         onMaskToggle={handleEyeClick}
                         isMasked={isMasked}
                         onDownload={handleDownload}
