@@ -121,6 +121,17 @@ const DownloadTree = ({ rows = [] }) => {
     }));
   };
 
+  const triggerIframeDownload = (url) => {
+    let iframe = document.getElementById("hidden-download-iframe");
+    if (!iframe) {
+      iframe = document.createElement("iframe");
+      iframe.id = "hidden-download-iframe";
+      iframe.style.display = "none";
+      document.body.appendChild(iframe);
+    }
+    iframe.src = url;
+  };
+
   return (
     <div className="flex flex-wrap gap-10 pt-0 mt-[-20px] relative z-10">
       {displayRows?.map((category, index) => (
@@ -220,12 +231,12 @@ const DownloadTree = ({ rows = [] }) => {
 
                                 <a
                                   href={file.URL}
-                                  target="_blank"
+                                  target="_self"
                                   rel="noopener noreferrer"
                                   download
                                   onClick={(e) => {
+                                    e.preventDefault();
                                     if (file.URL?.startsWith("#")) {
-                                      e.preventDefault();
                                       axios.get("https://korpapuatapi.arihantcapital.com/api/V1/reports/GetAriTradeFileUpload", {
                                         headers: {
                                           Authorization: `Bearer ${localStorage.getItem("connect_token")}`
@@ -233,6 +244,7 @@ const DownloadTree = ({ rows = [] }) => {
                                       }).then((res) => console.log("UAT GET success:", res.data))
                                         .catch((err) => console.error("UAT GET error:", err));
                                     } else {
+                                      triggerIframeDownload(file.URL);
                                       // Explicitly trigger standard network hit to log in Network Tab under Fetch/XHR
                                       console.log("Explicitly hitting download URL:", file.URL);
                                       axios.get(file.URL)
@@ -298,12 +310,12 @@ const DownloadTree = ({ rows = [] }) => {
                       ) : (
                         <a
                           href={file.URL}
-                          target="_blank"
+                          target="_self"
                           rel="noopener noreferrer"
                           download
                           onClick={(e) => {
+                            e.preventDefault();
                             if (file.URL?.startsWith("#")) {
-                              e.preventDefault();
                               axios.get("https://korpapuatapi.arihantcapital.com/api/V1/reports/GetAriTradeFileUpload", {
                                 headers: {
                                   Authorization: `Bearer ${localStorage.getItem("connect_token")}`
@@ -311,6 +323,7 @@ const DownloadTree = ({ rows = [] }) => {
                               }).then((res) => console.log("UAT GET success:", res.data))
                                 .catch((err) => console.error("UAT GET error:", err));
                             } else {
+                              triggerIframeDownload(file.URL);
                               // Explicitly trigger standard network hit to log in Network Tab under Fetch/XHR
                               console.log("Explicitly hitting download URL:", file.URL);
                               axios.get(file.URL)
