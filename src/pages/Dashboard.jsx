@@ -133,13 +133,15 @@ const StatItem = ({ icon, label, value, onEyeClick, isRevealed }) => {
         <div className="flex items-center justify-between gap-2.5">
           <span className="text-sm font-semibold text-gray-800">{displayValue}</span>
           {/* Eye toggle */}
-          <button
-            type="button"
-            onClick={onEyeClick}
-            className="text-gray-500 hover:text-gray-800 focus:outline-none"
-          >
-            {isRevealed ? <EyeOff size={16} /> : <Eye size={16} />}
-          </button>
+          {!isRevealed && (
+            <button
+              type="button"
+              onClick={onEyeClick}
+              className="text-gray-500 hover:text-gray-800 focus:outline-none"
+            >
+              <Eye size={16} />
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -153,13 +155,9 @@ function Dashboard() {
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [csrfToken, setCsrfToken] = useState("");
   const [otp, setOtp] = useState("");
-  const [isRevealed, setIsRevealed] = useState(false);
-
-  // Ensure masking is reset on component mount
-  useEffect(() => {
-    sessionStorage.removeItem("revenue_verified");
-    setIsRevealed(false);
-  }, []);
+  const [isRevealed, setIsRevealed] = useState(() => {
+    return sessionStorage.getItem("revenue_verified") === "true";
+  });
   const [resendTimer, setResendTimer] = useState(120); // 2 minutes in seconds
   const [canResend, setCanResend] = useState(false);
   const [toast, setToast] = useState({

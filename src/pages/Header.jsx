@@ -15,6 +15,7 @@ const Header = () => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('connect_token');
     localStorage.removeItem('connect_manager');
+    sessionStorage.removeItem('revenue_verified');
     window.location.href = '/login';
   };
 
