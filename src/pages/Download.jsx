@@ -133,7 +133,7 @@ const DownloadTree = ({ rows = [] }) => {
   };
 
   return (
-    <div className="flex flex-wrap gap-10 pt-0 mt-[-20px] relative z-10">
+    <div className="flex flex-wrap gap-10 pt-4 mt-4 relative z-10">
       {displayRows?.map((category, index) => (
         <div key={index} className="w-[320px] min-w-[320px]">
           {/* Category Header Row */}
