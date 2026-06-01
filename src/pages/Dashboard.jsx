@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Calendar, Wifi, User, Folder, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Calendar, Wifi, User, Folder, Loader2, X } from "lucide-react";
 import Header from "./Header";
 import korpInstance, { getDashboardData, getClientDetailByType, getMobileLoginData, getUserProfile, sendOtpMasking } from "../api/korpApiService";
 import { verifyOtp } from "../api/authApi";
@@ -133,6 +133,7 @@ const StatItem = ({ icon, label, value, onEyeClick, isRevealed }) => {
         <div className="flex items-center justify-between gap-2.5">
           <span className="text-sm font-semibold text-gray-800">{displayValue}</span>
           {/* Eye toggle */}
+<<<<<<< HEAD
           {!isRevealed && (
             <button
               type="button"
@@ -142,6 +143,15 @@ const StatItem = ({ icon, label, value, onEyeClick, isRevealed }) => {
               <Eye size={16} />
             </button>
           )}
+=======
+          <button
+            type="button"
+            onClick={onEyeClick}
+            className="text-gray-500 hover:text-gray-800 focus:outline-none"
+          >
+            {isRevealed ? <Eye size={16} /> : <EyeOff size={16} />}
+          </button>
+>>>>>>> 5c90f01 (Updated Dashboard and Download pages)
         </div>
       </div>
     </div>
@@ -310,10 +320,18 @@ function Dashboard() {
   };
 
   const handleEyeClick = async () => {
-    if (isRevealed) return;
+    if (isRevealed) {
+      setIsRevealed(false);
+      sessionStorage.removeItem("revenue_verified");
+      return;
+    }
+
+    setShowOtpModal(true);
+    setResendTimer(120);
+    setCanResend(false);
+    setOtp("");
 
     try {
-      setLoading(true);
       const branchCode = localStorage.getItem("branchCode");
       // Use masking-specific OTP endpoint
       const response = await sendOtpMasking(branchCode);
@@ -321,9 +339,6 @@ function Dashboard() {
       if (response?.data?.success) {
         const csrf = response?.data?.result?.CsrfToken || "";
         setCsrfToken(csrf);
-        setShowOtpModal(true);
-        setResendTimer(120);
-        setCanResend(false);
         setToast({
           show: true,
           type: "success",
@@ -339,7 +354,6 @@ function Dashboard() {
         message: err.message || "Failed to send OTP",
       });
     } finally {
-      setLoading(false);
       setTimeout(() => setToast({ show: false, type: "", message: "" }), 3000);
     }
   };
@@ -560,48 +574,52 @@ function Dashboard() {
 
       {/* OTP Modal */}
       {showOtpModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[2000]">
-          <div className="bg-white w-[95%] max-w-[500px] rounded-[24px] p-8 relative shadow-2xl animate-in zoom-in duration-300">
-            {/* Close Button */}
+        <div className="fixed inset-0 bg-black/40 z-[2000] flex items-center justify-center">
+          <div className="bg-white rounded-2xl p-10 w-[550px] shadow-lg relative">
             <button
               onClick={() => setShowOtpModal(false)}
-              className="absolute right-6 top-4 text-4xl text-gray-400 hover:text-black border-none bg-transparent cursor-pointer"
+              className="absolute right-8 top-8 text-gray-400 hover:text-black transition-colors"
             >
-              ×
+              <X size={20} />
             </button>
 
-            <h2 className="text-[28px] font-semibold text-gray-800 mb-6">Please enter OTP</h2>
-            <label className="text-lg text-gray-600 block mb-2">OTP</label>
-            <input
-              type="text"
-              maxLength={6}
-              value={otp}
-              onChange={(e) => {
-                const val = e.target.value.replace(/\D/g, '');
-                if (val.length <= 6) setOtp(val);
-              }}
-              className="w-full h-14 bg-gray-100 rounded-xl px-4 text-2xl tracking-[0.5rem] font-bold outline-none focus:bg-white focus:ring-2 focus:ring-[#34b350] transition-all border-none"
-              placeholder="000000"
-              onKeyDown={(e) => e.key === "Enter" && handleSubmitOtp()}
-            />
+            <div className="text-left px-4">
+              <h2 className="text-[26px] font-medium text-gray-800 mb-8">Please enter OTP</h2>
 
-            <div className="text-center mt-6 text-gray-600">
-              Resend OTP in <span className="font-bold text-[#34b350]">{formatTime(resendTimer)}</span>
-            </div>
-            <div
-              className={`text-center mt-2 transition-colors font-medium ${canResend ? "text-[#34b350] cursor-pointer hover:underline" : "text-gray-300 cursor-not-allowed"}`}
-              onClick={handleResendOtp}
-            >
-              Resend OTP
-            </div>
+              <div className="mb-6">
+                <label className="block text-[15px] text-gray-600 mb-2 font-medium">OTP</label>
+                <input
+                  type="text"
+                  maxLength={6}
+                  value={otp}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '');
+                    if (val.length <= 6) setOtp(val);
+                  }}
+                  placeholder="Enter your 6-digit OTP"
+                  className="w-full h-[52px] border border-gray-200 rounded-lg px-4 text-[15px] focus:border-[#34b350] outline-none transition-all placeholder:text-gray-300"
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmitOtp()}
+                />
+              </div>
 
-            <div className="flex justify-center mt-8">
-              <button
-                onClick={handleSubmitOtp}
-                className="bg-[#34b350] hover:bg-[#2da145] text-white px-12 py-3 rounded-full text-xl font-semibold transition-all duration-300 shadow-lg"
-              >
-                Submit
-              </button>
+              <div className="text-center mb-10">
+                <p className="text-[14px] text-gray-500 mb-1">Resend OTP in {formatTime(resendTimer)}</p>
+                <button
+                  onClick={handleResendOtp}
+                  className={`text-[14px] font-medium transition-colors ${canResend ? "text-[#34b350] cursor-pointer hover:underline" : "text-gray-300 cursor-default"}`}
+                >
+                  Resend OTP
+                </button>
+              </div>
+
+              <div className="flex justify-center">
+                <button
+                  onClick={handleSubmitOtp}
+                  className="bg-[#34b350] text-white font-medium rounded-full px-16 h-[52px] text-[16px] hover:bg-[#2e9e47] transition-all shadow-sm"
+                >
+                  Submit
+                </button>
+              </div>
             </div>
           </div>
         </div>
