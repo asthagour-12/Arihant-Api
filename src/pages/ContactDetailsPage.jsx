@@ -13,7 +13,7 @@ export default function ContactDetailsPage() {
       desk: "E-KYC - Digital account opening help desk",
       call: "07314217-272",
       email: "ekyc@arihantcapital.com",
-      time: "9AM",
+      time: "9AM - 6PM",
     },
     {
       name: "Mr. Prem Sachdev",
@@ -21,15 +21,15 @@ export default function ContactDetailsPage() {
       desk: "Digital Modification (re-KYC) Help desk",
       call: "07314217-272",
       email: "ekyc@arihantcapital.com",
-      time: "9AM",
+      time: "9AM - 6PM",
     },
     {
-      name: "Prem Sachdev",
+      name: "Mr. Prem Sachdev",
       designation: "Executive",
       desk: "E-kyc & re-kyc WHATS APP (Only chat service)",
       call: "7869955852",
       email: "chat",
-      time: "9AM",
+      time: "9AM - 6PM",
     },
     {
       name: "Rahul Pal / Rakesh Thakur",
@@ -37,7 +37,7 @@ export default function ContactDetailsPage() {
       desk: "Physical Account Opening Help desk",
       call: "07314217-126",
       email: "accountopening@arihantcapital.com",
-      time: "9AM",
+      time: "9AM - 6PM",
     },
     {
       name: "Heena Solanki / Tejbali / Chandresh",
@@ -45,7 +45,7 @@ export default function ContactDetailsPage() {
       desk: "Physical Modification Help Desk",
       call: "07314217-274",
       email: "modification@arihantcapital.com",
-      time: "9AM",
+      time: "9AM - 6PM",
     },
     {
       name: "Rohit Diwan / Ankit",
@@ -53,7 +53,7 @@ export default function ContactDetailsPage() {
       desk: "KRA services / CKYC",
       call: "07314217-110",
       email: "rohit.diwan@arihantcapital.com",
-      time: "10AM",
+      time: "10AM - 6PM",
     },
     {
       name: "Pramila Sharma",
@@ -61,7 +61,7 @@ export default function ContactDetailsPage() {
       desk: "Exchange / Compliance related",
       call: "07314217-268",
       email: "pramila.sharma@arihantcapital.com",
-      time: "8:30",
+      time: "8:30AM - 6PM",
     },
     {
       name: "Shailendra Mathane",
@@ -69,55 +69,50 @@ export default function ContactDetailsPage() {
       desk: "Critical /& Non individual Process / Escalation",
       call: "07314217-111",
       email: "shailendra.mathane@arihantcapital.com",
-      time: "10AM",
+      time: "10AM - 6PM",
     },
+    {
+      name: "Mahima Mandloi",
+      designation: "Manager",
+      desk: "Physical Process escalation 1",
+      call: "07314217-120",
+      email: "mahima.mandloi@arihantcapital.com",
+      time: "9:30AM - 6:30PM",
+    },
+    {
+      name: "Ashish Yadav",
+      designation: "Manager",
+      desk: "Digital Process escalation 1",
+      call: "7974249639",
+      email: "ashish.yadav@arihantcapital.com",
+      time: "10AM - 6PM",
+    },
+    {
+      name: "Kartikeya Shukla",
+      designation: "Head account opening",
+      desk: "Any escalation",
+      call: "9755618748",
+      email: "kartikeya.shukla@arihantcapital.com",
+      time: "10AM - 6PM",
+    }
   ];
 
-  useEffect(() => {
-    const fetchContacts = async () => {
-      setLoading(true);
-      try {
-        const response = await getClientContactDetails({ pageNumber: 0, size: 50 });
-        const items = response?.data?.data || response?.data?.Data || response?.data?.result || response?.data || [];
-        const list = Array.isArray(items) ? items : [items];
-        setApiContacts(list);
-      } catch (error) {
-        console.error("Failed to load client contact details:", error);
-        setApiError("Unable to fetch contact details from server.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchContacts();
-  }, []);
-
-  const contacts = apiContacts.length > 0
-    ? apiContacts.map((item) => ({
-      name: item.name || item.Name || item.clientName || item.ClientName || item.fullName || "-",
-      designation: item.designation || item.Designation || item.role || item.Role || "-",
-      desk: item.desk || item.Desk || item.department || item.Department || item.deskName || "-",
-      call: item.call || item.mobile || item.mobileNo || item.phone || item.Phone || item.PhoneNo || "-",
-      email: item.email || item.Email || item.emailId || item.EmailId || "-",
-      time: item.time || item.availability || item.Time || item.timeSlot || "-",
-    }))
-    : apiError
-      ? staticContacts
-      : [];
+  const contacts = staticContacts;
 
   return (
     <div className="w-full bg-[#f2f2f2] overflow-x-auto">
       <div className="px-6 py-4 text-sm text-gray-700 font-semibold">
         {loading ? "Loading contact details..." : apiError ? "Showing fallback contact list" : "Contact details"}
       </div>
-      <table className="w-[1817px] border-collapse text-[14px] text-[#1b1b1b] font-medium tracking-wide">
+      <table className="w-[1415px] border-collapse text-[14px] text-[#1b1b1b] font-medium tracking-wide">
         <thead>
           <tr className="bg-[#c7e2c7] h-[62px]">
-            <th className="w-[390px] border border-[#9fd49f]">Name</th>
-            <th className="w-[255px] border border-[#9fd49f]">Designation</th>
-            <th className="w-[490px] border border-[#9fd49f]">Desk</th>
-            <th className="w-[185px] border border-[#9fd49f]">Call</th>
-            <th className="w-[435px] border border-[#9fd49f]">Email</th>
-            <th className="w-[62px] border border-[#9fd49f]"></th>
+            <th className="w-[280px] border border-[#9fd49f] text-center">Name</th>
+            <th className="w-[180px] border border-[#9fd49f] text-center">Designation</th>
+            <th className="w-[350px] border border-[#9fd49f] text-center">Desk</th>
+            <th className="w-[185px] border border-[#9fd49f] text-center">Call</th>
+            <th className="w-[300px] border border-[#9fd49f] text-center">Email</th>
+            <th className="w-[120px] border border-[#9fd49f] text-center">Time</th>
           </tr>
         </thead>
 
@@ -127,7 +122,7 @@ export default function ContactDetailsPage() {
               key={index}
               className={index % 2 === 0 ? "bg-[#efefef]" : "bg-[#e3e3e3]"}
             >
-              <td className="h-[61px] px-14 border border-[#d2d2d2]">
+              <td className="h-[61px] px-4 border border-[#d2d2d2]">
                 {item.name}
               </td>
 
