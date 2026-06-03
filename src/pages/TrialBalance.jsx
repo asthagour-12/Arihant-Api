@@ -8,7 +8,7 @@ const TrialBalance = () => {
     const [clientCode, setClientCode] = useState("");
     const [tableData, setTableData] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+    const [sortConfig, setSortConfig] = useState({ key: "nameCode", direction: "asc" });
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 10;
 
@@ -122,8 +122,24 @@ const TrialBalance = () => {
     const sortedRows = React.useMemo(() => {
         if (!sortConfig.key) return mappedRows;
         return [...mappedRows].sort((a, b) => {
-            const aVal = a[sortConfig.key];
-            const bVal = b[sortConfig.key];
+            let aVal = a[sortConfig.key];
+            let bVal = b[sortConfig.key];
+
+            const isNumericColumn = ["openDebit", "openCredit", "netDebit", "netCredit"].includes(sortConfig.key);
+            if (isNumericColumn) {
+                const parseNum = (val) => {
+                    if (val === null || val === undefined || val === "-") return 0;
+                    const clean = String(val).replace(/[₹,\s]/g, "");
+                    const num = parseFloat(clean);
+                    return isNaN(num) ? 0 : num;
+                };
+                aVal = parseNum(aVal);
+                bVal = parseNum(bVal);
+            } else {
+                aVal = String(aVal).toLowerCase();
+                bVal = String(bVal).toLowerCase();
+            }
+
             if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
             if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
             return 0;
@@ -198,7 +214,7 @@ const TrialBalance = () => {
                                 <th
                                     key={i}
                                     onClick={() => handleSort(h.key)}
-                                    className={`px-4 py-4 text-[13px] font-semibold border-r border-white/10 last:border-0 cursor-pointer select-none hover:bg-[#18a045] transition-colors whitespace-nowrap ${h.align === "right" ? "text-right" : "text-left"}`}
+                                    className={`px-4 py-3 text-[13px] font-semibold border-r border-white/10 last:border-0 cursor-pointer select-none hover:bg-[#18a045] transition-colors whitespace-nowrap ${h.align === "right" ? "text-right" : "text-left"}`}
                                 >
                                     <div className={`flex items-center gap-1.5 ${h.align === "right" ? "justify-end" : "justify-start"}`}>
                                         <span>{h.label}</span>
@@ -210,15 +226,23 @@ const TrialBalance = () => {
                     </thead>
                     <tbody className="bg-white">
                         {visibleRows.map((row, rowIndex) => (
-                            <tr key={rowIndex} className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
-                                {headers.map((h, cellIndex) => (
-                                    <td
-                                        key={cellIndex}
-                                        className={`px-4 py-3.5 border-r border-gray-50 last:border-0 text-[13px] text-gray-700 font-medium whitespace-nowrap ${h.align === "right" ? "text-right" : "text-left"}`}
-                                    >
-                                        {row[h.key]}
-                                    </td>
-                                ))}
+                            <tr key={rowIndex} className={`border-b border-gray-200 hover:bg-gray-100/50 transition-colors ${rowIndex % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
+                                {headers.map((h, cellIndex) => {
+                                    let textColor = "text-gray-700";
+                                    if (h.key === "netDebit") {
+                                        textColor = "text-blue-600 font-bold";
+                                    } else if (h.key === "netCredit") {
+                                        textColor = "text-green-600 font-bold";
+                                    }
+                                    return (
+                                        <td
+                                            key={cellIndex}
+                                            className={`px-4 py-3.5 border-r border-gray-200 last:border-0 text-[13px] font-medium whitespace-nowrap ${h.align === "right" ? "text-right" : "text-left"} ${textColor}`}
+                                        >
+                                            {row[h.key]}
+                                        </td>
+                                    );
+                                })}
                             </tr>
                         ))}
                         {sortedRows.length === 0 && (
@@ -238,13 +262,6 @@ const TrialBalance = () => {
                     </div>
                     
                     <div className="flex items-center gap-4">
-                        {sortedRows.length > 0 && (
-                            <button onClick={handleDownload} className="flex items-center gap-1.5 text-[#1EB04C] hover:text-[#18a045] transition-colors font-bold">
-                                <Download size={14} />
-                                <span>Download CSV</span>
-                            </button>
-                        )}
-                        
                         {sortedRows.length > rowsPerPage && (
                             <div className="flex items-center gap-1.5">
                                 <button 
