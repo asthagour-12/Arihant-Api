@@ -133,17 +133,6 @@ const StatItem = ({ icon, label, value, onEyeClick, isRevealed }) => {
         <div className="flex items-center justify-between gap-2.5">
           <span className="text-sm font-semibold text-gray-800">{displayValue}</span>
           {/* Eye toggle */}
-<<<<<<< HEAD
-          {!isRevealed && (
-            <button
-              type="button"
-              onClick={onEyeClick}
-              className="text-gray-500 hover:text-gray-800 focus:outline-none"
-            >
-              <Eye size={16} />
-            </button>
-          )}
-=======
           <button
             type="button"
             onClick={onEyeClick}
@@ -151,7 +140,6 @@ const StatItem = ({ icon, label, value, onEyeClick, isRevealed }) => {
           >
             {isRevealed ? <Eye size={16} /> : <EyeOff size={16} />}
           </button>
->>>>>>> 5c90f01 (Updated Dashboard and Download pages)
         </div>
       </div>
     </div>
@@ -566,8 +554,8 @@ function Dashboard() {
             rel="noopener noreferrer"
             className="group bg-white p-[15px] rounded-lg flex items-center justify-center gap-3 cursor-pointer shadow-[0_2px_5px_rgba(0,0,0,0.08)] transition-all hover:-translate-y-1 hover:bg-[#f3fff5] hover:shadow-xl border border-gray-50 hover:border-green-100 no-underline active:scale-95"
           >
-            <span className="text-[14px] font-bold text-[#4ade80] group-hover:text-[#22c55e] transition-colors">{service.name}</span>
-            <span className="text-[#34b350] font-black text-lg group-hover:translate-x-1 transition-transform">{'>'}</span>
+            <span className="text-[14px] font-bold text-black transition-colors">{service.name}</span>
+            <span className="text-black font-black text-lg group-hover:translate-x-1 transition-transform">{'>'}</span>
           </a>
         ))}
       </div>
@@ -575,19 +563,19 @@ function Dashboard() {
       {/* OTP Modal */}
       {showOtpModal && (
         <div className="fixed inset-0 bg-black/40 z-[2000] flex items-center justify-center">
-          <div className="bg-white rounded-2xl p-10 w-[550px] shadow-lg relative">
+          <div className="bg-white rounded-2xl p-6 w-[420px] shadow-lg relative">
             <button
               onClick={() => setShowOtpModal(false)}
-              className="absolute right-8 top-8 text-gray-400 hover:text-black transition-colors"
+              className="absolute right-5 top-5 text-gray-400 hover:text-black transition-colors"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
 
-            <div className="text-left px-4">
-              <h2 className="text-[26px] font-medium text-gray-800 mb-8">Please enter OTP</h2>
+            <div className="text-left px-2">
+              <h2 className="text-[20px] font-semibold text-gray-800 mb-5">Please enter OTP</h2>
 
-              <div className="mb-6">
-                <label className="block text-[15px] text-gray-600 mb-2 font-medium">OTP</label>
+              <div className="mb-4">
+                <label className="block text-[14px] text-gray-600 mb-1.5 font-medium">OTP</label>
                 <input
                   type="text"
                   maxLength={6}
@@ -597,16 +585,16 @@ function Dashboard() {
                     if (val.length <= 6) setOtp(val);
                   }}
                   placeholder="Enter your 6-digit OTP"
-                  className="w-full h-[52px] border border-gray-200 rounded-lg px-4 text-[15px] focus:border-[#34b350] outline-none transition-all placeholder:text-gray-300"
+                  className="w-full h-[44px] border border-gray-200 rounded-lg px-4 text-[14px] focus:border-[#34b350] outline-none transition-all placeholder:text-gray-300"
                   onKeyDown={(e) => e.key === "Enter" && handleSubmitOtp()}
                 />
               </div>
 
-              <div className="text-center mb-10">
-                <p className="text-[14px] text-gray-500 mb-1">Resend OTP in {formatTime(resendTimer)}</p>
+              <div className="text-center mb-6">
+                <p className="text-[13px] text-gray-500 mb-1">Resend OTP in {formatTime(resendTimer)}</p>
                 <button
                   onClick={handleResendOtp}
-                  className={`text-[14px] font-medium transition-colors ${canResend ? "text-[#34b350] cursor-pointer hover:underline" : "text-gray-300 cursor-default"}`}
+                  className={`text-[13px] font-medium transition-colors ${canResend ? "text-[#34b350] cursor-pointer hover:underline" : "text-gray-300 cursor-default"}`}
                 >
                   Resend OTP
                 </button>
@@ -615,7 +603,7 @@ function Dashboard() {
               <div className="flex justify-center">
                 <button
                   onClick={handleSubmitOtp}
-                  className="bg-[#34b350] text-white font-medium rounded-full px-16 h-[52px] text-[16px] hover:bg-[#2e9e47] transition-all shadow-sm"
+                  className="bg-[#34b350] text-white font-medium rounded-full px-12 h-[44px] text-[15px] hover:bg-[#2e9e47] transition-all shadow-sm"
                 >
                   Submit
                 </button>
